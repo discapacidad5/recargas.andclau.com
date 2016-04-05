@@ -326,10 +326,10 @@
 												if($permiso){
 												?>
 												<div class="col-sm-6">
-													<a href="javascript:void(0);"> <!-- compras/reportes -->
+													<a href="billetera3/"> <!-- javascript:void(0); -->
 														<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>;">
-															<i class="fa fa-ticket fa-3x"></i><!-- fa-table -->
-															<h5>Boletos/Tickets</h5> <!-- Reportes -->
+															<i class="fa fa-mobile-phone fa-3x"></i><!-- fa-table -->
+															<h5>Recargas</h5> <!-- Reportes -->
 														</div>
 													</a>
 												</div>

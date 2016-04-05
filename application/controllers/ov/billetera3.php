@@ -55,7 +55,7 @@ class billetera3 extends CI_Controller
 		$this->template->set_partial('header', 'website/ov/header');
 		$this->template->set_partial('footer', 'website/ov/footer');
 		$this->template->build('website/ov/billetera/dashboard');
-		$this->template->build('website/ov/billetera/index');
+		$this->template->build('website/ov/recargas/billetera');
 	}
 	
 	function index_estado()
