@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class modelo_billetera extends CI_Model
+class modelo_recargas extends CI_Model
 {
 	function get_estatus($id)
 	{
