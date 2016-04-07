@@ -76,7 +76,7 @@
 														<input type="text" name="codigo_barras" id="codigo_barras">
 													</label>
 												</section>
-												<section class="col col-3">Categoria
+												<section class="col col-4">Categoria
 															<label class="select">
 																<select name="red">
 																<?foreach ($grupos as $grupo){?>
@@ -90,9 +90,10 @@
 											<div class="row">
 											<fieldset>
 											<section class="col col-2">
-											<label class="input"><span id="labelextra">Descuento del producto</span>
-												<input required id="precio_promo" type="number" name="descuento">
-											</label>
+											Valor en Recarga
+											<label class="input"><i class="icon-prepend fa fa-mobile-phone"></i>
+												<input type="number" class="form-control" name="descuento" size="30" min="0" required>
+									        </label>
 											</section>
 											</fieldset>
 											</div>
