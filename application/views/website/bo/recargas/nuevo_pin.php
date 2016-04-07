@@ -6,6 +6,7 @@
 							<a class="backHome" href="/bo"><i class="fa fa-home"></i> Menu</a>
 							<span>>
 								<a href="bo/comercial">Comercial</a> >  
+								<a href="/bo/comercial/red">Red de Afiliacion</a> >
 								<a href="/bo/recargas/">Recargas</a> >
 								<a href="/bo/recargas/pines">Pines</a> > Alta
 							</span>
@@ -33,21 +34,21 @@
 						<div class="widget-body no-padding smart-form">
 <div>
     <fieldset id="pswd">
-		<form class="smart-form" action="/bo/admin/new_retencion" method="POST" id="retencion" role="form">
+		<form class="smart-form" action="/bo/admin/new_retencion" method="POST" id="pin" role="form">
 			<legend>Nuevo PIN </legend><br>
 			<div class="form-group" style="width: 20rem;">
 			<label style="margin: 1rem;" class="input"><i class="icon-prepend fa fa-check-circle-o"></i>
-				<input id='desc'  class="form-control" name="desc" size="20" placeholder="PIN" type="text" required>
+				<input id='desc'  class="form-control" name="id" size="10" placeholder="PIN" type="text" required>
 	        </label>
 	        <label style="margin: 1rem;" class="input">
-	       <TEXTAREA id='desc'  class="form-control" name="desc" size="20" placeholder="Descripcion" rows="3" cols="30" required>
+	       <TEXTAREA id='desc'  class="form-control" name="descrip" placeholder="Descripcion" rows="3" cols="30" >
 </TEXTAREA> 
 	        </label>
 			<label style="margin: 1rem;" class="input"><i class="icon-prepend fa fa-check-circle-o"></i>
-				<input id='porc' class="form-control" name="porc" size="20" placeholder="Valor" type="number" type="number"  required>
+				<input id='porc' class="form-control" name="valor" size="20" placeholder="Valor" type="number" type="number"  required>
 	        </label>
 	        <label style="margin: 1rem;" class="input"><i class="icon-prepend fa fa-check-circle-o"></i>
-				<input id='porc' class="form-control" name="porc" size="20" placeholder="Credito" type="number" type="number"  required>
+				<input id='porc' class="form-control" name="credito" size="20" placeholder="Credito" type="number" type="number"  required>
 	        </label>
 			<button style="margin: 1rem;margin-bottom: 4rem;" type="submit" class="btn btn-success">Crear</button>
 			</div>
@@ -78,7 +79,7 @@
 <script src="/template/js/validacion.js"></script>
 <script src="/template/js/plugin/fuelux/wizard/wizard.min.js"></script>
 <script type="text/javascript">
-$( "#retencion" ).submit(function( event ) {
+$( "#pin" ).submit(function( event ) {
 	event.preventDefault();
 	iniciarSpinner();
 	enviar();
@@ -87,8 +88,8 @@ $( "#retencion" ).submit(function( event ) {
 function enviar(){
 	$.ajax({
 		type: "POST",
-		url: "/bo/admin/new_retencion",
-		data: $('#retencion').serialize()
+		url: "/bo/recargas/ingresar_pin",
+		data: $('#pin').serialize()
 	}).done(function( msg ) {				
 		bootbox.dialog({
 			message: msg,
@@ -98,7 +99,7 @@ function enviar(){
 					label: "Aceptar",
 					className: "btn-success",
 					callback: function() {
-							location.href="/bo/configuracion/listar_retenciones";
+							location.href="/bo/recargas/listar_pin";
 							FinalizarSpinner();
 					}
 				}

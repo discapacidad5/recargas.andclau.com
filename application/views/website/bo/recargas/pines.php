@@ -8,6 +8,7 @@
 								<a class="backHome" href="/bo"><i class="fa fa-home"></i> Menu</a>
 							<span>>
 								<a href="#">Comercial</a> > 
+								<a href="/bo/comercial/red">Red de Afiliacion</a> >
 								<a href="/bo/recargas/">Recargas</a> > Pines 
 								
 							</span>

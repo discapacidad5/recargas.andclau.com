@@ -1,6 +1,6 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
-include APPPATH.'models/bo/recargas/pin.php';
+
 class model_pin extends CI_Model
 {
 	
@@ -8,16 +8,18 @@ class model_pin extends CI_Model
 	{
 		parent::__construct();
 		$this->load->model('ov/model_perfil_red');
-		$this->load->model('model_tipo_red');
+		
 	}
 	
-	function ingresar_pin($id,$descrip,$valor,$credito){
+	function ingresar_pin(){
 		$dato=array(
-				"id" =>	$id,
-				"descripcion" =>	$descrip,
-				"valor" =>	$valor,
-				"credito" =>	$credito
+				"id" =>				$this->pin->getId(),
+				"descripcion" => 	$this->pin->getDescripcion(),
+				"valor" => 			$this->pin->getValor(),
+				"credito" => 		$this->pin->getCredito()
 		);
 		$this->db->insert("pin",$dato);
+		
+		return true;
 	}
 }

@@ -1,5 +1,5 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-include APPPATH.'models/bo/recargas/pin.php';
+
 class recargas extends CI_Controller
 {
 	function __construct()
@@ -16,7 +16,8 @@ class recargas extends CI_Controller
 		$this->load->model('bo/model_bonos');
 		$this->load->model('bo/model_mercancia');
 		$this->load->model('bo/general');
-		
+		$this->load->model('bo/recargas/pin');
+		$this->load->model('bo/recargas/model_pin');
 	}
 	
 	function index(){
@@ -125,10 +126,15 @@ class recargas extends CI_Controller
 	}
 	function ingresar_pin(){
 
-		$this->pin->id = $_POST['id'];
-		$this->pin->descrip = $_POST['descrip'];
-		$this->pin->valor = $_POST['valor'];
-		$this->pin->credito = $_POST['credito'];
+		$this->pin->setId($_POST['id']);
+		$this->pin->setDescripcion($_POST['descrip']);
+		$this->pin->setValor($_POST['valor']);
+		$this->pin->setCredito($_POST['credito']);
+		
+		#echo $_POST['id']."|".$_POST['descrip']."|".$_POST['valor']."|".$_POST['credito'];
+		
+		echo $this->model_pin->ingresar_pin() ? "Pin Creado Exitosamente" : "Pin no pudo ser Creado";
+		
 	}
 	
 	

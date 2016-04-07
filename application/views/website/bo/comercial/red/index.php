@@ -33,7 +33,7 @@
                   <fieldset>
 										<div class="col-sm-12 link">
 											<div class="">
-												<div class="col-sm-2 link">
+												<div class="col-sm-1 link">
 												</div>
 												<div class="col-sm-2 link">
 													<a href="/bo/usuarios/afiliar">
@@ -51,7 +51,14 @@
 														</div>
 													</a>
 												</div>
-												
+												<div class="col-sm-2 link">
+													<a href="/bo/recargas">
+														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>;">
+															<i class="fa fa-mobile-phone fa-3x"></i>
+															<h1>Recargas</h1>
+														</div>
+													</a>
+												</div>
 											</div>
 										 </div>
 									</div>
