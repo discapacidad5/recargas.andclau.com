@@ -50,12 +50,14 @@ class billetera3 extends CI_Controller
 		$style=$this->general->get_style($id);
 		
 		$this->billetera_recargas->setUsuario($id);	
-		$this->model_billetera_recargas->getSaldo();	
-		$saldo = $this->billetera_recargas->getSaldo();		
+		$this->model_billetera_recargas->getSaldos();	
+		$saldo = $this->billetera_recargas->getSaldo();	
+		$disponible = $this->billetera_recargas->getDisponible();	
 		
 		$this->template->set("style",$style);
 		$this->template->set("usuario",$usuario);
 		$this->template->set("saldo",$saldo);
+		$this->template->set("disponible",$disponible);
 
 		$this->template->set_theme('desktop');
 		$this->template->set_layout('website/main');

@@ -2,7 +2,7 @@
 
 class billetera_recargas extends CI_Model
 {
-private	$id,$usuario,$saldo;
+private	$id,$usuario,$saldo,$disponible,$Saldos;
 
 	function __construct()
 	{
@@ -22,12 +22,31 @@ private	$id,$usuario,$saldo;
 		$this->usuario = $usuario;
 	}
 	
-	public function getSaldo() {
-		return $this->saldo;
+	public function getSaldos() {
+		return $this->Saldos;
 	}
+	
+	public function setSaldos($Saldos) {
+		$this->Saldos = $Saldos;
+	}	
+	
+	public function getSaldo() {
+		return $this->Saldos['saldo'];
+	}
+	
 	public function setSaldo($saldo) {
 		$this->saldo = $saldo;
+	}	
+	
+	public function getDisponible() {
+		return $this->Saldos['disponible'];
 	}
+	
+	public function setDisponible($disponible) {
+		$this->disponible = $disponible;
+	}
+	
+	
 	
 	
 }

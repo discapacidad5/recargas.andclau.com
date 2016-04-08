@@ -11,9 +11,27 @@ class model_billetera_recargas extends CI_Model
 		
 	}
 	
-	function getSaldo(){
-		$q=$this->db->query("select * from billetera_recargas where id_user = ".$this->billetera_recargas->getUsuario());
+	function getSaldos(){
+		$q=$this->db->query("SELECT 
+								u.id,u.username,
+								(select sum(valor) 
+									from billetera_recargas_saldo 
+									where id_billetera = b.id) saldo,
+								(select sum(valor) 
+									from billetera_recargas_retiro 
+									where id_billetera = b.id and estatus = 'ACT') disponible
+								FROM billetera_recargas b, users u
+								WHERE b.id_user = u.id 
+										and u.id = ".$this->billetera_recargas->getUsuario()."
+								ORDER BY u.id");
 		$q=$q->result();
-		$this->billetera_recargas->setSaldo($q[0]->monto);
+		
+		$Saldos = array(
+				#'billetera' => $q[0]->saldo,
+				'disponible' => $q[0]->disponible,
+				'saldo' => $q[0]->saldo - $q[0]->disponible
+		);
+		
+		$this->billetera_recargas->setSaldos($Saldos);
 	}
 }

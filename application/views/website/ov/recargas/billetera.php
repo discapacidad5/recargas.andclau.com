@@ -1,15 +1,20 @@
 <!-- MAIN CONTENT -->
 <div id="content">
 	<div class="row">
-		<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
 			<h1 class="page-title txt-color-blueDark">
 				<a class="backHome" href="/bo"><i class="fa fa-home"></i> Menu</a> <span>>
 					Billetera Recargas </span>
 			</h1>
 		</div>
-		<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+		<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
 						<h1 class="page-title txt-color-blueDark">
-							<i style="color: #5B835B;" class="fa fa-money"></i> Saldo Billetera Recargas <span class="txt-color-black"><b>$ <?=number_format($saldo,2)?> </b></span>
+							<i style="color: #5B835B;" class="fa fa-money"></i> Saldo Billetera <span class="txt-color-black"><b>$ <?=number_format($saldo,2)?> </b></span>
+						</h1>
+		</div>
+		<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+						<h1 class="page-title txt-color-blueDark">
+							<i style="color: #5B835B;" class="fa fa-mobile-phone"></i> Saldo Recargas <span class="txt-color-black"><b>$ <?=number_format($disponible,2)?> </b></span>
 						</h1>
 		</div>
 	</div>
