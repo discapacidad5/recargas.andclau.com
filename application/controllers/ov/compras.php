@@ -26,6 +26,8 @@ class compras extends CI_Controller
 		$this->load->model('model_carrito_temporal');
 		$this->load->model('model_servicio');
 		$this->load->model('bo/modelo_pagosonline');
+		$this->load->model('bo/recargas/billetera_recargas');
+		$this->load->model('bo/recargas/model_billetera_recargas');
 			
 		$this->load->model('ov/model_web_personal_reporte');
 	}
@@ -3754,9 +3756,49 @@ function index()
 				$this->calcularComisionAfiliado($id_venta,$id_red_mercancia,$costoVenta,$id_afiliado_comprador);
 				
 			}
-
+			
+			$this->RecargaPadre ($id_afiliado_comprador,$mercancia);						
+			
+			$this->SaldoRecargas($id_afiliado_comprador,$mercancia->recarga);
+			
 		}
 	}
+	
+	
+	private function RecargaPadre($id,$mercancia) {
+		$categoria = $this->modelo_compras->ObtenerCategoria($mercancia->id);
+		$grupo_recargas = $this->modelo_compras->getCatRecargas();
+		
+		foreach ($grupo_recargas as $grupo){
+			($grupo->id_grupo==$categoria) 
+					? $this->SaldoRecargasPadre(
+							$id,
+							$mercancia->costo_unidad_total
+							)
+					: '';
+		}
+	}
+
+	
+
+	private function SaldoRecargasPadre($id,$valor) {	
+		
+		if($id>2){	
+		$padre = $this->model_perfil_red->ConsultarPadres($id);
+		$this->billetera_recargas->setUsuarioValor($padre,$valor);
+		$this->model_billetera_recargas->agregarSaldoPadre();
+		}
+	}
+	
+	private function SaldoRecargas($id,$valor) {
+	
+		if($valor>0){
+			$this->billetera_recargas->setUsuarioValor($id,$valor);
+			#$this->model_billetera_recargas->agregarSaldo();
+			$this->model_billetera_recargas->agregarCanjeo();
+		}
+	}
+
 	
 	public function calcularComisionAfiliado($id_venta,$id_red_mercancia,$costoVenta,$id_afiliado){
 	

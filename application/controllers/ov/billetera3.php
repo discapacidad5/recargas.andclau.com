@@ -17,6 +17,8 @@ class billetera3 extends CI_Controller
 		$this->load->model('ov/modelo_dashboard');
 		$this->load->model('bo/model_bonos');
 		$this->load->model('model_tipo_red');
+		$this->load->model('bo/recargas/billetera_recargas');
+		$this->load->model('bo/recargas/model_billetera_recargas');
 		
 		if (!$this->tank_auth->is_logged_in())
 		{																		// logged in
@@ -46,9 +48,16 @@ class billetera3 extends CI_Controller
 
 		$usuario=$this->general->get_username($id);
 		$style=$this->general->get_style($id);
-
+		
+		$this->billetera_recargas->setUsuario($id);	
+		$this->model_billetera_recargas->getSaldos();	
+		$saldo = $this->billetera_recargas->getSaldo();	
+		$disponible = $this->billetera_recargas->getDisponible();	
+		
 		$this->template->set("style",$style);
 		$this->template->set("usuario",$usuario);
+		$this->template->set("saldo",$saldo);
+		$this->template->set("disponible",$disponible);
 
 		$this->template->set_theme('desktop');
 		$this->template->set_layout('website/main');

@@ -73,10 +73,10 @@ $porcentajeContador=0;
 
 
 										<section class="col col-2" style="width: 50%;">
-											<label class="input"><span id="labelextra">Descuento del
-													combinado</span> 
-													<input required id="precio_promo" type="number" name="descuento" value='<? echo $mercancia[0]->descuento;?>' required/> 
-											</label>
+											Valor en Recarga
+											<label class="input"><i class="icon-prepend fa fa-mobile-phone"></i>
+												<input type="number" class="form-control" value='<? echo $mercancia[0]->descuento;?>' name="descuento" size="30" min="0" required>
+									        </label>
 										</section>
 
 										<section class="col col-12" style="width: 100%;">

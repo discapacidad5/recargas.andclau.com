@@ -6,8 +6,6 @@ private	$id,$descripcion,$valor,$credito,$pin,$tarifa;
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('ov/model_perfil_red');
-		$this->load->model('model_tipo_red');
 	}
 	
 	public function getId() {

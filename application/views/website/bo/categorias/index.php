@@ -247,7 +247,7 @@ function editar(id){
 	.done(function( msg ) {
 		bootbox.dialog({
 			message: msg,
-			title: 'Modificar Afiliado',
+			title: 'Modificar Categoria',
 				});
 	});//fin Done ajax
 }
