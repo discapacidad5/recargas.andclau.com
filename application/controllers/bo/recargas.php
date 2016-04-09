@@ -97,6 +97,20 @@ class recargas extends CI_Controller
 		$this->template->build('website/bo/recargas/nuevo_pin');
 	}
 	
+	
+	function ingresar_pin(){
+
+		$this->pin->setId($_POST['id']);
+		$this->pin->setDescripcion($_POST['descripcion']);
+		$this->pin->setValor($_POST['valor']);
+		//$this->pin->setCredito($_POST['credito']);
+		
+		#echo $_POST['id']."|".$_POST['descrip']."|".$_POST['valor']."|".$_POST['credito'];
+		
+		echo $this->model_pin->ingresar_pin() ? "Pin Creado Exitosamente" : "Pin no pudo ser Creado";
+		
+	}
+	
 	function listar_pines()
 	{
 		if (!$this->tank_auth->is_logged_in())
@@ -104,38 +118,84 @@ class recargas extends CI_Controller
 			redirect('/auth');
 		}
 	
-		$id=$this->tank_auth->get_user_id();
-		$usuario=$this->general->get_username($id);
-	
-		if($usuario[0]->id_tipo_usuario!=1)
-		{
-			redirect('/auth/logout');
-		};
-	
-		$retenciones 	 = $this->model_admin->get_retencion();
-	
-		$style=$this->modelo_dashboard->get_style($id);
+		$style=$this->modelo_dashboard->get_style(1);
 	
 		$this->template->set("style",$style);
-		$this->template->set("retenciones",$retenciones);
+		
+		$this->model_pin->listar_pin();
+		$pin = $this->pin->getPin();
+		
+		#echo var_dump($pin);exit();
+		
+		$this->template->set("pines",$pin);
+		
 		$this->template->set_theme('desktop');
 		$this->template->set_layout('website/main');
 		$this->template->set_partial('header', 'website/bo/header');
 		$this->template->set_partial('footer', 'website/bo/footer');
 		$this->template->build('website/bo/recargas/listar_pines');
 	}
-	function ingresar_pin(){
-
+	
+	function listar_tarifa()
+	{
+		if (!$this->tank_auth->is_logged_in())
+		{																		// logged in
+			redirect('/auth');
+		}
+	
+		$style=$this->modelo_dashboard->get_style(1);
+	
+		$this->template->set("style",$style);
+	
+		$this->model_pin->listar_tarifa();
+		$tarifa = $this->pin->getTarifa();
+	
+		#echo var_dump($pin);exit();
+	
+		$this->template->set("tarifas",$tarifa);
+	
+		$this->template->set_theme('desktop');
+		$this->template->set_layout('website/main');
+		$this->template->set_partial('header', 'website/bo/header');
+		$this->template->set_partial('footer', 'website/bo/footer');
+		$this->template->build('website/bo/recargas/nuevo_pin');
+	}
+	
+	
+	function editar_pin(){
+	//	$id              = $this->tank_auth->get_user_id();
+		#$style           = $this->general->get_style($id);
 		$this->pin->setId($_POST['id']);
-		$this->pin->setDescripcion($_POST['descrip']);
-		$this->pin->setValor($_POST['valor']);
-		$this->pin->setCredito($_POST['credito']);
+		$this->model_pin->editar_pin();
+		$pin	 	 = $this->pin->getPin();
 		
-		#echo $_POST['id']."|".$_POST['descrip']."|".$_POST['valor']."|".$_POST['credito'];
+		#echo "dentro de editar";
+	
+		$this->template->set("pin",$pin);
+		$this->template->build('website/bo/recargas/editar_pin');
+	}
+	
+function actualizar_pin(){
 		
-		echo $this->model_pin->ingresar_pin() ? "Pin Creado Exitosamente" : "Pin no pudo ser Creado";
+$this->pin->setId($_POST['id']);
+$this->pin->setDescripcion($_POST['descripcion']);
+$this->pin->setValor($_POST['valor']);
+
+		
+		echo $this->model_pin->actualizar_pin() ? "Pin actualizado Exitosamente" : "Pin no pudo ser actualizado ";
+		//redirect('bo/recargas/listar_pines');
 		
 	}
+	
+	function eliminar_pin(){
+	
+		if(isset($_POST['id'])){
+			$this->pin->setId($_POST['id']);
+				
+		}
+		echo $this->model_pin->eliminar_pin() ? "Pin eliminado Exitosamente" : "Pin no pudo ser eliminado";
+	}
+	
 	
 	
 }

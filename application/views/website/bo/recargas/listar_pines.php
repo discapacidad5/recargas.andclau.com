@@ -68,43 +68,27 @@
 									<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
 											<thead>			                
 												<tr>
-													<th>ID</th>
-													<th data-class="expand">Nombre</th>
+													
+													<th data-class="expand">PIN</th>
+													<th data-hide="phone,tablet">descripcion</th>
 													<th data-hide="phone,tablet">Valor</th>
-													<th data-hide="phone,tablet">Duracion</th>
-													<th></th>
+													<th data-hide="phone,tablet">credito</th>
+													<th data-hide="phone,tablet">Acciones</th>
 												</tr>
 											</thead>
 											<tbody>
 												
-												<?foreach ($retenciones as $retencion) {?>
+												<?foreach ($pines as $pin) {?>
 													<tr>
-														<td><?php echo $retencion->id_retencion; ?></td>
-														<td><?php echo $retencion->descripcion; ?></td>
-														<td>$ <?php echo $retencion->porcentaje; ?></td>
+														<td><?php echo $pin->id; ?></td>
+														<td><?php echo $pin->descripcion; ?></td>
+														<td>$ <?php echo $pin->valor; ?></td>
+														<td>$ <?php echo $pin->credito; ?></td>
 														<td>
-														<?php 
-														if($retencion->duracion=='DIA')
-															echo "Diario";
-														else if($retencion->duracion=='SEM')
-															echo "Semanal";
-														else if($retencion->duracion=='MES')
-															echo "Mensual";
-														else if($retencion->duracion=='ANO')
-															echo "Anual";
-														else if ($retencion->duracion=='UNI')
-															echo "Unica Vez";
-														 ?>
-														</td>
-														<td>
-															<a title="Editar" class="txt-color-blue" onclick="editar('<?php echo $retencion->id_retencion; ?>');"><i class="fa fa-pencil fa-3x"></i></a>
+															<a title="Editar" style="cursor: pointer" class="txt-color-blue" onclick="editar('<?php echo $pin->id; ?>');"><i class="fa fa-pencil fa-3x"></i></a>
 															
-															<?php if($retencion->estatus == 'ACT'){ ?>
-																<a title="Desactivar" onclick="estado('DES','<?php echo $retencion->id_retencion; ?>')" class="txt-color-green"><i class="fa fa-check-square-o fa-3x"></i></a>
-															<?php } else {?>
-																<a title="Activar" onclick="estado('ACT','<?php echo $retencion->id_retencion; ?>')" class="txt-color-green"><i class="fa fa-square-o fa-3x"></i></a>
-															<?php } ?>
-															<a title="Eliminar"  class="txt-color-red" onclick="eliminar('<?php echo $retencion->id_retencion; ?>');"><i class="fa fa-trash-o fa-3x"></i></a>
+															
+															<a title="Eliminar" style="cursor: pointer" class="txt-color-red" onclick="eliminar('<?php echo $pin->id; ?>');"><i class="fa fa-trash-o fa-3x"></i></a>
 														</td>
 													</tr>
 												<?}?>
@@ -228,7 +212,7 @@ $(document).ready(function() {
 function editar(id){
 	$.ajax({
 		type: "POST",
-		url: "/bo/configuracion/editar_retencion",
+		url: "/bo/recargas/editar_pin",
 		data: {
 			id: id
 			}
@@ -237,7 +221,7 @@ function editar(id){
 	.done(function( msg ) {
 		bootbox.dialog({
 			message: msg,
-			title: 'Modificar Retencion',
+			title: 'Modificar Pin',
 				});
 	});//fin Done ajax
 }
@@ -247,13 +231,13 @@ function eliminar(id) {
 	$.ajax({
 		type: "POST",
 		url: "/auth/show_dialog",
-		data: {message: '¿ Esta seguro que desea Eliminar la Retencion ?'},
+		data: {message: '¿ Esta seguro que desea Eliminar el PIN ?'},
 	})
 	.done(function( msg )
 	{
 		bootbox.dialog({
 		message: msg,
-		title: 'Eliminar Retencion',
+		title: 'Eliminar Pin',
 		buttons: {
 			success: {
 			label: "Aceptar",
@@ -262,20 +246,20 @@ function eliminar(id) {
 
 					$.ajax({
 						type: "POST",
-						url: "/bo/admin/kill_retencion",
+						url: "/bo/recargas/eliminar_pin",
 						data: {id: id}
 					})
 					.done(function( msg )
 					{
 						bootbox.dialog({
-						message: "Se ha eliminado la retencion.",
+						message: "Se ha eliminado el Pin.",
 						title: 'Felicitaciones',
 						buttons: {
 							success: {
 							label: "Aceptar",
 							className: "btn-success",
 							callback: function() {
-								location.href="/bo/configuracion/listar_retenciones";
+								location.href="/bo/recargas/listar_pines";
 								}
 							}
 						}
@@ -296,20 +280,20 @@ function eliminar(id) {
 	});
 }
 
-function estado(estatus, id)
-{
+// function estado(estatus, id)
+//{
 		
-	$.ajax({
-		type: "POST",
-		url: "/bo/configuracion/cambiar_estado_retencion",
-		data: {
-			id:id, 
-			estado: estatus
-		},
-		}).done(function( msg )
-				{
-					location.href = "/bo/configuracion/listar_retenciones";
+//	$.ajax({
+	//	type: "POST",
+		//url: "/bo/configuracion/cambiar_estado_retencion",
+	//	data: {
+		//	id:id, 
+			//estado: estatus
+	//	},
+		//}).done(function( msg )
+			//	{
+				//	location.href = "/bo/configuracion/listar_retenciones";
 				
-			})
-	}
+		//	})
+	//}
 </script>

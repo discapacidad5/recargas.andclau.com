@@ -1,7 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 class pin extends CI_Model
 {
-private	$id,$descrip,$valor,$credito;
+private	$id,$descripcion,$valor,$credito,$pin,$tarifa;
 
 	function __construct()
 	{
@@ -17,10 +17,10 @@ private	$id,$descrip,$valor,$credito;
 		$this->id = $id;
 	}
 	public function getDescripcion() {
-		return $this->descrip;
+		return $this->descripcion;
 	}
-	public function setDescripcion($descrip) {
-		$this->descrip = $descrip;
+	public function setDescripcion($descripcion) {
+		$this->descripcion = $descripcion;
 	}
 	
 	public function getValor() {
@@ -35,5 +35,18 @@ private	$id,$descrip,$valor,$credito;
 	}
 	public function setCredito($credito) {
 		$this->credito = $credito;
+	}
+	public function getPin() {
+		return $this->pin;
+	}
+	public function setPin($pin) {
+		$this->pin = $pin;
+	}
+	
+	public function getTarifa() {
+		return $this->tarifa;
+	}
+	public function setTarifa($tarifa) {
+		$this->tarifa = $tarifa;
 	}
 }

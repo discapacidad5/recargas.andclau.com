@@ -41,15 +41,17 @@
 				<input id='desc'  class="form-control" name="id" size="10" placeholder="PIN" type="text" required>
 	        </label>
 	        <label style="margin: 1rem;" class="input">
-	       <TEXTAREA id='desc'  class="form-control" name="descrip" placeholder="Descripcion" rows="3" cols="30" >
+	       <TEXTAREA id='desc'  class="form-control" name="descripcion" placeholder="Descripcion" rows="3" cols="30" >
 </TEXTAREA> 
 	        </label>
-			<label style="margin: 1rem;" class="input"><i class="icon-prepend fa fa-check-circle-o"></i>
-				<input id='porc' class="form-control" name="valor" size="20" placeholder="Valor" type="number" type="number"  required>
+			<label style="margin: 1rem;" class="select"><i class="icon-prepend fa fa-check-circle-o"></i>	        
+	        <select id='porc' class="form-control" name="valor" required>
+	        <option value="1">valor: € 10 cubre 2000 créditos </option>
+	        <option value="2">valor: € 25 cubre 5000 créditos </option>
+	        <option value="3">valor: € 50 cubre 10000 créditos </option>
+	        </select>
 	        </label>
-	        <label style="margin: 1rem;" class="input"><i class="icon-prepend fa fa-check-circle-o"></i>
-				<input id='porc' class="form-control" name="credito" size="20" placeholder="Credito" type="number" type="number"  required>
-	        </label>
+	       
 			<button style="margin: 1rem;margin-bottom: 4rem;" type="submit" class="btn btn-success">Crear</button>
 			</div>
 		</form>
@@ -99,7 +101,7 @@ function enviar(){
 					label: "Aceptar",
 					className: "btn-success",
 					callback: function() {
-							location.href="/bo/recargas/listar_pin";
+							location.href="/bo/recargas/listar_pines";
 							FinalizarSpinner();
 					}
 				}
