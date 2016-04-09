@@ -1236,6 +1236,13 @@ where a.id_paquete = e.id_paquete and d.sku= a.id_paquete and d.estatus="ACT" an
 		return $categoria[0]->id_grupo;
 	}
 	
+	function getCatRecargas(){
+		$q = $this->db->query("select id_grupo from cat_grupo_recarga");		
+		$categoria = $q->result();
+	
+		return $categoria;
+	}
+	
 	function obtenerPlanDeCompensacion($id_red){
 		$q = $this->db->query("SELECT plan FROM tipo_red where id=".$id_red);
 		return $q->result();
@@ -1333,7 +1340,7 @@ where a.id_paquete = e.id_paquete and d.sku= a.id_paquete and d.estatus="ACT" an
 									CVM.costo_unidad as costo_unidad, 
 									M.costo_publico, CVM.cantidad,
 									M.puntos_comisionables, 
-									M.descuento as recarga,
+									(M.descuento*CVM.cantidad) as recarga,
 									M.id_tipo_mercancia
 							from cross_venta_mercancia CVM, mercancia M
 							where CVM.id_venta = ".$id_venta."  and CVM.id_mercancia=M.id;");

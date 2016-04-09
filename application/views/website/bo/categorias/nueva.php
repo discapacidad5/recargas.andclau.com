@@ -81,6 +81,11 @@
 												<option value="ACT">Activado</option>
 												<option value="DES">Desactivado</option>
 											</select> <i></i> </label>
+											<br>
+										<i class="fa fa-mobile-phone"></i>&nbsp;&nbsp;Recarga
+										<label class="input" style="width: 25rem;"> 
+											<input style="width: 25rem;" type="checkbox" name="recarga" placeholder="Nombre" class="form-control" >
+										 </label>
 							<br>
 										<div class="row">
 											<section  id="div_subir" style="width: 25rem;">

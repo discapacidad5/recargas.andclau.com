@@ -3757,23 +3757,31 @@ function index()
 				
 			}
 			
-			$categoria = $this->modelo_compras->ObtenerCategoria($mercancia->id);
-			($categoria==41) 
-			? $this->SaldoRecargasPadre(
-					$id_afiliado_comprador,
-					$mercancia->costo_unidad_total,
-					$categoria)
-			: '';			
+			$this->RecargaPadre ($id_afiliado_comprador,$mercancia);						
 			
-			$this->SaldoRecargas(
-					$id_afiliado_comprador,
-					$mercancia->recarga);
+			$this->SaldoRecargas($id_afiliado_comprador,$mercancia->recarga);
 			
 		}
 	}
 	
+	
+	private function RecargaPadre($id,$mercancia) {
+		$categoria = $this->modelo_compras->ObtenerCategoria($mercancia->id);
+		$grupo_recargas = $this->modelo_compras->getCatRecargas();
+		
+		foreach ($grupo_recargas as $grupo){
+			($grupo->id_grupo==$categoria) 
+					? $this->SaldoRecargasPadre(
+							$id,
+							$mercancia->costo_unidad_total
+							)
+					: '';
+		}
+	}
 
-	private function SaldoRecargasPadre($id,$valor,$categoria) {	
+	
+
+	private function SaldoRecargasPadre($id,$valor) {	
 		
 		if($id>2){	
 		$padre = $this->model_perfil_red->ConsultarPadres($id);

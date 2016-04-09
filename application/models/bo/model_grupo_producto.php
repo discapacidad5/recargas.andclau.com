@@ -20,11 +20,36 @@ function __construct()
 				'estatus'	  => $_POST['estado']
 		);
 		$this->db->insert('cat_grupo_producto', $datos);
+		$id=$this->db->insert_id();
+		
+		isset($_POST['recarga']) 
+		? $this->crear_grupo_recarga ( $id ) 
+		: '';		
+		
 		return true;
 	}
 	
+	private function eliminar_grupo_recarga($id){
+		$this->db->query("delete from cat_grupo_recarga where id_grupo=".$id);
+		return true;
+	}
+	
+	private function crear_grupo_recarga($id) {
+		$datos = array(
+				'id_grupo' => $id
+		);
+		$this->db->insert('cat_grupo_recarga', $datos);
+	}
+
+	
 	function ConsultarCategoria($id){
-		$categoria = $this->db->query('select * from cat_grupo_producto where id_grupo = '.$id.'');
+		$categoria = $this->db->query('select *,
+										(case when (
+												(select id_grupo 
+													from cat_grupo_recarga
+													where id_grupo=c.id_grupo)) 
+											then "checked" else "" end) recarga
+									from cat_grupo_producto c where c.id_grupo ='.$id.'');
 		return $categoria->result();
 	}
 	
@@ -36,7 +61,21 @@ function __construct()
 		);
 		$this->db->where('id_grupo', $_POST['id']);
 		$this->db->update('cat_grupo_producto', $datos);
+		
+		$recarga = $this->get_grupo_recarga_id();
+		
+		isset($_POST['recarga'])
+		? (!$recarga) 
+			? $this->crear_grupo_recarga ($_POST['id']) : ''
+		: ($recarga) 
+			? $this->eliminar_grupo_recarga ($_POST['id']): '';
+		
 		return true;
+	}
+	
+	function get_grupo_recarga_id(){
+		$q=$this->db->query("select * from cat_grupo_recarga where id_grupo=".$_POST["id"]);
+		return $q->result();
 	}
 	
 	function eliminar_categoria(){

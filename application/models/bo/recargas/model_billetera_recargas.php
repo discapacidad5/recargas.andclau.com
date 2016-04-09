@@ -29,10 +29,13 @@ class model_billetera_recargas extends CI_Model
 								ORDER BY u.id");
 		$q=$q->result();
 		
+		$disponible = $q[0]->disponible - $q[0]->consumo;
+		$saldo = $q[0]->saldo - $q[0]->disponible;
+		
 		$Saldos = array(
 				#'billetera' => $q[0]->saldo,
-				'disponible' => $q[0]->disponible - $q[0]->consumo,
-				'saldo' => $q[0]->saldo - $q[0]->disponible
+				'disponible' => ($disponible<0) ? 0 : $disponible,
+				'saldo' => ($saldo<0) ? 0 : $saldo
 		);
 		
 		$this->billetera_recargas->setSaldos($Saldos);
