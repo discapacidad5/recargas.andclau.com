@@ -26,6 +26,8 @@ class compras extends CI_Controller
 		$this->load->model('model_carrito_temporal');
 		$this->load->model('model_servicio');
 		$this->load->model('bo/modelo_pagosonline');
+		$this->load->model('bo/recargas/billetera_recargas');
+		$this->load->model('bo/recargas/model_billetera_recargas');
 			
 		$this->load->model('ov/model_web_personal_reporte');
 	}
@@ -3754,9 +3756,24 @@ function index()
 				$this->calcularComisionAfiliado($id_venta,$id_red_mercancia,$costoVenta,$id_afiliado_comprador);
 				
 			}
+			
+			$categoria = $this->modelo_compras->ObtenerCategoria($mercancia->id);
+			$this->SaldoRecargasPadre($id_afiliado_comprador,$id_venta,$mercancia->id,$categoria);
 
 		}
 	}
+	
+
+	private function SaldoRecargasPadre($id,$id_venta,$mercancia,$categoria) {	
+		
+		if($categoria==41||$id>2){	
+		$valor = $this->modelo_compras->get_total_venta_item($id_venta,$mercancia);
+		$padre = $this->model_perfil_red->ConsultarPadres($id);
+		$this->billetera_recargas->setUsuarioValor($padre,$valor);
+		$this->model_billetera_recargas->agregarSaldoPadre();
+		}
+	}
+
 	
 	public function calcularComisionAfiliado($id_venta,$id_red_mercancia,$costoVenta,$id_afiliado){
 	

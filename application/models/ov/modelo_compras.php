@@ -1216,6 +1216,26 @@ where a.id_paquete = e.id_paquete and d.sku= a.id_paquete and d.estatus="ACT" an
 		return $red; 
 	}
 	
+	function ObtenerCategoria($id_mercancia){
+		$q = $this->db->query("select id_tipo_mercancia, sku from mercancia where id =".$id_mercancia);
+		$mercancia = $q->result();
+	
+		if($mercancia[0]->id_tipo_mercancia == 1){
+			$q = $this->db->query("SELECT id_grupo as id_grupo FROM producto where id =".$mercancia[0]->sku);
+		}elseif ($mercancia[0]->id_tipo_mercancia == 2){
+			$q = $this->db->query("SELECT id_red as id_grupo FROM servicio where id=".$mercancia[0]->sku);
+		}elseif($mercancia[0]->id_tipo_mercancia == 3) {
+			$q = $this->db->query("SELECT id_red as id_grupo FROM combinado where id=".$mercancia[0]->sku);
+		}elseif($mercancia[0]->id_tipo_mercancia == 4) {
+			$q = $this->db->query("SELECT id_red as id_grupo FROM paquete_inscripcion where id_paquete=".$mercancia[0]->sku);
+		}elseif($mercancia[0]->id_tipo_mercancia == 5) {
+			$q = $this->db->query("SELECT id_red as id_grupo FROM membresia where id=".$mercancia[0]->sku);
+		}
+		$categoria = $q->result();
+	
+		return $categoria[0]->id_grupo;
+	}
+	
 	function obtenerPlanDeCompensacion($id_red){
 		$q = $this->db->query("SELECT plan FROM tipo_red where id=".$id_red);
 		return $q->result();
@@ -1562,6 +1582,21 @@ where a.id_paquete = e.id_paquete and d.sku= a.id_paquete and d.estatus="ACT" an
 		return $q->result();
 	
 	}
+	
+	function get_total_venta($id_venta){
+		$q = $this->db->query("SELECT sum(costo_unidad*cantidad) valor FROM cross_venta_mercancia where id_venta=".$id_venta);
+		$q=$q->result();
+		return $q[0]->valor;
+	
+	}
+	
+	function get_total_venta_item($id_venta,$mercancia){
+		$q = $this->db->query("SELECT costo_unidad*cantidad valor FROM cross_venta_mercancia where id_venta=".$id_venta." and id_mercancia = ".$mercancia);
+		$q=$q->result();
+		return $q[0]->valor;
+	
+	}
+	
 	function get_tipo_mercancia($id_mercancia){
 		$q = $this->db->query("SELECT id_tipo_mercancia FROM mercancia where id=".$id_mercancia);
 		return $q->result();
