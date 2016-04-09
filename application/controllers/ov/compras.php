@@ -3794,8 +3794,8 @@ function index()
 	
 		if($valor>0){
 			$this->billetera_recargas->setUsuarioValor($id,$valor);
-			#$this->model_billetera_recargas->agregarSaldo();
-			$this->model_billetera_recargas->agregarCanjeo();
+			$this->model_billetera_recargas->agregarSaldo();
+			#$this->model_billetera_recargas->agregarCanjeo();
 		}
 	}
 
