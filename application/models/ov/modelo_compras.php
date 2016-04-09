@@ -1327,7 +1327,14 @@ where a.id_paquete = e.id_paquete and d.sku= a.id_paquete and d.estatus="ACT" an
 	}
 	
 	function consultarMercanciaTotalVenta($id_venta){
-		$q = $this->db->query("select M.id, CVM.costo_total as costo,(CVM.costo_unidad*CVM.cantidad) as costo_unidad_total,CVM.costo_unidad as costo_unidad, M.costo_publico, CVM.cantidad, M.puntos_comisionables, M.id_tipo_mercancia
+		$q = $this->db->query("select M.id, 
+									CVM.costo_total as costo,
+									(CVM.costo_unidad*CVM.cantidad) as costo_unidad_total,
+									CVM.costo_unidad as costo_unidad, 
+									M.costo_publico, CVM.cantidad,
+									M.puntos_comisionables, 
+									M.descuento as recarga,
+									M.id_tipo_mercancia
 							from cross_venta_mercancia CVM, mercancia M
 							where CVM.id_venta = ".$id_venta."  and CVM.id_mercancia=M.id;");
 		$mercancia = $q->result();

@@ -18,8 +18,11 @@ class model_billetera_recargas extends CI_Model
 									from billetera_recargas_saldo 
 									where id_billetera = b.id) saldo,
 								(select sum(valor) 
+									from billetera_recargas_canjeo 
+									where id_billetera = b.id and estatus = 'ACT') disponible,
+								(select sum(valor) 
 									from billetera_recargas_retiro 
-									where id_billetera = b.id and estatus = 'ACT') disponible
+									where id_billetera = b.id) consumo
 								FROM billetera_recargas b, users u
 								WHERE b.id_user = u.id 
 										and u.id = ".$this->billetera_recargas->getUsuario()."
@@ -28,7 +31,7 @@ class model_billetera_recargas extends CI_Model
 		
 		$Saldos = array(
 				#'billetera' => $q[0]->saldo,
-				'disponible' => $q[0]->disponible,
+				'disponible' => $q[0]->disponible - $q[0]->consumo,
 				'saldo' => $q[0]->saldo - $q[0]->disponible
 		);
 		
@@ -44,6 +47,30 @@ class model_billetera_recargas extends CI_Model
 		);
 		
 		$this->db->insert("billetera_recargas_saldo",$data);
+		return $this->db->insert_id();
+	}
+	
+	function agregarSaldo(){
+		$this->getId();
+		$data = array(
+				'id_billetera' => $this->billetera_recargas->getId(),
+				'valor' => number_format(($this->billetera_recargas->getValor()*1.05),2),
+				'tipo' => 'CARRITO'
+		);
+	
+		$this->db->insert("billetera_recargas_saldo",$data);
+		return $this->db->insert_id();
+	}
+	
+	function agregarCanjeo(){
+		$this->getId();
+		$data = array(
+				'id_billetera' => $this->billetera_recargas->getId(),
+				'valor' => number_format(($this->billetera_recargas->getValor()*1.05),2),
+				'estatus' => 'ACT'
+		);
+	
+		$this->db->insert("billetera_recargas_canjeo",$data);
 		return $this->db->insert_id();
 	}
 	

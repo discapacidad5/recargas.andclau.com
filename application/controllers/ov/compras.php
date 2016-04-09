@@ -3758,19 +3758,36 @@ function index()
 			}
 			
 			$categoria = $this->modelo_compras->ObtenerCategoria($mercancia->id);
-			$this->SaldoRecargasPadre($id_afiliado_comprador,$id_venta,$mercancia->id,$categoria);
-
+			($categoria==41) 
+			? $this->SaldoRecargasPadre(
+					$id_afiliado_comprador,
+					$mercancia->costo_unidad_total,
+					$categoria)
+			: '';			
+			
+			$this->SaldoRecargas(
+					$id_afiliado_comprador,
+					$mercancia->recarga);
+			
 		}
 	}
 	
 
-	private function SaldoRecargasPadre($id,$id_venta,$mercancia,$categoria) {	
+	private function SaldoRecargasPadre($id,$valor,$categoria) {	
 		
-		if($categoria==41||$id>2){	
-		$valor = $this->modelo_compras->get_total_venta_item($id_venta,$mercancia);
+		if($id>2){	
 		$padre = $this->model_perfil_red->ConsultarPadres($id);
 		$this->billetera_recargas->setUsuarioValor($padre,$valor);
 		$this->model_billetera_recargas->agregarSaldoPadre();
+		}
+	}
+	
+	private function SaldoRecargas($id,$valor) {
+	
+		if($valor>0){
+			$this->billetera_recargas->setUsuarioValor($id,$valor);
+			#$this->model_billetera_recargas->agregarSaldo();
+			$this->model_billetera_recargas->agregarCanjeo();
 		}
 	}
 
