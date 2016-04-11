@@ -2,6 +2,8 @@
 
 class billetera3 extends CI_Controller
 {
+	private $saldo, $disponible; 
+	
 	function __construct()
 	{
 		parent::__construct();
@@ -51,13 +53,13 @@ class billetera3 extends CI_Controller
 		
 		$this->billetera_recargas->setUsuario($id);	
 		$this->model_billetera_recargas->getSaldos();	
-		$saldo = $this->billetera_recargas->getSaldo();	
-		$disponible = $this->billetera_recargas->getDisponible();	
+		$this->saldo = $this->billetera_recargas->getSaldo();	
+		$this->disponible = $this->billetera_recargas->getDisponible();	
 		
 		$this->template->set("style",$style);
 		$this->template->set("usuario",$usuario);
-		$this->template->set("saldo",$saldo);
-		$this->template->set("disponible",$disponible);
+		$this->template->set("saldo",$this->saldo);
+		$this->template->set("disponible",$this->disponible);
 
 		$this->template->set_theme('desktop');
 		$this->template->set_layout('website/main');
@@ -67,7 +69,7 @@ class billetera3 extends CI_Controller
 		$this->template->build('website/ov/recargas/billetera');
 	}
 	
-	function index_estado()
+	function canjear()
 	{
 		if (!$this->tank_auth->is_logged_in())
 		{																		// logged in
@@ -78,21 +80,22 @@ class billetera3 extends CI_Controller
 		
 		if($this->general->isActived($id)!=0){
 			redirect('/ov/compras/carrito');
-		}
-	 
+		}	
 	
+		$this->billetera_recargas->setUsuario($id);
+		$this->model_billetera_recargas->getSaldos();
+		$this->saldo = $this->billetera_recargas->getSaldo();
+		$this->disponible = $this->billetera_recargas->getDisponible();
+		
 		$usuario=$this->general->get_username($id);
 		$style=$this->general->get_style($id);
 	
 		$this->template->set("style",$style);
 		$this->template->set("usuario",$usuario);
+		$this->template->set("saldo",$this->saldo);
+		$this->template->set("disponible",$this->disponible);
 	
-		$this->template->set_theme('desktop');
-		$this->template->set_layout('website/main');
-		$this->template->set_partial('header', 'website/ov/header');
-		$this->template->set_partial('footer', 'website/ov/footer');
-		$this->template->build('website/ov/billetera/dashboard');
-		$this->template->build('website/ov/billetera/index_estado');
+		$this->template->build('website/ov/recargas/canjear');
 	}
 	
 	function historial_cuenta()
@@ -245,7 +248,7 @@ class billetera3 extends CI_Controller
 		$this->template->build('website/ov/billetera/pago');
 	}
 	
-	function cobrar()
+	function agregar_saldo()
 	{
 		if (!$this->tank_auth->is_logged_in())
 		{																		// logged in
@@ -255,49 +258,22 @@ class billetera3 extends CI_Controller
 		if(intval($_POST['cobro'])<=0){
 			echo "ERROR <br>Valor del cobro invalido.";
 			exit();
-		}
-	
-		if($_POST['ctitular']==""){
-			echo "ERROR <br>Falta ingresar el nombre del titular de la cuenta.";
-			exit();
-		}
-		
-		if(is_numeric($_POST['ctitular'])){
-			echo "ERROR <br>El titular de la cuenta no debe contener valores numericos.";
-			exit();
-		}
-		
-		if($_POST['cbanco']==""){
-			echo "ERROR <br>Falta ingresar el banco de la cuenta.";
-			exit();
-		}
-		
-		if(intval($_POST['ncuenta'])==0){
-			echo "ERROR <br>El numero de la cuenta debe ser un numero valido.";
-			exit();
-		}
-	
+		}	
 		
 		$id=$this->tank_auth->get_user_id();
 		
-		$comisiones = $this->modelo_billetera->get_total_comisiones_afiliado($id);
-		$retenciones = $this->modelo_billetera->ValorRetencionesTotalesAfiliado($id);
-		$cobrosPagos=$this->modelo_billetera->get_cobros_total_afiliado($id);
-		$cobroPendientes=$this->modelo_billetera->get_cobros_pendientes_total_afiliado($id);
-		$total_transact = $this->modelo_billetera->get_total_transact_id($id);
-		
-	/*	echo $comisiones."<br>";
-		echo $retenciones."<br>";
-		echo $cobrosPagos."<br>";
-		echo $cobroPendientes."<br>";
-*/
+		$this->billetera_recargas->setUsuario($id);
+		$this->model_billetera_recargas->getSaldos();
+		$this->saldo = number_format($this->billetera_recargas->getSaldo(),2);
+		#$this->disponible = $this->billetera_recargas->getDisponible();
 		
  
-		if((($comisiones-($retenciones+$cobrosPagos+$_POST['cobro']+$cobroPendientes))+($total_transact))>0){
-			$this->modelo_billetera->cobrar($id,$_POST['ncuenta'],$_POST['ctitular'],$_POST['cbanco'],$_POST['cclabe']);
-			echo "Felicitaciones<br> Tu cobro se esta procesando.";
+		if(($this->saldo-$_POST['cobro'])>=0){
+			$this->billetera_recargas->setValor($_POST['cobro']);
+			$this->model_billetera_recargas->agregarCanjeo();
+			echo "Felicitaciones<br> Tu Canjeo se ha Realizado.";
 		}else {
-			echo "ERROR <br>No hay saldo para realizar el cobro.";
+			echo "ERROR <br>No hay saldo para realizar el Canjeo.";
 		}
 
 	}
