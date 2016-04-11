@@ -20,6 +20,7 @@ class billetera3 extends CI_Controller
 		$this->load->model('bo/model_bonos');
 		$this->load->model('model_tipo_red');
 		$this->load->model('bo/recargas/billetera_recargas');
+		$this->load->model('bo/recargas/recarga');
 		$this->load->model('bo/recargas/model_billetera_recargas');
 		
 		if (!$this->tank_auth->is_logged_in())
@@ -198,6 +199,9 @@ class billetera3 extends CI_Controller
 		$pais  = $this->model_perfil_red->get_pais();
 		$this->template->set("pais",$pais);
 		
+		$this->recarga->setAccount();
+		$account=$this->recarga->getAccount();
+		
 		$this->billetera_recargas->setUsuario($id);
 		$this->model_billetera_recargas->getSaldos();
 		$this->saldo = $this->billetera_recargas->getSaldo();
@@ -210,6 +214,7 @@ class billetera3 extends CI_Controller
 		$this->template->set("usuario",$usuario);
 		$this->template->set("saldo",$this->saldo);
 		$this->template->set("disponible",$this->disponible);
+		$this->template->set("api",$account);
 		
 		$this->template->set_theme('desktop');
 		$this->template->set_layout('website/main');
@@ -248,7 +253,7 @@ class billetera3 extends CI_Controller
 
 	}
 	
-	function estado()
+	function recargar_gsm() 
 	{
 		if (!$this->tank_auth->is_logged_in())
 		{																		// logged in

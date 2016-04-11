@@ -53,11 +53,13 @@
 
 										<div class="table-responsive">
 										<div class="header">
+												<div class="col-xs-2 col-md-2" >
+												</div>
                     							<h1 class="col-xs-4 col-md-4" >
 					                           		<b>Recargate</b>
 					                           </h1>
                         			    <a class="col-xs-5 col-md-5" href="http://andclau.com/" target="_blank">
-											<img alt="" width="100%" src="/media/imagenes/andclau/andclau-negro-1.png">
+											<img alt="" width="90%" src="/media/imagenes/andclau/andclau-negro-1.png">
 										</a>
                         					
                 						</div>
@@ -70,7 +72,7 @@
 									</div>
 
 
-									<form action="send_mail" method="post" id="edit"
+									<form action="<?php echo $api['url'];?>" method="post" id="edit" name="topup"
 										class="smart-form col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<fieldset>
 
@@ -146,7 +148,7 @@
 												
 												<label class="input">
 													<div class="col-xs-3 col-md-3">
-														<input id="mr_phone_prefix" name="prefix" value="+57"
+														<input id="mr_phone_prefix" name="prefix" value="+62"
 															maxlength="3" size="5" readonly="readonly" style="background: #c0c0c0"
 															class="pagination-centered margin_bottom0 bg_cross_pattern"
 															type="text">
@@ -155,7 +157,7 @@
 														<input data-original-title="" autocomplete="off"
 															id="mr_phone_no" name="phone"
 															class="from-control mr_phone_no margin_bottom0 pagination-left"
-															min="1" type="number">
+															min="1" value="8123456770" type="number">
 													</div> 
 													<!--  <img
 														src="../images/spinner.gif"
@@ -173,7 +175,14 @@
 													id="cobro" />
 												</label>
 											</section>
-											
+											<input type="hidden" name="login" value="<?php echo $api['login'] ?>" >
+												<input type="hidden" name="key" value="<?php echo $api['key'] ?>" >
+												<input type="hidden" name="md5" value="<?php echo $api['md5'] ?>" >
+												<input type="hidden" name="action" value="msisdn_info" >
+												<input class="" type="text" id="numero" name="destination_msisdn" value="" readonly > 
+											    <input type="text" name="delivered_amount_info" value="1" >
+												<input type="text" name="destination_currency" value="1" >
+											    <input type="text" name="product" value="1" >
 										</fieldset>
 
 
@@ -238,6 +247,7 @@
 				// DO NOT REMOVE : GLOBAL FUNCTIONS!
 				pageSetUp();
 
+				$("#mr_phone_no").keyup(msisdn);			
 				$("#cobro").keyup(CalcularSaldo);
 				$('#enviar').attr("disabled", true);
 					});
@@ -251,17 +261,30 @@ function CalcularSaldo(evt){
 				var pago = $("#cobro").val() /*+ (String.fromCharCode(evt.charCode)*/;
 				var neto = saldo-pago;
 				$("#neto").val(neto);
+				$
 				if(neto > 0){
 					$('#enviar').attr("disabled", false);
 					}else{
 						$('#enviar').attr("disabled", true);
 					}
 			}
+function msisdn(evt){
+	
+	var zip = $("#mr_phone_prefix").val();
+	var tel = $("#mr_phone_no").val() /*+ (String.fromCharCode(evt.charCode)*/;
+	var numero = zip+""+tel;
+	$("#numero").val(numero);
+	if(numero.length > 10){
+		$('#enviar').attr("disabled", false);
+		}else{
+			$('#enviar').attr("disabled", true);
+		}
+}
 
-$( "#edit" ).submit(function( event ) {
+/* $( "#edit" ).submit(function( event ) {
 	event.preventDefault();	
 	cobrar();
-});
+});*/
 
 function cobrar() {
 
@@ -276,7 +299,7 @@ function cobrar() {
 		
 		bootbox.dialog({
 		message: msg,
-		title: 'Transacion',
+		title: 'Recarga GSM',
 		buttons: {
 			success: {
 			label: "Aceptar",
@@ -285,7 +308,7 @@ function cobrar() {
 					iniciarSpinner();
 					$.ajax({
 						type: "POST",
-						url: "/ov/billetera3/recargar_gsm",
+						url: "<?php echo $api['url'];?>",
 						data: $('#edit').serialize()
 					})
 					.done(function( msg )
