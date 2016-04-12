@@ -20,6 +20,7 @@ class billetera3 extends CI_Controller
 		$this->load->model('bo/model_bonos');
 		$this->load->model('model_tipo_red');
 		$this->load->model('bo/recargas/billetera_recargas');
+		$this->load->model('bo/recargas/model_recargas');
 		$this->load->model('bo/recargas/recarga');
 		$this->load->model('bo/recargas/model_billetera_recargas');
 		
@@ -196,7 +197,7 @@ class billetera3 extends CI_Controller
 			redirect('/ov/compras/carrito');
 		}	
 	
-		$pais  = $this->model_perfil_red->get_pais();
+		$pais  = $this->model_recargas->get_pais();
 		$this->template->set("pais",$pais);
 		
 		$this->recarga->setAccount();
@@ -270,168 +271,72 @@ class billetera3 extends CI_Controller
 		$usuario=$this->general->get_username($id);
 		$style=$this->general->get_style($id);
 	
-		$redes = $this->model_tipo_red->listarTodos();
-		$redesUsuario = $this->model_tipo_red->RedesUsuario($id);
-		
-		$ganancias=array();
-		$comision_directos = array();
-		$bonos = array();		
-		
-		foreach ($redesUsuario as $red){
-			//$array_bono = $this->model_bonos->ver_total_bonos_id($id,$red->id,'');
-			//$array_ganancias = $this->modelo_billetera->get_comisiones($id,$red->id);
-			//$array_comision = $this->modelo_billetera->getComisionDirectos($id, $red->id);
-
-			array_push($bonos,$this->model_bonos->ver_total_bonos_id_red($id,$red->id));
-			array_push($ganancias,$this->modelo_billetera->get_comisiones($id,$red->id));
-			array_push($comision_directos,$this->modelo_billetera->getComisionDirectos($id, $red->id));
-		}
-		
-		$comision_todo= array(
-				'directos' => $comision_directos,
-				'ganancias' => $ganancias,
-				'bonos' => $bonos,
-				'redes' => $redesUsuario
-		);
-		
-		$comisiones = $this->modelo_billetera->get_total_comisiones_afiliado($id);
-		$cobro=$this->modelo_billetera->get_cobros_total($id);
-		$cobroPendientes=$this->modelo_billetera->get_cobros_pendientes_total_afiliado($id);
-		$retenciones = $this->modelo_billetera->ValorRetencionesTotales($id);
-		$total_bonos = $this->model_bonos->ver_total_bonos_id($id);
-		
-		$transaction = $this->modelo_billetera->get_total_transacciones_id($id);	
 		
 		
-		$this->template->set("style",$style);
-		$this->template->set("usuario",$usuario);
-		$this->template->set("id",$id);
-		$this->template->set("redes",$redesUsuario);
-		$this->template->set("bonos",$bonos);
-		$this->template->set("total_bonos",$total_bonos);
-		$this->template->set("comisiones",$comisiones);
-		$this->template->set("comision_todo",$comision_todo);
-		$this->template->set("ganancias",$ganancias);
-		$this->template->set("transaction",$transaction);
-		$this->template->set("comisiones_directos",$comision_directos);
-		$this->template->set("cobro",$cobro);
-		$this->template->set("cobroPendientes",$cobroPendientes);
-		$this->template->set("retenciones",$retenciones);
 		
-		$this->template->set_theme('desktop');
-		$this->template->set_layout('website/main');
-		$this->template->set_partial('header', 'website/ov/header');
-		$this->template->set_partial('footer', 'website/ov/footer');
-		$this->template->build('website/ov/billetera/estadoCuenta');
 	}
 	
-	function estado_historial()
+	function getmsisdn()
 	{
-		if (!$this->tank_auth->is_logged_in())
-		{																		// logged in
-			redirect('/auth');
-		}
-	
-		$id=$this->tank_auth->get_user_id();
-	
-	
-		$usuario= $this->general->get_username($id);
-		$style=$this->general->get_style($id);
-	
-		$redes = $this->model_tipo_red->listarTodos();
-		$redesUsuario = $this->model_tipo_red->RedesUsuario($id);
 		
-		$ganancias=array();
-		$comision_directos = array();
-		$bonos = array();		
-		
-		foreach ($redes as $red){
-			array_push($bonos,$this->model_bonos->ver_total_bonos_id_red_fecha($id,$red->id,$_GET['fecha']));
-			array_push($ganancias,$this->modelo_billetera->get_comisiones_mes($id,$red->id,$_GET['fecha']));
-			array_push($comision_directos, $this->modelo_billetera->getComisionDirectosMes($id, $red->id, $_GET['fecha']));
-		}
-		
-		$comision_todo= array(
-				'directos' => $comision_directos,
-				'ganancias' => $ganancias,
-				'bonos' => $bonos,
-				'redes' => $redesUsuario
-		);		
-
-		$retenciones = $this->modelo_billetera->ValorRetenciones_historial($_GET['fecha'],$id);
-		$cobro=$this->modelo_billetera->get_cobros_afiliado_mes($id,$_GET['fecha']);
-		$cobroPendiente=$this->modelo_billetera->get_cobros_afiliado_mes_pendientes($id,$_GET['fecha']);
-
-		$total_bonos = $this->model_bonos->ver_total_bonos_id($id);
-		
-		/*echo date("Y-m", strtotime($_GET['fecha'])) ;
-		exit();*/
-		
-		$transaction = $this->modelo_billetera->get_total_transacciones_id_fecha($id,$_GET['fecha']);
-		
-		$this->template->set("style",$style);
-		$this->template->set("usuario",$usuario);
-		$this->template->set("id",$id);
-		$this->template->set("redes",$redesUsuario);
-		$this->template->set("bonos",$bonos);
-		$this->template->set("total_bonos",$total_bonos);
-		$this->template->set("comision_todo",$comision_todo);
-		$this->template->set("ganancias",$ganancias);
-		$this->template->set("retenciones",$retenciones);
-		$this->template->set("transaction",$transaction);
-		$this->template->set("cobro",$cobro);
-		$this->template->set("fecha",$_GET['fecha']);
-		$this->template->set("cobroPendientes",$cobroPendiente);
-		$this->template->set("comisiones_directos",$comision_directos);
-	
-		$this->template->set_theme('desktop');
-		$this->template->set_layout('website/main');
-		$this->template->set_partial('header', 'website/ov/header');
-		$this->template->set_partial('footer', 'website/ov/footer');
-		$this->template->build('website/ov/billetera/dashboard');
-		$this->template->build('website/ov/billetera/estado');
-	}
-	
-	function historial_transaccion(){
-	
-		
-		$id=$_POST['id'];
-	
-		//echo "dentro de historial : ".$id;
-		
-		$transactions = $this->modelo_billetera->get_transacciones_id($id);
-		
-		echo
-		"<table id='datatable_fixed_column1' class='table table-striped table-bordered table-hover' width='80%'>
-				<thead id='tablacabeza'>
-					<th data-class='expand'>ID</th>
-					<th data-hide='phone,tablet'>Fecha</th>
-					<th data-hide='phone,tablet'>Tipo de Transacción</th>
-					<th data-hide='phone,tablet'>Motivo</th>
-					<th data-hide='phone,tablet'>Valor</th>
-				</thead>
-				<tbody>";
-		
-		
-			foreach($transactions as $transaction)
-			{
-				$color = ($transaction->tipo=="plus") ? "green" : "red";
-				echo "<tr>
-			<td class='sorting_1'>".$transaction->id."</td>
-			<td>".$transaction->fecha."</td>
-			<td style='color: ".$color.";'><i class='fa fa-".$transaction->tipo."-circle fa-3x'></i></td>
-			<td>".$transaction->descripcion."</td>
-			<td> $	".number_format($transaction->monto, 2)."</td>			
-			</tr>";
-					
-				
-			}		
-			
-		
-		echo "</tbody>
-		</table><tr class='odd' role='row'>";
+		$zip  = $this->model_recargas->get_pais_id($_POST['id']);
+		echo $zip ? "+".$zip[0]->zip : "";
 	
 	}
+	
+	function response_numero(){	
+		
+		$this->recarga->setKey(time().rand());
+		$this->recarga->setMd5();
+		
+		$login= $this->recarga->getLogin();
+		$key = $this->recarga->getKey();
+		$md5 = $this->recarga->getMd5();		
+		
+		$url = $this->recarga->getUrl().
+		"?login=".$login
+		."&key=".$key
+		."&md5=".$md5
+		."&destination_msisdn=".$_POST["destination_msisdn"]		
+		."&currency=USD
+		&destination_currency=USD
+		&action=".$_POST["action"];
+		
+		$responses = split("\n", file_get_contents($url) );
+		$values = $this->model_recargas->setResponse($responses);
+		
+		$salida = ($values['error_code']==0) ? $this->get_products ($values) : "";
+		
+		echo $salida ;
+	}
+	
+	private function get_products($values) {
+		$product_list =  split(",", $values['product_list']);
+		$retail_price_list = split(",", $values['retail_price_list']);
+		$wholesale_price_list = split(",", $values['wholesale_price_list']);
+		$skuid_list = split(",", $values['skuid_list']);	
+		$open_range = $values['open_range'];
+		$requested_currency = $values['requested_currency'];
+		$operator= $values['operator'];
+		$operatorid= $values['operatorid'];
+		$countryid = $values['countryid'];
+		$country = $values['country'];
+		
+		$salida="";		
+		$i=0;
+		foreach ($product_list as $product)
+		{
+			$salida.='<div class="well well-sm txt-color-white text-center col-xs-4 col-md-4 primary margin2">
+						<h2>'.$product.'</h2>
+						<h6>'.$retail_price_list[$i].'</h4>
+						<p>'.$wholesale_price_list[$i].'</p>
+						<input type="radio" value="'.$product.'" id="monto" name="delivered_amount_info" />		
+					</div>';
+			$i++;
+		}
+		return $salida;
+	}
+
 	
 	function ventas_comision(){
 	

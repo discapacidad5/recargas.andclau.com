@@ -48,7 +48,7 @@ private $url = 'https://fm.transfer-to.com/cgi-bin/shop/topup',
 		return $this->account;
 	}
 	public function setAccount() {
-		$this->setKey(time());
+		$this->setKey(time().rand());
 		$this->setMd5();
 		$account = array(
 				'login' => $this->login,
