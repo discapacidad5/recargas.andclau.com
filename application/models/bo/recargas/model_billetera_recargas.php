@@ -57,7 +57,7 @@ class model_billetera_recargas extends CI_Model
 		$this->getId();
 		$data = array(
 				'id_billetera' => $this->billetera_recargas->getId(),
-				'valor' => number_format(($this->billetera_recargas->getValor()*1.05),2),
+				'valor' => number_format(($this->billetera_recargas->getValor()),2),
 				'tipo' => 'CARRITO'
 		);
 	

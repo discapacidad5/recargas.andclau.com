@@ -51,6 +51,10 @@ private	$id,$usuario,$saldo,$disponible,$Saldos,$valor;
 	public function setUsuarioValor($usuario,$valor) {
 		$this->usuario = $usuario;
 		$this->valor = $valor;		
-	}	
+	}
+	public function setValor($valor) {
+		$this->valor = $valor;
+	}
+		
 	
 }
