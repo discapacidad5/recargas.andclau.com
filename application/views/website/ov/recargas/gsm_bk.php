@@ -107,6 +107,43 @@
 													<?}?>
 												</select>
 											</section>
+											<!--  <section >
+												<label class="label "><b>Operador</b></label>
+												<div class="span8 operators clearfix many many_small">
+													<div class="span4 margin_left0 clear clear_on_phone"
+														data-operator_name="Claro" data-operator_id="887">
+														<div class="operator_name_claro"></div>
+													</div>
+													<div class="span4 " data-operator_name="Tigo"
+														data-operator_id="888">
+														<div class="operator_name_tigo"></div>
+													</div>
+													<div class="span4  clear_on_phone"
+														data-operator_name="Movistar" data-operator_id="889">
+														<div class="operator_name_movistar"></div>
+													</div>
+													<div class="span4 margin_left0 clear"
+														data-operator_name="Uff" data-operator_id="2305">
+														<div class="operator_name_uff"></div>
+													</div>
+													<div class="span4  clear_on_phone"
+														data-operator_name="Virgin Mobile" data-operator_id="2253">
+														<div class="operator_name_virgin"></div>
+													</div>
+													<div class="span4 " data-operator_name="Avantel"
+														data-operator_id="2611">
+														<div class="operator_name_avantel"></div>
+													</div>
+													<div class="span4 margin_left0 clear clear_on_phone"
+														data-operator_name="ETB" data-operator_id="2671">
+														<div class="operator_name_etb"></div>
+													</div>
+													<div class="span4 " data-operator_name="Une"
+														data-operator_id="2663">
+														<div class="operator_name_une"></div>
+													</div>
+												</div>
+											</section> -->
 											<section id="numero_telefono" >
 												<label class="label"><b>Numero de Teléfono</b></label>
 												
@@ -123,6 +160,12 @@
 															class="from-control mr_phone_no margin_bottom0 pagination-left"
 															min="1" value="" type="number" required>
 													</div> 
+													<!--  <img
+														src="../images/spinner.gif"
+														class="margin_horizontal5 mr_input_spinner none">
+													<img
+														src="../images/check_mark.png"
+														class="margin_horizontal5 check_mark none"> -->
 													<div class="margin_top5"> &nbsp;</div> 
 													<div class="margin_top5 ">  
 														<div class="col col-6" id="validacion"></div>
@@ -141,11 +184,27 @@
 													id="cobro" />
 												</label>
 											</section>
+											<!--<input type="hidden" name="login" value="<?php echo $api['login'] ?>" >
+												<input type="hidden" name="key" value="<?php echo $api['key'] ?>" >
+												<input type="hidden" name="md5" value="<?php echo $api['md5'] ?>" >-->
 												<input type="hidden" name="action" value="simulation" >
-												<input class="hide" type="text" id="numero" name="destination_msisdn" value="" readonly >
+												<input class="hide" type="text" id="numero" name="destination_msisdn" value="" readonly ><!--  +573115654368--> 
+											    <!--<input type="hidden" name="delivered_amount_info" value="1" >  -->
 												<input type="hidden" name="currency" value="USD" >
+												<!--  <input type="hidden" name="originating_currency" value="USD" >-->
+												<!--  <input type="hidden" name="sms_sent" value="+573115654368" >-->
 												<input type="hidden" name="sms" value="nueva recarga" >
 												<input type="hidden" name="destination_currency" value="USD" >
+												<!--  <input type="hidden" name="skuid" value="9940" >-->
+												<!--  <input type="hidden" name="open_range" value="1" > -->
+											   <!--   <input type="hidden" name="product" value="1.41" >-->
+											   <!--   <input type="hidden" name="retail_price" value="1.00" >
+											    <input type="hidden" name="wholesale_price" value="0.92" >-->
+											  	<!--    <input type="hidden" name="operator" value="Tigo Colombia USD" >
+											    <input type="hidden" name="operatorid" value="1578" >
+											    <input type="hidden" name="country" value="Colombia" >
+											    <input type="hidden" name="countryid" value="710" > -->
+											    <!--  <input type="hidden" name="msisdn" value="<?=$usuario[0]->nombre." ".$usuario[0]->apellido?>" >-->
 										</fieldset>
 
 
@@ -219,9 +278,17 @@
 
 				$("#validar").click(msisdn);	
 				$("#mr_phone_no").change(validarCampos);
+				
+				//$("#cobro").on("mouseenter",validarCampos);
 				if(monto!=""){$('#foo').show();$('#enviar').attr("disabled", false);};
 				$("#pais").change(getmsisdn);	
+				//$("#pais").change(validarCampos);
 				$("#pais").before(getmsisdn);	
+				//if($("#cobro").val()){
+					//	CalcularSaldo;
+				//}
+				//$("#cobro").before(CalcularSaldo);
+				//$('#enviar').attr("disabled", true);
 				$('#productos').hide();
 				$('#foo').hide();
 				$('#enviar').attr("disabled", true);
@@ -242,17 +309,21 @@ function selector(html,param){
 }
 			
 function CalcularSaldo(){
+				//alert('aqui!')
 				saldo = $("#saldo").val();
-				pago = $("#cobro").val(); 
+				pago = $("#cobro").val(); /*+ (String.fromCharCode(evt.charCode)*/;
 				neto = saldo-pago;
 				$("#neto").val(neto);
 				var tel = $("#mr_phone_no").val();
 				if(pago=""||neto<0){
 					$('#foo').hide();
+				//}else{
+					//$('#foo').show();
 				}
 			}
 
 function getproduct(msg){
+	//if(!monto){	
 		
 		bootbox.dialog({
 			message: msg,
@@ -264,10 +335,12 @@ function getproduct(msg){
 				callback: 
 					function() {
 						if($("#monto:checked")){
-							monto = $("#monto:checked").val().split("|");
+							monto = $("#monto:checked").val().split("|");	
+							//alert(monto[1]);	
 							pago = monto[1];
 							$("#cobro").val(pago);								
 							$('#productos').show();	
+							//$('#foo').show();
 							$('#foo').show();
 							CalcularSaldo();
 							$('#enviar').attr("disabled", false);
@@ -284,20 +357,26 @@ function getproduct(msg){
 						}
 				}
 			}
-		})
+		})//fin done ajax	
+	/*}else{					
+		$("#cobro").val(monto[1]);
+		$('#productos').show();
+		$('#enviar').attr("disabled", false);
+	}*/
 }
 
 function msisdn(evt){
 	var zip = $("#mr_phone_prefix").val();
-	var tel = $("#mr_phone_no").val(); 
+	var tel = $("#mr_phone_no").val(); /*+ (String.fromCharCode(evt.charCode)*/;
 	numero = zip+""+tel;
 	
-	
+	//$("#numero").val(numero); 
+	//alert(numero);
 	if(zip&&tel){
 		iniciarSpinner();
 		$.ajax({
 			type: "POST",
-			url: "response_numero",
+			url: "response_numero",///ov/billetera3/recargar_gsm
 			data: {
 				destination_msisdn:numero,
 				action:'msisdn_info'
@@ -307,7 +386,14 @@ function msisdn(evt){
 		{
 			FinalizarSpinner();	
 			if(msg){
-				getproduct(msg);	
+				
+				//alert(msg);
+				//$("#mr_phone_prefix").val(msg);
+				getproduct(msg);
+				//$("#cobro").val(pago);
+				//$("#numero").val(numero); 				
+				//$('#foo').show();
+				//$("#productos").html(msg);	
 			}else{
 				$('#productos').hide();
 				$('#foo').hide();
@@ -321,11 +407,12 @@ function msisdn(evt){
 
 function getmsisdn(evt){
 	var pais = $("#pais").val();
+	//alert(pais);
 	if(pais){
 		iniciarSpinner();
 		$.ajax({
 			type: "POST",
-			url: "getmsisdn",
+			url: "getmsisdn",///ov/billetera3/recargar_gsm
 			data: {
 					id:pais
 				}
@@ -378,7 +465,13 @@ function cobrar() {
 			className: "btn-success",
 			callback: function() {
 					iniciarSpinner();
-
+					//alert(numero);
+					//$('#edit').append("<input value='"+monto[0]+"' type='hidden' name='skuid'>");
+					//$('#edit').append("<input value='"+monto[1]+"' type='hidden' name='product'>");
+					//$('#edit').append("<input value='"+monto[2]+"' type='hidden' name='retail_price'>");
+					//$('#edit').append("<input value='"+monto[3]+"' type='hidden' name='wholesale_price'>");		
+					//$('#edit').append("<input value='"+monto+"' type='hidden' name='sku'>");	
+					//$('#edit').append("<input value='"+numero+"' type='hidden' name='destination_msisdn'>");				
 					$.ajax({
 						type: "POST",
 						url: "/ov/billetera3/recargar_gsm",
@@ -388,7 +481,7 @@ function cobrar() {
 							neto:neto,
 							pago:pago,
 							saldo:saldo
-							} 
+							} /*$('#edit').serialize()*/<?php //echo $api['url'];?>
 					})
 					.done(function( msg2 )
 					{
@@ -431,7 +524,7 @@ function validarCampos(){
 	iniciarSpinner();
 	$.ajax({
 		type: "POST",
-		url: "response_numero",
+		url: "response_numero",///ov/billetera3/recargar_gsm
 		data: {
 			destination_msisdn:numero,
 			action:'msisdn_info'
@@ -442,24 +535,32 @@ function validarCampos(){
 		FinalizarSpinner();	
 		$('#productos').hide();
 		$('#foo').hide();
-		if(!tel){		
+		if(!tel){
+			//return false;			
 			$("#msg_tel").remove();
 			$('#validacion').append("<div id='msg_tel' >Digite Número de telefono</div>");
 			return false;
-		}else if(!msg){	
+		}else if(!msg){
+			//return false;			
 			$("#msg_tel").remove();
 			$('#validacion').append("<div id='msg_tel' class='txt-color-red'>Número de telefono no valido</div>");
 			return false;			
 		}else{
+			//$('#foo').show();
 			if(!monto){
 				getproduct(msg);				
-			}			
+			}
+			//$("#numero").val(numero);			
 			$("#msg_tel").remove();
 			$('#validacion').append("<div id='msg_tel' class='txt-color-green'>Número de telefono Correcto</div>");
 			
 			return true;
 		}
 	});
+	
+	//if(!$('#numero').val()){
+		//return false;
+	//}
 	
 	return true;
 }

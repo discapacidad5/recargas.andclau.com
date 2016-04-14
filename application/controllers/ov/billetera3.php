@@ -257,7 +257,8 @@ class billetera3 extends CI_Controller
 	function recargar_gsm() 
 	{
 		
-		$id              = $this->tank_auth->get_user_id();
+		$id = $this->tank_auth->get_user_id();
+		$usuario=$this->general->get_username(2);
 		
 		$this->recarga->setKey(time().rand());
 		$this->recarga->setMd5();
@@ -269,7 +270,7 @@ class billetera3 extends CI_Controller
 		if(!isset($_POST["destination_msisdn"])){return "";}
 		
 		$sku = $_POST["sku"];
-		$action = "simulation";
+		$action = "topup";//"simulation";
 		
 		$url = $this->recarga->getUrl().
 		"?login=".$login
@@ -283,6 +284,7 @@ class billetera3 extends CI_Controller
 		."&delivered_amount_info=".$sku[1]	
 		."&retail_price=".$sku[2]
 		."&wholesale_price=".$sku[3]
+		."&msisdn=AndClau_Soluciones_Tecnologicas"
 		."&action=".$action;
 		
 		try {
@@ -299,7 +301,7 @@ class billetera3 extends CI_Controller
 		$this->disponible = number_format($this->billetera_recargas->getDisponible(),2);
 		
  
-		if(($this->disponible-$sku[1])>=0){
+		if(($this->disponible-$sku[1])>=0&&$values['error_code']==0){
 			$this->billetera_recargas->setValor($sku[1]);
 			$this->model_billetera_recargas->agregarRetiro();
 			//aqui inserta factura_recarga
@@ -307,9 +309,9 @@ class billetera3 extends CI_Controller
 			echo "ERROR <br>No hay saldo para realizar la Recarga.";
 		}
 		
-		//echo $sku[0]."|".$sku[1]."|".$response;//"dentro de recargar_gsm";
+		echo $sku[0]."|".$sku[1]."|".$response;//"dentro de recargar_gsm";
 		
-		echo ($values['error_code']==0 ) ? "Transaccion Exitosa" : "Transacción fallida";// $values['error_code'];//$responses;
+		//echo ($values['error_code']==0 ) ? "Transaccion Exitosa" : "Transacción fallida";// $values['error_code'];//$responses;
 		
 		
 	}
