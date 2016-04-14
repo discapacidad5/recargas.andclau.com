@@ -1,14 +1,15 @@
 <div id="spinner-div"></div>
-<form id="nueva" action="/bo/configuracion/actualizar_retencion" class="smart-form"  role="form" >
+<form id="nueva" action="/bo/recargas/actualizar_pin" class="smart-form"  role="form" >
 							<fieldset>
-								<input type="text" class="hide" value="<?php echo $_POST['id']; ?>" name="id">
+							<label class="input">
+								<input type="text" class="hide"  value="<?php echo $_POST['id']; ?>" name="id2">
 								<label class="input"> PIN
 								<input type="text" name="id" required placeholder="id" style="width: 50%;" class="form-control" value="<?php echo $pin[0]->id; ?>" required>
 								<label class="input"> Descripcion
 								<input type="text" name="descripcion" required placeholder="Descripcion" style="width: 50%;" class="form-control" value="<?php echo $pin[0]->descripcion; ?>" required>
 								<label class="input"> Valor
 	        <select id='porc' class="form-control" name="valor" required>
-	        <option  >Seleccione el valor</option>
+	        <option value="<?php echo $pin[0]->id_pin_tarifas; ?>" >Seleccione el valor</option>
 	        <option value="1">valor: € 10 cubre 2000 créditos </option>
 	        <option value="2">valor: € 25 cubre 5000 créditos </option>
 	        <option value="3">valor: € 50 cubre 10000 créditos </option>

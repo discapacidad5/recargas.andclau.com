@@ -51,7 +51,7 @@ class model_pin extends CI_Model
 			//	'credito' =>         $this->pin->getCredito()
 				
 		);
-		$this->db->update("pin",$datos,"id = ".$this->pin->getId());
+		$this->db->update("pin",$datos,"id = ".$_POST['id2']);
 		return true;
 	}
 	
