@@ -293,6 +293,8 @@ class billetera3 extends CI_Controller
 		$key = $this->recarga->getKey();
 		$md5 = $this->recarga->getMd5();		
 		
+		if(!isset($_POST["destination_msisdn"])){return "";}
+		
 		$url = $this->recarga->getUrl().
 		"?login=".$login
 		."&key=".$key
@@ -302,41 +304,118 @@ class billetera3 extends CI_Controller
 		&destination_currency=USD
 		&action=".$_POST["action"];
 		
-		$responses = split("\n", file_get_contents($url) );
+		$response = file_get_contents($url);
+		$responses = split("\n", $response );
 		$values = $this->model_recargas->setResponse($responses);
 		
-		$salida = ($values['error_code']==0) ? $this->get_products ($values) : "";
+		if($values['error_code']!=0){return "";}
 		
-		echo $salida ;
+		$salida = isset($values['product_list']) ? $this->get_productlist ($values) : $this->get_products($values);		 
+		
+		echo ($values['error_code']==0) ? $salida : "";// $values['error_code'];//$responses;
+		
+	}
+	
+	function validar_numero(){
+	
+		$this->recarga->setKey(time().rand());
+		$this->recarga->setMd5();
+	
+		$login= $this->recarga->getLogin();
+		$key = $this->recarga->getKey();
+		$md5 = $this->recarga->getMd5();
+	
+		if(!isset($_POST["destination_msisdn"])){return "";}
+	
+		$url = $this->recarga->getUrl().
+		"?login=".$login
+		."&key=".$key
+		."&md5=".$md5
+		."&destination_msisdn=".$_POST["destination_msisdn"]
+		."&currency=USD
+		&destination_currency=USD
+		&action=".$_POST["action"];
+	
+		$response = file_get_contents($url);
+		$responses = split("\n", $response );
+		$values = $this->model_recargas->setResponse($responses);
+	
+		echo ($values['error_code']==0) ? "OK" : "";// $values['error_code'];//$responses;
+	
 	}
 	
 	private function get_products($values) {
-		$product_list =  split(",", $values['product_list']);
-		$retail_price_list = split(",", $values['retail_price_list']);
-		$wholesale_price_list = split(",", $values['wholesale_price_list']);
-		$skuid_list = split(",", $values['skuid_list']);	
-		$open_range = $values['open_range'];
-		$requested_currency = $values['requested_currency'];
-		$operator= $values['operator'];
-		$operatorid= $values['operatorid'];
-		$countryid = $values['countryid'];
-		$country = $values['country'];
+		$minimum_local =  $values['open_range_minimum_amount_local_currency'];
+		#$maximum_local =  $values['open_range_maximum_amount_local_currency'];
+		$minimum =  $values['open_range_minimum_amount_requested_currency'];
+		$maximum =  $values['open_range_maximum_amount_requested_currency'];
+		$increment_local =  $values['open_range_increment_local_currency'];
+		$increment =  number_format((($increment_local*$minimum)/$minimum_local),2);
+		$skuid =  $values['skuid'];
+		#$open_range = $values['open_range'];
+		#$requested_currency = $values['requested_currency'];
+		#$operator= $values['operator'];
+		#$operatorid= $values['operatorid'];
+		#$countryid = $values['countryid'];
+		#$country = $values['country'];
 		
 		$salida="";		
-		$i=0;
-		foreach ($product_list as $product)
+		$j=0;
+		$salida.='<div style="overflow-y: scroll; height:200px;">';
+		for ($i=$minimum;$i<$maximum;$i=$i+$increment)
 		{
-			$salida.='<div class="well well-sm txt-color-white text-center col-xs-4 col-md-4 primary margin2">
-						<h2>'.$product.'</h2>
-						<h6>'.$retail_price_list[$i].'</h4>
-						<p>'.$wholesale_price_list[$i].'</p>
-						<input type="radio" value="'.$product.'" id="monto" name="delivered_amount_info" />		
+			error_reporting(0);
+			$salida.='<div class="well well-sm txt-color-white text-center col-xs-3 col-md-3 primary margin2">
+						<h6>$ '.number_format($i,2).'</h6>
+						'.//<h6>'.$retail_price_list[$i].'</h4>
+						//<p>'.$wholesale_price_list[$i].'</p>
+						'<input type="radio" value="'.$skuid
+						.'|'.$i
+						.'|'.$i
+						.'|'.$i
+						.'" id="monto" name="delivered_amount_info" />		
 					</div>';
-			$i++;
+			$j++;
+			$i*=$j;
 		}
+		$salida.='</div>';
 		return $salida;
 	}
 
+	private function get_productlist($values) {
+		$product_list =  split(",", $values['product_list']);
+		$retail_price_list = split(",", $values['retail_price_list']);
+		$wholesale_price_list = split(",", $values['wholesale_price_list']);
+		$skuid_list = split(",", $values['skuid_list']);
+		#$open_range = $values['open_range'];
+		#$requested_currency = $values['requested_currency'];
+		#$operator= $values['operator'];
+		#$operatorid= $values['operatorid'];
+		#$countryid = $values['countryid'];
+		#$country = $values['country'];
+	
+		$salida="";
+		$i=0;
+		$salida.='<div style="overflow-y: scroll; height:200px;">';
+		foreach ($product_list as $product)
+		{
+			if($i%5==0){
+			$salida.='<div class="well well-sm txt-color-white text-center col-xs-3 col-md-3 primary margin2">
+						<h6>$ '.$product.'</h6>
+						'.//<h6>'.$retail_price_list[$i].'</h4>
+							//<p>'.$wholesale_price_list[$i].'</p>
+			'<input type="radio" value="'.$skuid_list[$i]
+			.'|'.$product
+			.'|'.$retail_price_list[$i]
+			.'|'.$wholesale_price_list[$i]
+			.'" id="monto" name="delivered_amount_info" />
+					</div>';
+			}
+			$i++;
+		}
+		$salida.='</div>';
+		return $salida;
+	}
 	
 	function ventas_comision(){
 	

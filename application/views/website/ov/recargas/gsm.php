@@ -95,10 +95,10 @@
 													</label>
 												</section>
 										</fieldset>
-										<fieldset>	
+										<fieldset >	
 											<section >
 												<label class="label "><b>País</b></label> 
-												<select style="width: 100%" class="select2" id="pais"  required	name="country">
+												<select style="width: 100%" class="select2" id="pais"  required	name="pais">
 												<option value="">Seleccione País</option>
 													<?foreach ( $pais as $key ) {?>
 														<option value="<?=$key->code?>">
@@ -167,32 +167,48 @@
 														src="../images/check_mark.png"
 														class="margin_horizontal5 check_mark none"> -->
 													<div class="margin_top5"> &nbsp;</div> 
+													<div class="margin_top5 ">  
+														<div class="col col-6" id="validacion"></div>
+														<div class="col col-6">
+															<input type="button" class="btn btn-default col col-6" value="Elegir Monto" id="validar"/>
+														</div>
+													</div>
+													<div class="margin_top5"> &nbsp;</div>  
 												</label>
 											</section>
 											<hr/>
 											<section id="productos">
 												<label class="label"><b>Monto</b></label> <label
 													class="input"> <i class="icon-prepend fa fa-money"></i> <input
-													name="delivered_amount_info" type="number" min="1" step="0.01" class="from-control" readonly
+													name="delivered_amount_info" type="number" min="1" step="0.01" class="from-control" readonly required
 													id="cobro" />
 												</label>
 											</section>
 											<input type="hidden" name="login" value="<?php echo $api['login'] ?>" >
 												<input type="hidden" name="key" value="<?php echo $api['key'] ?>" >
 												<input type="hidden" name="md5" value="<?php echo $api['md5'] ?>" >
-												<input type="hidden" name="action" value="msisdn_info" >
-												<input class="hide" type="text" id="numero" name="destination_msisdn" value="+573008423480" readonly > 
-											   <!-- <input type="hidden" name="delivered_amount_info" value="1" > -->
+												<input type="hidden" name="action" value="simulation" >
+												<input class="hide" type="text" id="numero" name="destination_msisdn" value="+573115654368" readonly > 
+											    <!--<input type="hidden" name="delivered_amount_info" value="1" >  -->
 												<input type="hidden" name="currency" value="USD" >
+												<!--  <input type="hidden" name="originating_currency" value="USD" >-->
+												<input type="hidden" name="sms_sent" value="+573115654368" >
+												<input type="hidden" name="sms" value="nueva recarga" >
 												<input type="hidden" name="destination_currency" value="USD" >
-											  <!--    <input type="hidden" name="product" value="1.0" >
-											   <input type="hidden" name="operator" value="Tigo Colombia USD" >
-											    <input type="hidden" name="operatorid" value="1578" >--> 
+												<input type="hidden" name="skuid" value="9940" >
+												<!--  <input type="hidden" name="open_range" value="1" > -->
+											    <input type="hidden" name="product" value="1.41" >
+											   <!--   <input type="hidden" name="retail_price" value="1.00" >
+											    <input type="hidden" name="wholesale_price" value="0.92" >-->
+											  <!--    <input type="hidden" name="operator" value="Tigo Colombia USD" >
+											    <input type="hidden" name="operatorid" value="1578" >
+											    <input type="hidden" name="country" value="Colombia" >
+											    <input type="hidden" name="countryid" value="710" > -->
 											    <input type="hidden" name="msisdn" value="<?=$usuario[0]->nombre." ".$usuario[0]->apellido?>" >
 										</fieldset>
 
 
-										<footer>
+										<footer id="foo">
 
 											<div class=" col-md-4"></div>
 											<div class="col-xs-12 col-md-4">
@@ -256,16 +272,35 @@
 				// DO NOT REMOVE : GLOBAL FUNCTIONS!
 				pageSetUp();
 
-				$("#mr_phone_no").keyup(msisdn);	
-				$("#mr_phone_no").before(msisdn);
+				$("#validar").click(msisdn);	
+				$("#mr_phone_no").change(validarCampos);
+				//$("#cobro").on("mouseenter",validarCampos);
+				if(monto!=""){$('#foo').show();$('#enviar').attr("disabled", false);};
 				$("#pais").change(getmsisdn);	
 				$("#pais").before(getmsisdn);	
-				$("#cobro").keyup(CalcularSaldo);
+				//if($("#cobro").val()){
+					//	CalcularSaldo;
+				//}
+				//$("#cobro").before(CalcularSaldo);
+				//$('#enviar').attr("disabled", true);
+				$('#productos').hide();
+				$('#foo').hide();
 				$('#enviar').attr("disabled", true);
-					});
+			});
 
 			//setup_flots();
 			/* end flot charts */
+			
+function selector(html,param){
+
+			if(param = 1){
+				$(html).attr("disabled", true);
+			}else if(param = 2){
+				alert('aqui!');
+				$(html).attr("disabled", false);
+			}	
+				
+}
 			
 function CalcularSaldo(evt){
 				
@@ -274,21 +309,63 @@ function CalcularSaldo(evt){
 				var neto = saldo-pago;
 				$("#neto").val(neto);
 				var tel = $("#mr_phone_no").val();
-				if(neto > 0 && tel.length > 0){
-					$('#enviar').attr("disabled", false);
-					}else{
-						$('#enviar').attr("disabled", true);
-					}
+				if(pago=""){
+					$('#foo').hide();
+				//}else{
+					//$('#foo').show();
+				}
 			}
+
+function getproduct(msg){
+	//if(!monto){	
+		
+		bootbox.dialog({
+			message: msg,
+			title: 'Elegir Monto',
+			buttons: {
+				success: {
+				label: "Aceptar",
+				className: "btn-success",
+				callback: 
+					function() {
+						if($("#monto:checked")){
+							monto = $("#monto:checked").val().split("|");	
+							//alert(monto[1]);	
+							$("#cobro").val(monto[1]);		
+							$('#productos').show();	
+							//$('#foo').show();
+							$('#foo').show();
+							$('#enviar').attr("disabled", false);
+						}else{
+							alert('por favor selecciona monto!')			
+						}		
+					}
+				},
+				danger: {
+					label: "Cancelar!",
+					className: "btn-danger",
+					callback: function() {
+
+						}
+				}
+			}
+		})//fin done ajax	
+	/*}else{					
+		$("#cobro").val(monto[1]);
+		$('#productos').show();
+		$('#enviar').attr("disabled", false);
+	}*/
+}
+
 function msisdn(evt){
-	
 	var zip = $("#mr_phone_prefix").val();
 	var tel = $("#mr_phone_no").val(); /*+ (String.fromCharCode(evt.charCode)*/;
 	var numero = zip+""+tel;
 	
 	//$("#numero").val(numero); 
 	//alert(numero);
-	if(numero){
+	if(zip&&tel){
+		iniciarSpinner();
 		$.ajax({
 			type: "POST",
 			url: "response_numero",///ov/billetera3/recargar_gsm
@@ -299,53 +376,22 @@ function msisdn(evt){
 		})
 		.done(function( msg )
 		{
-			
+			FinalizarSpinner();	
 			if(msg){
+				
 				//alert(msg);
 				//$("#mr_phone_prefix").val(msg);
-				if(!monto){		
-					bootbox.dialog({
-						message: msg,
-						title: 'Elegir Monto',
-						buttons: {
-							success: {
-							label: "Aceptar",
-							className: "btn-success",
-							callback: 
-								function() {
-								monto = $("#monto:checked").val();	
-								alert(monto);	
-								$("#cobro").val(monto);		
-								$('#productos').show();			
-								}
-							},
-							danger: {
-								label: "Cancelar!",
-								className: "btn-danger",
-								callback: function() {
-			
-									}
-							}
-						}
-					})//fin done ajax	
-				}else{
-					$("#cobro").val(monto);
-					$('#productos').show();
-				}
-				
+				getproduct(msg);
+				//$('#foo').show();
 				//$("#productos").html(msg);	
 			}else{
 				$('#productos').hide();
+				$('#foo').hide();
 			}
 		});//Fin callback bootbox
 	}else{
 		$('#productos').hide();
-	}
-	
-	if(numero.length > 10){
-		$('#enviar').attr("disabled", false);
-		}else{
-			$('#enviar').attr("disabled", true);
+		$('#foo').hide();
 	}
 }
 
@@ -353,6 +399,7 @@ function getmsisdn(evt){
 	var pais = $("#pais").val();
 	//alert(pais);
 	if(pais){
+		iniciarSpinner();
 		$.ajax({
 			type: "POST",
 			url: "getmsisdn",///ov/billetera3/recargar_gsm
@@ -363,12 +410,15 @@ function getmsisdn(evt){
 		.done(function( msg )
 		{
 			if(msg){
+				
 				$("#mr_phone_prefix").val(msg);
-				$('#numero_telefono').show();				
+				$('#numero_telefono').show();	
+							
 			}else{
 				$('#numero_telefono').hide();
 			}
 		});//Fin callback bootbox
+		FinalizarSpinner();
 	}else{
 		$('#numero_telefono').hide();
 	}
@@ -399,6 +449,10 @@ function cobrar() {
 			className: "btn-success",
 			callback: function() {
 					iniciarSpinner();
+					$('#edit').append("<input value='"+monto[0]+"' type='hidden' name='skuid'>");
+					$('#edit').append("<input value='"+monto[1]+"' type='hidden' name='product'>");
+					$('#edit').append("<input value='"+monto[2]+"' type='hidden' name='retail_price'>");
+					$('#edit').append("<input value='"+monto[3]+"' type='hidden' name='wholesale_price'>");					
 					$.ajax({
 						type: "POST",
 						url: "<?php echo $api['url'];?>",///ov/billetera3/recargar_gsm
@@ -440,9 +494,51 @@ function cobrar() {
 }
 function validarCampos(){
 
-	if(parseInt($('#cobro').val())<=0)
+	
+	
+	var zip = $("#mr_phone_prefix").val();
+	var tel = $("#mr_phone_no").val();
+	var numero = zip+""+tel;
+	iniciarSpinner();
+	$.ajax({
+		type: "POST",
+		url: "validar_numero",///ov/billetera3/recargar_gsm
+		data: {
+			destination_msisdn:numero,
+			action:'msisdn_info'
+			}
+	})
+	.done(function( msg )
+	{
+		FinalizarSpinner();	
+		if(!msg){
+			//return false;
+			$('#productos').hide();
+			$('#foo').hide();
+			$("#msg_tel_1").remove();
+			$("#msg_tel_2").remove();
+			$('#validacion').append("<div id='msg_tel_1'>Número de telefono no valido</div>");
+		}else{
+			//$('#foo').show();
+			$("#msg_tel_1").remove();
+			$("#msg_tel_2").remove();
+			$('#validacion').append("<div id='msg_tel_2'>Número de telefono Correcto</div>");
+		}
+	});
+	
+	if(parseInt($('#cobro').val())<=0){
 		return false;
-
+	}
+	
 	return true;
 }
 	</script>
+	
+	<style>
+		#msg_tel_2{
+			color: green;		
+		}
+		#msg_tel_1{
+			color: red;		
+		}
+	</style>
