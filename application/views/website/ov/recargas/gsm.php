@@ -72,9 +72,9 @@
 									</div>
 
 
-									<form action="<?php echo $api['url'];?>" method="post" id="edit" name="topup"
+									<form action="" method="post" id="edit" name="topup"
 										class="smart-form col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<fieldset>
+										<fieldset><?php // echo $api['url'];?>
 
 												<section class="col-xs-12 col-md-6">
 													<label class="label "><b>Saldo Disponible</b></label> 
@@ -184,20 +184,20 @@
 													id="cobro" />
 												</label>
 											</section>
-											<input type="hidden" name="login" value="<?php echo $api['login'] ?>" >
+											<!--<input type="hidden" name="login" value="<?php echo $api['login'] ?>" >
 												<input type="hidden" name="key" value="<?php echo $api['key'] ?>" >
-												<input type="hidden" name="md5" value="<?php echo $api['md5'] ?>" >
+												<input type="hidden" name="md5" value="<?php echo $api['md5'] ?>" >-->
 												<input type="hidden" name="action" value="simulation" >
-												<input class="hide" type="text" id="numero" name="destination_msisdn" value="+573115654368" readonly > 
+												<input class="hide" type="text" id="numero" name="destination_msisdn" value="" readonly ><!--  +573115654368--> 
 											    <!--<input type="hidden" name="delivered_amount_info" value="1" >  -->
 												<input type="hidden" name="currency" value="USD" >
 												<!--  <input type="hidden" name="originating_currency" value="USD" >-->
-												<input type="hidden" name="sms_sent" value="+573115654368" >
+												<!--  <input type="hidden" name="sms_sent" value="+573115654368" >-->
 												<input type="hidden" name="sms" value="nueva recarga" >
 												<input type="hidden" name="destination_currency" value="USD" >
-												<input type="hidden" name="skuid" value="9940" >
+												<!--  <input type="hidden" name="skuid" value="9940" >-->
 												<!--  <input type="hidden" name="open_range" value="1" > -->
-											    <input type="hidden" name="product" value="1.41" >
+											   <!--   <input type="hidden" name="product" value="1.41" >-->
 											   <!--   <input type="hidden" name="retail_price" value="1.00" >
 											    <input type="hidden" name="wholesale_price" value="0.92" >-->
 											  <!--    <input type="hidden" name="operator" value="Tigo Colombia USD" >
@@ -212,7 +212,7 @@
 
 											<div class=" col-md-4"></div>
 											<div class="col-xs-12 col-md-4">
-												<button type="submit" class="btn btn-primary" id="enviar">
+												<button type="button" class="btn btn-primary" id="enviar">
 													<i class="glyphicon glyphicon-ok"></i> Recargar
 												</button>
 											</div>
@@ -266,6 +266,10 @@
 			 */
 
 			var monto="";
+			var numero="";
+			var neto ="";
+			var pago="";
+			var saldo=""; 
 			
 			$(document).ready(function() {
 				
@@ -274,6 +278,7 @@
 
 				$("#validar").click(msisdn);	
 				$("#mr_phone_no").change(validarCampos);
+				
 				//$("#cobro").on("mouseenter",validarCampos);
 				if(monto!=""){$('#foo').show();$('#enviar').attr("disabled", false);};
 				$("#pais").change(getmsisdn);	
@@ -302,11 +307,11 @@ function selector(html,param){
 				
 }
 			
-function CalcularSaldo(evt){
-				
-				var saldo = $("#saldo").val();
-				var pago = $("#cobro").val() /*+ (String.fromCharCode(evt.charCode)*/;
-				var neto = saldo-pago;
+function CalcularSaldo(){
+				//alert('aqui!')
+				saldo = $("#saldo").val();
+				pago = $("#cobro").val(); /*+ (String.fromCharCode(evt.charCode)*/;
+				neto = saldo-pago;
 				$("#neto").val(neto);
 				var tel = $("#mr_phone_no").val();
 				if(pago=""){
@@ -330,11 +335,13 @@ function getproduct(msg){
 					function() {
 						if($("#monto:checked")){
 							monto = $("#monto:checked").val().split("|");	
-							//alert(monto[1]);	
-							$("#cobro").val(monto[1]);		
+							alert(monto[1]);	
+							pago = monto[1];
+							$("#cobro").val(pago);								
 							$('#productos').show();	
 							//$('#foo').show();
 							$('#foo').show();
+							//CalcularSaldo();
 							$('#enviar').attr("disabled", false);
 						}else{
 							alert('por favor selecciona monto!')			
@@ -360,7 +367,7 @@ function getproduct(msg){
 function msisdn(evt){
 	var zip = $("#mr_phone_prefix").val();
 	var tel = $("#mr_phone_no").val(); /*+ (String.fromCharCode(evt.charCode)*/;
-	var numero = zip+""+tel;
+	numero = zip+""+tel;
 	
 	//$("#numero").val(numero); 
 	//alert(numero);
@@ -382,6 +389,8 @@ function msisdn(evt){
 				//alert(msg);
 				//$("#mr_phone_prefix").val(msg);
 				getproduct(msg);
+				$("#cobro").val(pago);
+				//$("#numero").val(numero); 				
 				//$('#foo').show();
 				//$("#productos").html(msg);	
 			}else{
@@ -424,14 +433,19 @@ function getmsisdn(evt){
 	}
 }
 
-/* $( "#edit" ).submit(function( event ) {
+$( "#enviar" ).click(function( event ) {
 	event.preventDefault();	
-	cobrar();
-});*/
+	if(validarCampos()){
+		$('#productos').show();	
+		$('#foo').show();
+		cobrar();
+	}else {
+		alert("Los datos de la operación estan incompletos o erroneos");
+	}
+	
+});
 
 function cobrar() {
-
-	if(validarCampos()){
 	$.ajax({
 		type: "POST",
 		url: "/auth/show_dialog",
@@ -449,21 +463,30 @@ function cobrar() {
 			className: "btn-success",
 			callback: function() {
 					iniciarSpinner();
-					$('#edit').append("<input value='"+monto[0]+"' type='hidden' name='skuid'>");
-					$('#edit').append("<input value='"+monto[1]+"' type='hidden' name='product'>");
-					$('#edit').append("<input value='"+monto[2]+"' type='hidden' name='retail_price'>");
-					$('#edit').append("<input value='"+monto[3]+"' type='hidden' name='wholesale_price'>");					
+					alert(numero);
+					//$('#edit').append("<input value='"+monto[0]+"' type='hidden' name='skuid'>");
+					//$('#edit').append("<input value='"+monto[1]+"' type='hidden' name='product'>");
+					//$('#edit').append("<input value='"+monto[2]+"' type='hidden' name='retail_price'>");
+					//$('#edit').append("<input value='"+monto[3]+"' type='hidden' name='wholesale_price'>");		
+					//$('#edit').append("<input value='"+monto+"' type='hidden' name='sku'>");	
+					//$('#edit').append("<input value='"+numero+"' type='hidden' name='destination_msisdn'>");				
 					$.ajax({
 						type: "POST",
-						url: "<?php echo $api['url'];?>",///ov/billetera3/recargar_gsm
-						data: $('#edit').serialize()
+						url: "/ov/billetera3/recargar_gsm",
+						data: {
+							sku:monto,
+							destination_msisdn:numero,
+							neto:neto,
+							pago:pago,
+							saldo:saldo
+							} /*$('#edit').serialize()*/<?php //echo $api['url'];?>
 					})
-					.done(function( msg )
+					.done(function( msg2 )
 					{
 						FinalizarSpinner();
 						bootbox.dialog({
-						message: msg,
-						title: '',
+						message: msg2,
+						title: 'ATENCION!!!',
 						buttons: {
 							success: {
 							label: "Aceptar",
@@ -488,21 +511,17 @@ function cobrar() {
 		}
 	})
 	});
-	}else {
-		alert("Los datos de la operación estan incompletos o erroneos");
-	}
+	
 }
 function validarCampos(){
-
-	
 	
 	var zip = $("#mr_phone_prefix").val();
 	var tel = $("#mr_phone_no").val();
-	var numero = zip+""+tel;
+	numero = zip+""+tel;
 	iniciarSpinner();
 	$.ajax({
 		type: "POST",
-		url: "validar_numero",///ov/billetera3/recargar_gsm
+		url: "response_numero",///ov/billetera3/recargar_gsm
 		data: {
 			destination_msisdn:numero,
 			action:'msisdn_info'
@@ -518,17 +537,25 @@ function validarCampos(){
 			$("#msg_tel_1").remove();
 			$("#msg_tel_2").remove();
 			$('#validacion').append("<div id='msg_tel_1'>Número de telefono no valido</div>");
+			return false;			
 		}else{
 			//$('#foo').show();
+			if(!monto){
+				getproduct(msg);				
+			}
+			//$("#numero").val(numero); 
+			$('#foo').hide();
 			$("#msg_tel_1").remove();
 			$("#msg_tel_2").remove();
 			$('#validacion').append("<div id='msg_tel_2'>Número de telefono Correcto</div>");
+			
+			return true;
 		}
 	});
 	
-	if(parseInt($('#cobro').val())<=0){
-		return false;
-	}
+	//if(!$('#numero').val()){
+		//return false;
+	//}
 	
 	return true;
 }

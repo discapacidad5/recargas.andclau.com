@@ -7,7 +7,6 @@ class model_recargas extends CI_Model
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('ov/model_perfil_red');
 		
 	}
 	

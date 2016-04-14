@@ -256,22 +256,42 @@ class billetera3 extends CI_Controller
 	
 	function recargar_gsm() 
 	{
-		if (!$this->tank_auth->is_logged_in())
-		{																		// logged in
-			redirect('/auth');
-		}
-	
-		$id              = $this->tank_auth->get_user_id();
 		
-		if($this->general->isActived($id)!=0){
-			redirect('/ov/compras/carrito');
-		}
-	
-	
-		$usuario=$this->general->get_username($id);
-		$style=$this->general->get_style($id);
-	
+		//$id              = $this->tank_auth->get_user_id();
 		
+		$this->recarga->setKey(time().rand());
+		$this->recarga->setMd5();
+		
+		$login= $this->recarga->getLogin();
+		$key = $this->recarga->getKey();
+		$md5 = $this->recarga->getMd5();		
+		
+		if(!isset($_POST["destination_msisdn"])){return "";}
+		
+		$sku = $_POST["sku"];
+		$action = "simulation";
+		
+		$url = $this->recarga->getUrl().
+		"?login=".$login
+		."&key=".$key
+		."&md5=".$md5
+		."&destination_msisdn=".$_POST["destination_msisdn"]		
+		."&currency=USD"
+		//."&destination_currency=USD"
+		."&skuid=".intval($sku[0])		
+		."&product=".$sku[1]	
+		."&delivered_amount_info=".$sku[1]	
+		//."&retail_price=".$sku[2]
+		//."&wholesale_price=".$sku[3]
+		."&action=".$action;
+		
+		$response = file_get_contents($url);
+		$responses = split("\n", $response );
+		$values = $this->model_recargas->setResponse($responses);
+		
+		echo $sku[0]."|".$sku[1]."|".$response;//"dentro de recargar_gsm";
+		
+		//echo ($values['error_code']==0 ) ? "Transaccion Exitosa" : "Transacción fallida";// $values['error_code'];//$responses;
 		
 		
 	}
@@ -350,8 +370,8 @@ class billetera3 extends CI_Controller
 		$minimum =  $values['open_range_minimum_amount_requested_currency'];
 		$maximum =  $values['open_range_maximum_amount_requested_currency'];
 		$increment_local =  $values['open_range_increment_local_currency'];
-		$increment =  number_format((($increment_local*$minimum)/$minimum_local),2);
-		$skuid =  $values['skuid'];
+		$increment =  (($increment_local*$minimum)/$minimum_local);
+		$skuid = $values['skuid'];
 		#$open_range = $values['open_range'];
 		#$requested_currency = $values['requested_currency'];
 		#$operator= $values['operator'];
@@ -369,10 +389,7 @@ class billetera3 extends CI_Controller
 						<h6>$ '.number_format($i,2).'</h6>
 						'.//<h6>'.$retail_price_list[$i].'</h4>
 						//<p>'.$wholesale_price_list[$i].'</p>
-						'<input type="radio" value="'.$skuid
-						.'|'.$i
-						.'|'.$i
-						.'|'.$i
+						'<input type="radio" value="'.intval($skuid).'|'.number_format($i,2).'|'.number_format($i,2).'|'.number_format($i,2).'|2'
 						.'" id="monto" name="delivered_amount_info" />		
 					</div>';
 			$j++;
@@ -408,6 +425,7 @@ class billetera3 extends CI_Controller
 			.'|'.$product
 			.'|'.$retail_price_list[$i]
 			.'|'.$wholesale_price_list[$i]
+			.'|1'
 			.'" id="monto" name="delivered_amount_info" />
 					</div>';
 			}
