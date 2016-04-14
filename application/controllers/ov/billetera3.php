@@ -258,7 +258,7 @@ class billetera3 extends CI_Controller
 	{
 		
 		$id = $this->tank_auth->get_user_id();
-		$usuario=$this->general->get_username(2);
+		#$usuario=$this->general->get_username(2);
 		
 		$this->recarga->setKey(time().rand());
 		$this->recarga->setMd5();
@@ -270,7 +270,7 @@ class billetera3 extends CI_Controller
 		if(!isset($_POST["destination_msisdn"])){return "";}
 		
 		$sku = $_POST["sku"];
-		$action = "topup";//"simulation";
+		$action = "simulation";//"topup";
 		
 		$url = $this->recarga->getUrl().
 		"?login=".$login
@@ -284,34 +284,37 @@ class billetera3 extends CI_Controller
 		."&delivered_amount_info=".$sku[1]	
 		."&retail_price=".$sku[2]
 		."&wholesale_price=".$sku[3]
-		."&msisdn=AndClau_Soluciones_Tecnologicas"
+		."&msisdn=AndClau_ST"
 		."&action=".$action;
-		
-		try {
-			$response = file_get_contents($url);
-		} catch (Exception $e) {
-			return "";
-		}
-		$responses = split("\n", $response );
-		$values = $this->model_recargas->setResponse($responses);
 		
 		$this->billetera_recargas->setUsuario($id);
 		$this->model_billetera_recargas->getSaldos();
 		#$this->saldo = number_format($this->billetera_recargas->getSaldo(),2);
 		$this->disponible = number_format($this->billetera_recargas->getDisponible(),2);
+			
+		if(($this->disponible-$sku[1])>=0){
+			
+			try {
+				$response = file_get_contents($url);
+			} catch (Exception $e) {
+				return "";
+			}
+			
+			$responses = split("\n", $response );
+			$values = $this->model_recargas->setResponse($responses);					
 		
- 
-		if(($this->disponible-$sku[1])>=0&&$values['error_code']==0){
 			$this->billetera_recargas->setValor($sku[1]);
 			$this->model_billetera_recargas->agregarRetiro();
 			//aqui inserta factura_recarga
+			
+			echo ($values['error_code']==0 ) ? "Transaccion Exitosa" : "Transacción No pudo realizarse";
 		}else {
 			echo "ERROR <br>No hay saldo para realizar la Recarga.";
 		}
 		
-		echo $sku[0]."|".$sku[1]."|".$response;//"dentro de recargar_gsm";
+		//echo $sku[0]."|".$sku[1]."|".$response;//"dentro de recargar_gsm";
 		
-		//echo ($values['error_code']==0 ) ? "Transaccion Exitosa" : "Transacción fallida";// $values['error_code'];//$responses;
+		// $values['error_code'];//$responses;
 		
 		
 	}
