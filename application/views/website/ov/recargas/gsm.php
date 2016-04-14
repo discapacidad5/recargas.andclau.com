@@ -170,7 +170,7 @@
 													<div class="margin_top5 ">  
 														<div class="col col-6" id="validacion"></div>
 														<div class="col col-6">
-															<input type="button" class="btn btn-default col col-6" value="Elegir Monto" id="validar"/>
+															<input type="button" class="btn btn-primary" value="Elegir Monto" id="validar"/>
 														</div>
 													</div>
 													<div class="margin_top5"> &nbsp;</div>  
@@ -212,7 +212,7 @@
 
 											<div class=" col-md-4"></div>
 											<div class="col-xs-12 col-md-4">
-												<button type="button" class="btn btn-primary" id="enviar">
+												<button type="button" class="btn btn-success" id="enviar">
 													<i class="glyphicon glyphicon-ok"></i> Recargar
 												</button>
 											</div>
@@ -282,6 +282,7 @@
 				//$("#cobro").on("mouseenter",validarCampos);
 				if(monto!=""){$('#foo').show();$('#enviar').attr("disabled", false);};
 				$("#pais").change(getmsisdn);	
+				//$("#pais").change(validarCampos);
 				$("#pais").before(getmsisdn);	
 				//if($("#cobro").val()){
 					//	CalcularSaldo;
@@ -314,7 +315,7 @@ function CalcularSaldo(){
 				neto = saldo-pago;
 				$("#neto").val(neto);
 				var tel = $("#mr_phone_no").val();
-				if(pago=""){
+				if(pago=""||neto<0){
 					$('#foo').hide();
 				//}else{
 					//$('#foo').show();
@@ -335,13 +336,13 @@ function getproduct(msg){
 					function() {
 						if($("#monto:checked")){
 							monto = $("#monto:checked").val().split("|");	
-							alert(monto[1]);	
+							//alert(monto[1]);	
 							pago = monto[1];
 							$("#cobro").val(pago);								
 							$('#productos').show();	
 							//$('#foo').show();
 							$('#foo').show();
-							//CalcularSaldo();
+							CalcularSaldo();
 							$('#enviar').attr("disabled", false);
 						}else{
 							alert('por favor selecciona monto!')			
@@ -389,7 +390,7 @@ function msisdn(evt){
 				//alert(msg);
 				//$("#mr_phone_prefix").val(msg);
 				getproduct(msg);
-				$("#cobro").val(pago);
+				//$("#cobro").val(pago);
 				//$("#numero").val(numero); 				
 				//$('#foo').show();
 				//$("#productos").html(msg);	
@@ -426,6 +427,7 @@ function getmsisdn(evt){
 			}else{
 				$('#numero_telefono').hide();
 			}
+			validarCampos();
 		});//Fin callback bootbox
 		FinalizarSpinner();
 	}else{
@@ -463,7 +465,7 @@ function cobrar() {
 			className: "btn-success",
 			callback: function() {
 					iniciarSpinner();
-					alert(numero);
+					//alert(numero);
 					//$('#edit').append("<input value='"+monto[0]+"' type='hidden' name='skuid'>");
 					//$('#edit').append("<input value='"+monto[1]+"' type='hidden' name='product'>");
 					//$('#edit').append("<input value='"+monto[2]+"' type='hidden' name='retail_price'>");
@@ -483,7 +485,7 @@ function cobrar() {
 					})
 					.done(function( msg2 )
 					{
-						FinalizarSpinner();
+						iniciarSpinner();
 						bootbox.dialog({
 						message: msg2,
 						title: 'ATENCION!!!',
@@ -492,6 +494,7 @@ function cobrar() {
 							label: "Aceptar",
 							className: "btn-success",
 							callback: function() {
+								FinalizarSpinner();
 								location.href='/ov/billetera3/';
 								}
 							}
@@ -530,24 +533,26 @@ function validarCampos(){
 	.done(function( msg )
 	{
 		FinalizarSpinner();	
-		if(!msg){
-			//return false;
-			$('#productos').hide();
-			$('#foo').hide();
-			$("#msg_tel_1").remove();
-			$("#msg_tel_2").remove();
-			$('#validacion').append("<div id='msg_tel_1'>Número de telefono no valido</div>");
+		$('#productos').hide();
+		$('#foo').hide();
+		if(!tel){
+			//return false;			
+			$("#msg_tel").remove();
+			$('#validacion').append("<div id='msg_tel' >Digite Número de telefono</div>");
+			return false;
+		}else if(!msg){
+			//return false;			
+			$("#msg_tel").remove();
+			$('#validacion').append("<div id='msg_tel' class='txt-color-red'>Número de telefono no valido</div>");
 			return false;			
 		}else{
 			//$('#foo').show();
 			if(!monto){
 				getproduct(msg);				
 			}
-			//$("#numero").val(numero); 
-			$('#foo').hide();
-			$("#msg_tel_1").remove();
-			$("#msg_tel_2").remove();
-			$('#validacion').append("<div id='msg_tel_2'>Número de telefono Correcto</div>");
+			//$("#numero").val(numero);			
+			$("#msg_tel").remove();
+			$('#validacion').append("<div id='msg_tel' class='txt-color-green'>Número de telefono Correcto</div>");
 			
 			return true;
 		}
@@ -562,10 +567,11 @@ function validarCampos(){
 	</script>
 	
 	<style>
-		#msg_tel_2{
-			color: green;		
-		}
-		#msg_tel_1{
-			color: red;		
-		}
+	
+	#validar{
+		color: #fff;
+		background: #3276b1;
+	}
+	
 	</style>
+	

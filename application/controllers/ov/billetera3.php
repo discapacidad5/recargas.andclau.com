@@ -257,7 +257,7 @@ class billetera3 extends CI_Controller
 	function recargar_gsm() 
 	{
 		
-		//$id              = $this->tank_auth->get_user_id();
+		$id              = $this->tank_auth->get_user_id();
 		
 		$this->recarga->setKey(time().rand());
 		$this->recarga->setMd5();
@@ -277,21 +277,39 @@ class billetera3 extends CI_Controller
 		."&md5=".$md5
 		."&destination_msisdn=".$_POST["destination_msisdn"]		
 		."&currency=USD"
-		//."&destination_currency=USD"
+		."&destination_currency=USD"
 		."&skuid=".intval($sku[0])		
 		."&product=".$sku[1]	
 		."&delivered_amount_info=".$sku[1]	
-		//."&retail_price=".$sku[2]
-		//."&wholesale_price=".$sku[3]
+		."&retail_price=".$sku[2]
+		."&wholesale_price=".$sku[3]
 		."&action=".$action;
 		
-		$response = file_get_contents($url);
+		try {
+			$response = file_get_contents($url);
+		} catch (Exception $e) {
+			return "";
+		}
 		$responses = split("\n", $response );
 		$values = $this->model_recargas->setResponse($responses);
 		
-		echo $sku[0]."|".$sku[1]."|".$response;//"dentro de recargar_gsm";
+		$this->billetera_recargas->setUsuario($id);
+		$this->model_billetera_recargas->getSaldos();
+		#$this->saldo = number_format($this->billetera_recargas->getSaldo(),2);
+		$this->disponible = number_format($this->billetera_recargas->getDisponible(),2);
 		
-		//echo ($values['error_code']==0 ) ? "Transaccion Exitosa" : "Transacción fallida";// $values['error_code'];//$responses;
+ 
+		if(($this->disponible-$sku[1])>=0){
+			$this->billetera_recargas->setValor($sku[1]);
+			$this->model_billetera_recargas->agregarRetiro();
+			//aqui inserta factura_recarga
+		}else {
+			echo "ERROR <br>No hay saldo para realizar la Recarga.";
+		}
+		
+		//echo $sku[0]."|".$sku[1]."|".$response;//"dentro de recargar_gsm";
+		
+		echo ($values['error_code']==0 ) ? "Transaccion Exitosa" : "Transacción fallida";// $values['error_code'];//$responses;
 		
 		
 	}
@@ -324,7 +342,11 @@ class billetera3 extends CI_Controller
 		&destination_currency=USD
 		&action=".$_POST["action"];
 		
-		$response = file_get_contents($url);
+		try {
+			$response = file_get_contents($url);
+		} catch (Exception $e) {
+			return "";
+		}
 		$responses = split("\n", $response );
 		$values = $this->model_recargas->setResponse($responses);
 		
@@ -356,7 +378,11 @@ class billetera3 extends CI_Controller
 		&destination_currency=USD
 		&action=".$_POST["action"];
 	
-		$response = file_get_contents($url);
+		try {
+			$response = file_get_contents($url);
+		} catch (Exception $e) {
+			return "";
+		}
 		$responses = split("\n", $response );
 		$values = $this->model_recargas->setResponse($responses);
 	

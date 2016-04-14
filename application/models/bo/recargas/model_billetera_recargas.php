@@ -77,6 +77,18 @@ class model_billetera_recargas extends CI_Model
 		return $this->db->insert_id();
 	}
 	
+	function agregarRetiro(){
+		$this->getId();
+		$data = array(
+				'id_billetera' => $this->billetera_recargas->getId(),
+				'valor' => number_format(($this->billetera_recargas->getValor()),2),
+				'tipo' => 'GSM'
+		);
+	
+		$this->db->insert("billetera_recargas_retiro",$data);
+		return $this->db->insert_id();
+	}
+	
 	function getId(){
 		$q=$this->db->query("SELECT id from billetera_recargas where id_user = ".$this->billetera_recargas->getUsuario());
 		$q=$q->result();
