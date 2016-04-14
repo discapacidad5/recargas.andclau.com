@@ -3,7 +3,7 @@
 							<fieldset>
 								<input type="text" class="hide" value="<?php echo $_POST['id']; ?>" name="id">
 								<label class="input"> PIN
-								<input type="text" name="pin" required placeholder="Pin" style="width: 50%;" class="form-control" value="<?php echo $pin[0]->id; ?>" required>
+								<input type="text" name="id" required placeholder="id" style="width: 50%;" class="form-control" value="<?php echo $pin[0]->id; ?>" required>
 								<label class="input"> Descripcion
 								<input type="text" name="descripcion" required placeholder="Descripcion" style="width: 50%;" class="form-control" value="<?php echo $pin[0]->descripcion; ?>" required>
 								<label class="input"> Valor
