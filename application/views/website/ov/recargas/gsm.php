@@ -417,7 +417,7 @@ function cobrar() {
 				label: "Cancelar!",
 				className: "btn-danger",
 				callback: function() {
-
+					FinalizarSpinner();
 					}
 			}
 		}
