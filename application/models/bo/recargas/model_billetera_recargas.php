@@ -94,5 +94,7 @@ class model_billetera_recargas extends CI_Model
 		$q=$q->result();
 		$this->billetera_recargas->setId($q[0]->id);
 	}
+		
+		
 	
 }
