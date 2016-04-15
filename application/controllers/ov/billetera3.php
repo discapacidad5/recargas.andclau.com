@@ -267,10 +267,10 @@ class billetera3 extends CI_Controller
 		$key = $this->recarga->getKey();
 		$md5 = $this->recarga->getMd5();		
 		
-		if(!isset($_POST["destination_msisdn"])){return "";}
+		if(!isset($_POST["destination_msisdn"])){return "No digitó numero!";}
 		
 		$sku = $_POST["sku"];
-		$action = "simulation";//"topup";
+		$action = "topup";//"simulation";
 		
 		$url = $this->recarga->getUrl().
 		"?login=".$login
@@ -301,11 +301,20 @@ class billetera3 extends CI_Controller
 			}
 			
 			$responses = split("\n", $response );
-			$values = $this->model_recargas->setResponse($responses);					
-		
+			$values = $this->model_recargas->setResponse($responses);	
+			
+			//foreach ($values as $key => $item){
+				//echo $key."=".$item."\n";
+			//}exit();			
+			
+			$transaccion = ($values['error_code']==0) 
+			? $this->model_recargas->insertar_gsm($values) : "NO";
+			$this->recarga->setId($transaccion);
+			//echo $transaccion;//exit();
+			
 			$this->billetera_recargas->setValor($sku[1]);
 			$this->model_billetera_recargas->agregarRetiro();
-			//aqui inserta factura_recarga
+			
 			
 			echo ($values['error_code']==0 ) ? "Transaccion Exitosa" : "Transacción No pudo realizarse";
 		}else {
@@ -352,8 +361,13 @@ class billetera3 extends CI_Controller
 		} catch (Exception $e) {
 			return "";
 		}
+		
 		$responses = split("\n", $response );
 		$values = $this->model_recargas->setResponse($responses);
+		
+		//foreach ($values as $key => $item){
+			//echo $key."=".$item."\n";
+		//}
 		
 		if($values['error_code']!=0){return "";}
 		
@@ -411,10 +425,11 @@ class billetera3 extends CI_Controller
 		#$country = $values['country'];
 		
 		$salida="";		
-		$j=0;
+		$j=2;
 		$salida.='<div style="overflow-y: scroll; height:200px;">';
-		for ($i=$minimum;$i<$maximum;$i=$i+$increment)
+		for ($i=($minimum ? $minimum : $increment);$i<$maximum;$i=$i+$increment)
 		{
+			if($i>$minimum){
 			error_reporting(0);
 			$salida.='<div class="well well-sm txt-color-white text-center col-xs-3 col-md-3 primary margin2">
 						<h6>$ '.number_format($i,2).'</h6>
@@ -423,8 +438,10 @@ class billetera3 extends CI_Controller
 						'<input type="radio" value="'.intval($skuid).'|'.number_format($i,2).'|'.number_format($i,2).'|'.number_format($i,2).'|2'
 						.'" id="monto" name="delivered_amount_info" />		
 					</div>';
-			$j++;
+			
+			//$j++;
 			$i*=$j;
+			}
 		}
 		$salida.='</div>';
 		return $salida;

@@ -11,7 +11,8 @@ private $url = 'https://fm.transfer-to.com/cgi-bin/shop/topup',
 		$account, 
 		$destination_msisdn = '+573008423480',
 		$msisdn,
-		$valor;
+		$valor,
+		$id;
 
 	function __construct()
 	{
@@ -90,9 +91,15 @@ private $url = 'https://fm.transfer-to.com/cgi-bin/shop/topup',
 	}
 	public function setMsisdn($msisdn) {
 		$this->msisdn = $msisdn;
+	}	
+	public function getId() {
+		return $this->id;
+	}
+	public function setId($id) {
+		$this->id = $id;
 	}
 	
 	
-		
+	
 	
 }

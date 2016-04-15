@@ -368,7 +368,7 @@ function cobrar() {
 	})
 	.done(function( msg )
 	{
-		
+		iniciarSpinner();
 		bootbox.dialog({
 		message: msg,
 		title: 'Recarga GSM',
@@ -377,7 +377,7 @@ function cobrar() {
 			label: "Aceptar",
 			className: "btn-success",
 			callback: function() {
-					iniciarSpinner();
+					
 
 					$.ajax({
 						type: "POST",
@@ -392,7 +392,7 @@ function cobrar() {
 					})
 					.done(function( msg2 )
 					{
-						iniciarSpinner();
+						//iniciarSpinner();
 						bootbox.dialog({
 						message: msg2,
 						title: 'ATENCION!!!',
