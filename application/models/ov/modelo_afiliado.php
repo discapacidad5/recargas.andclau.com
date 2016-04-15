@@ -165,6 +165,8 @@ class modelo_afiliado extends CI_Model{
 		
 		($fijos&&$moviles) ? $this->insert_dato_tels($id,$fijos,$moviles) : '' ; 
 		
+		$this->billetera_recargas($id);
+		
 		$dato_perfil=$this->Perfil($id); # USER_PROFILES
 		$dato_afiliar=$this->dato_afiliar ( $id, $mi_red, $id_debajo, $lado, $directo ); # AFILIAR 
 		//$dato_permiso=$this->Perfil($id); # USER_PERMISSIONS
@@ -244,6 +246,17 @@ class modelo_afiliado extends CI_Model{
 		#echo "bill si|";
 	}
 
+	private function billetera_recargas($id) { #insert_dato_billetera
+	
+		$dato_billetera=array(
+		"id_user"	=> $id,
+		"estatus"		=> "ACT",
+		/*"activo"		=> "No"*/
+				);
+		$this->db->insert("billetera_recargas",$dato_billetera);
+		return true;#$dato_billetera;
+		#echo "bill si|";
+	}
 	
 
 	private function dato_dir($id) {#insert_dato_dir
