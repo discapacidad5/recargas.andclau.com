@@ -211,6 +211,7 @@
 			var neto ="";
 			var pago="";
 			var saldo=""; 
+			var r=0;
 			
 			$(document).ready(function() {
 				
@@ -350,6 +351,7 @@ function getmsisdn(evt){
 
 $( "#enviar" ).click(function( event ) {
 	event.preventDefault();	
+	r=1;
 	if(validarCampos()){
 		$('#productos').show();	
 		$('#foo').show();
@@ -439,7 +441,9 @@ function validarCampos(){
 	})
 	.done(function( msg )
 	{
-		FinalizarSpinner();	
+		if(r==0){
+			FinalizarSpinner();
+		}	
 		$('#productos').hide();
 		$('#foo').hide();
 		if(!tel){		

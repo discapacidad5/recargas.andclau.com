@@ -270,7 +270,7 @@ class billetera3 extends CI_Controller
 		if(!isset($_POST["destination_msisdn"])){return "No digitó numero!";}
 		
 		$sku = $_POST["sku"];
-		$action = "topup";//"simulation";
+		$action = "simulation";//"topup";
 		
 		$url = $this->recarga->getUrl().
 		"?login=".$login
@@ -308,7 +308,7 @@ class billetera3 extends CI_Controller
 			//}exit();			
 			
 			$transaccion = ($values['error_code']==0) 
-			? $this->model_recargas->insertar_gsm($values) : "NO";
+			? $this->model_recargas->insertar_gsm($values) : $values['transactionid'];
 			$this->recarga->setId($transaccion);
 			//echo $transaccion;//exit();
 			
