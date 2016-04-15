@@ -211,6 +211,7 @@
 			var neto ="";
 			var pago="";
 			var saldo=""; 
+			var r=0;
 			
 			$(document).ready(function() {
 				
@@ -350,6 +351,7 @@ function getmsisdn(evt){
 
 $( "#enviar" ).click(function( event ) {
 	event.preventDefault();	
+	r=1;
 	if(validarCampos()){
 		$('#productos').show();	
 		$('#foo').show();
@@ -368,7 +370,7 @@ function cobrar() {
 	})
 	.done(function( msg )
 	{
-		
+		iniciarSpinner();
 		bootbox.dialog({
 		message: msg,
 		title: 'Recarga GSM',
@@ -377,7 +379,7 @@ function cobrar() {
 			label: "Aceptar",
 			className: "btn-success",
 			callback: function() {
-					iniciarSpinner();
+					
 
 					$.ajax({
 						type: "POST",
@@ -392,7 +394,7 @@ function cobrar() {
 					})
 					.done(function( msg2 )
 					{
-						iniciarSpinner();
+						//iniciarSpinner();
 						bootbox.dialog({
 						message: msg2,
 						title: 'ATENCION!!!',
@@ -439,7 +441,9 @@ function validarCampos(){
 	})
 	.done(function( msg )
 	{
-		FinalizarSpinner();	
+		if(r==0){
+			FinalizarSpinner();
+		}	
 		$('#productos').hide();
 		$('#foo').hide();
 		if(!tel){		

@@ -82,7 +82,8 @@ class model_billetera_recargas extends CI_Model
 		$data = array(
 				'id_billetera' => $this->billetera_recargas->getId(),
 				'valor' => number_format(($this->billetera_recargas->getValor()),2),
-				'tipo' => 'GSM'
+				'tipo' => 'GSM',
+				'id_transaccion' => $this->recarga->getId()
 		);
 	
 		$this->db->insert("billetera_recargas_retiro",$data);
