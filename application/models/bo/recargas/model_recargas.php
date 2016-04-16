@@ -13,8 +13,8 @@ class model_recargas extends CI_Model
 	function setResponse($responses){
 		$data = array();
 		foreach ($responses as $response) {
-			$key = split("=", $response)[0];
-			$value = count(split("=", $response))>1 ? split("=", $response)[1] : "";
+			$key = explode("=", $response)[0];
+			$value = count(explode("=", $response))>1 ? explode("=", $response)[1] : "";
 			if($key != "" && $value != "") {
 				$data[$key] = $value;
 			}

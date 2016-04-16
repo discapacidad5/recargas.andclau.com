@@ -34,11 +34,11 @@
 						<div class="widget-body no-padding smart-form">
 <div>
     <fieldset id="pswd">
-		<form class="smart-form" action="/bo/admin/new_retencion" method="POST" id="pin" role="form">
+		<form class="smart-form" action="" method="POST" id="pin" role="form">
 			<legend>Nuevo PIN </legend><br>
 			<div class="form-group" style="width: 20rem;">
 			<label style="margin: 1rem;" class="input"><i class="icon-prepend fa fa-check-circle-o"></i>
-				<input id='desc'  class="form-control" name="id" size="10" placeholder="PIN" type="text" required>
+				<input id='id'  class="form-control" name="id" size="10" pattern="[0-9]{10}" type="number" placeholder="PIN"  required>
 	        </label>
 	        <label style="margin: 1rem;" class="input">
 	       <TEXTAREA id='desc'  class="form-control" name="descripcion" placeholder="Descripcion" rows="3" cols="30" >
@@ -81,10 +81,22 @@
 <script src="/template/js/validacion.js"></script>
 <script src="/template/js/plugin/fuelux/wizard/wizard.min.js"></script>
 <script type="text/javascript">
+
+function validar(){
+	var id = $("#id").val();
+	if(id.length<=10){
+		return true;
+	}
+}
+
 $( "#pin" ).submit(function( event ) {
-	event.preventDefault();
-	iniciarSpinner();
-	enviar();
+	event.preventDefault();	
+	if(validar()){
+		iniciarSpinner();
+		enviar();
+	}else{
+		alert("la longitud del PIN no debe superar los 10 digitos!")
+	}	
 });
 
 function enviar(){

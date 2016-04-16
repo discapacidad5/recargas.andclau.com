@@ -49,7 +49,7 @@
 													</a>
 												</div>
 												<div class="col-sm-3 link">
-													<a href="/bo/comercial/categorias">
+													<a href="/bo/recargas/#">
 														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>">
 															<i class="fa fa-exchange fa-3x"></i>
 															<h1>Transferencias<br>&nbsp</h1>
@@ -57,7 +57,7 @@
 													</a>
 												</div>
 												<div class="col-sm-3 link">
-													<a href="/bo/comercial/carrito_de_compras?co=c">
+													<a href="/bo/recargas/#">
 														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>">
 															<i class="fa fa-money fa-3x"></i>
 															<h1>Billetera<br>&nbsp</h1>
