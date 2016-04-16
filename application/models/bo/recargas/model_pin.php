@@ -15,7 +15,7 @@ class model_pin extends CI_Model
 		$dato=array(
 				"id" =>				$this->pin->getId(),
 				"descripcion" => 	$this->pin->getDescripcion(),
-				"id_pin_tarifas" => 			$this->pin->getValor()
+				"id_pin_tarifas" =>  $this->pin->getValor()
 			//	"credito" => 		$this->pin->getCredito()
 		);
 		$this->db->insert("pin",$dato);
@@ -47,7 +47,7 @@ class model_pin extends CI_Model
 		$datos = array(
 				'id' =>              $this->pin->getId(),
 				'descripcion' =>     $this->pin->getDescripcion(),
-				'id_pin_tarifas' =>           $this->pin->getValor()
+				'id_pin_tarifas' =>  $this->pin->getValor()
 			//	'credito' =>         $this->pin->getCredito()
 				
 		);

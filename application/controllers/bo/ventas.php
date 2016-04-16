@@ -148,9 +148,9 @@ class ventas extends CI_Controller
 				<a title='Eliminar' style='cursor: pointer;' class='txt-color-red' onclick='eliminar(".$venta->id_venta.");'>
 				<i class='fa fa-trash-o fa-3x'></i>
 				</a>
-				<a title='Imprimir' style='cursor: pointer;' class='txt-color-green' onclick='imprimir(".$venta->id_venta.");'>
+				<!-- <a title='Imprimir' style='cursor: pointer;' class='txt-color-green' onclick='imprimir(".$venta->id_venta.");'>
 				<i class='fa fa-file-pdf-o fa-3x'></i>
-				</a>
+				</a> -->
 			</td>
 			</tr>";
 					

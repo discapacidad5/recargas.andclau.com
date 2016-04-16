@@ -101,11 +101,11 @@ class recargas extends CI_Controller
 	function ingresar_pin(){
 
 		$this->pin->setId($_POST['id']);
-		$this->pin->setDescripcion($_POST['descripcion']);
+		$this->pin->setDescripcion($_POST['descripcion'] ? $_POST['descripcion'] : "no define");
 		$this->pin->setValor($_POST['valor']);
 		//$this->pin->setCredito($_POST['credito']);
 		
-		#echo $_POST['id']."|".$_POST['descrip']."|".$_POST['valor']."|".$_POST['credito'];
+		#echo $_POST['id']."|".$_POST['descripcion']."|".$_POST['valor'];
 		
 		echo $this->model_pin->ingresar_pin() ? "Pin Creado Exitosamente" : "Pin no pudo ser Creado";
 		
@@ -178,9 +178,10 @@ class recargas extends CI_Controller
 function actualizar_pin(){
 		
 $this->pin->setId($_POST['id']);
-$this->pin->setDescripcion($_POST['descripcion']);
+$this->pin->setDescripcion($_POST['descripcion'] ? $_POST['descripcion'] : "no define");
 $this->pin->setValor($_POST['valor']);
 
+#echo $_POST['id']."|".$_POST['descripcion']."|".$_POST['valor']."|".$_POST['id2'];
 		
 		echo $this->model_pin->actualizar_pin() ? "Pin actualizado Exitosamente" : "Pin no pudo ser actualizado ";
 		//redirect('bo/recargas/listar_pines');

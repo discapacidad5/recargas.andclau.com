@@ -300,7 +300,7 @@ class billetera3 extends CI_Controller
 				return "";
 			}
 			
-			$responses = split("\n", $response );
+			$responses = explode("\n", $response );
 			$values = $this->model_recargas->setResponse($responses);	
 			
 			//foreach ($values as $key => $item){
@@ -362,7 +362,7 @@ class billetera3 extends CI_Controller
 			return "";
 		}
 		
-		$responses = split("\n", $response );
+		$responses = explode("\n", $response );
 		$values = $this->model_recargas->setResponse($responses);
 		
 		//foreach ($values as $key => $item){
@@ -402,7 +402,7 @@ class billetera3 extends CI_Controller
 		} catch (Exception $e) {
 			return "";
 		}
-		$responses = split("\n", $response );
+		$responses = explode("\n", $response );
 		$values = $this->model_recargas->setResponse($responses);
 	
 		echo ($values['error_code']==0) ? "OK" : "";// $values['error_code'];//$responses;
@@ -448,10 +448,10 @@ class billetera3 extends CI_Controller
 	}
 
 	private function get_productlist($values) {
-		$product_list =  split(",", $values['product_list']);
-		$retail_price_list = split(",", $values['retail_price_list']);
-		$wholesale_price_list = split(",", $values['wholesale_price_list']);
-		$skuid_list = split(",", $values['skuid_list']);
+		$product_list =  explode(",", $values['product_list']);
+		$retail_price_list = explode(",", $values['retail_price_list']);
+		$wholesale_price_list = explode(",", $values['wholesale_price_list']);
+		$skuid_list = explode(",", $values['skuid_list']);
 		#$open_range = $values['open_range'];
 		#$requested_currency = $values['requested_currency'];
 		#$operator= $values['operator'];
