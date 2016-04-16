@@ -53,11 +53,9 @@
 
 										<div class="table-responsive">
 										<div class="header">
-												<div class="col-xs-2 col-md-2" >
+												<div class="col-xs-4 col-md-4" >
 												</div>
-                    							<h1 class="col-xs-4 col-md-4" >
-					                           		<b>Recargate</b>
-					                           </h1>
+                    							
                         			    <a class="col-xs-5 col-md-5" href="http://andclau.com/" target="_blank">
 											<img alt="" width="90%" src="/media/imagenes/andclau/andclau-negro-1.png">
 										</a>
