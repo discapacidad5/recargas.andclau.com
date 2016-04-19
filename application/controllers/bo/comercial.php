@@ -5,7 +5,10 @@ class comercial extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
-
+       
+		
+		$this->load->model('bo/recargas/billetera_recargas');
+		$this->load->model('bo/recargas/model_billetera_recargas');
 		$this->load->helper(array('form', 'url'));
 		$this->load->library('form_validation');
 		$this->load->library('security');
@@ -30,13 +33,14 @@ class comercial extends CI_Controller
 		$this->load->model('bo/model_mercancia');
 		$this->load->model('ov/modelo_compras');
 		$this->load->model('ov/modelo_billetera');
-		$this->load->model('model_tipo_red');
+		$this->load->model('model_tipo_red'); 
 		$this->load->model('cemail');
 		
 	}
 
 	function index()
 	{
+		echo "aqui!";
 		if (!$this->tank_auth->is_logged_in()) 
 		{																		// logged in
 			redirect('/auth');
@@ -102,6 +106,33 @@ class comercial extends CI_Controller
 		$this->template->build('website/bo/comercial/billetera');
 	}
 	
+	function billetera_rec_saldo(){
+	
+		$style=$this->modelo_dashboard->get_style(1);
+		$usuario = $this->tank_auth->get_user_id();
+		$id=$_POST['id'];
+	
+    	$this->billetera_recargas->setUsuario($id);
+    	$this->model_billetera_recargas->getSaldos();
+   	    $saldo = $this->billetera_recargas->getSaldo();
+        $disponible = $this->billetera_recargas->getDisponible();
+	
+		$this->template->set("saldo",$saldo);
+		$this->template->set("disponible",$disponible);
+		
+		$this->template->set("usuario",$usuario);
+		//$usuario=$this->general->get_username($id);
+		//$style=$this->general->get_style($id);
+	
+		$this->template->set("id",$id);
+		$this->template->set_theme('desktop');
+		//$this->template->set_layout('website/main');
+		$this->template->set_partial('header', 'website/bo/header');
+		$this->template->set_partial('footer', 'website/bo/footer');
+		$this->template->build('website/bo/comercial/billetera_recarga_saldo');
+	}
+	
+	
 	function add_sub_billetera_afiliado(){
 		
 		$id = $_POST['id'];
@@ -125,6 +156,29 @@ class comercial extends CI_Controller
 		echo $transact ? "Transacción Exitosa" : "Falló la Transacción";
 		//echo $email ? "Email Enviado" : "Falló envio de Email";
 		
+	}
+
+	function add_sub_billetera_afiliadoRec(){
+	   
+		$id = $_POST['id'];
+		$monto = $_POST['cobro'];
+		$tipo = $_POST['tipo'];
+	echo "dentro de la funcion ".$id."|".$tipo."|".$monto;
+		$transact = $this->model_billetera_recargas->add_sub_billeteraRec($tipo,$id,$monto);
+	 
+		/*$data = array(
+				'email' => $this->model_perfil_red->get_email($id),
+				'username' => $this->model_perfil_red->get_username($id),
+				'id_transaccion' => $transact,
+				'tipo_t' => ($tipo=="ADD") ? "Agregado" : "Descontado",
+				'monto_t' => $monto
+		);
+	
+		$email = $this->cemail->send_email(11, $data['email'], $data);*/
+	
+		echo $transact ? "Transacción Exitosa" : "Falló la Transacción";
+		//echo $email ? "Email Enviado" : "Falló envio de Email";
+	
 	}
 	
 	function transacciones_billetera(){
