@@ -1523,9 +1523,9 @@ function index()
 			<td>				<a title='Factura' style='cursor: pointer;' class='txt-color-blue' onclick='factura(".$venta->id_venta.");'>
 				<i class='fa fa-eye fa-3x'></i>
 				</a>
-					<a title='Imprimir' style='cursor: pointer;' class='txt-color-green' onclick='factura(".$venta->id_venta.");'>
+				<!--	<a title='Imprimir' style='cursor: pointer;' class='txt-color-green' onclick='factura(".$venta->id_venta.");'>
 				<i class='fa fa-file-pdf-o fa-3x'></i>
-				</a>
+				</a> -->
 				</td>
 			</tr>";
 					
@@ -1834,12 +1834,12 @@ function index()
 								<a id="imprimir-2" href="reporte_compras_usr_excel?inicio='.$inicio.'&fin='.$fin.'" class="btn btn-primary col-xs-12 col-lg-12 col-md-12 col-sm-12"><i class="fa fa-print"></i>&nbsp;Crear excel</a>
 							</label>
 						</section>
-						<section class="col col-lg-3 col-md-3 col-sm-6 col-xs-12">
+					<!--	<section class="col col-lg-3 col-md-3 col-sm-6 col-xs-12">
 							
 							<label class="input">
 								<a id="imprimir-2" onclick="window.print()" class="btn btn-success col-xs-12 col-lg-12 col-md-12 col-sm-12"><i class="fa fa-print"></i>&nbsp;Imprimir</a>
 							</label>
-						</section>
+						</section> -->
 						
 					</div>
 				</form>
