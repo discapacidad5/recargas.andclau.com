@@ -336,7 +336,98 @@ class billetera3 extends CI_Controller
 	
 	}
 	
-	function response_numero(){	
+	function response_numero(){
+	
+		$this->recarga->setKey(time().rand());
+		$this->recarga->setMd5();
+	
+		$login= $this->recarga->getLogin();
+		$key = $this->recarga->getKey();
+		$md5 = $this->recarga->getMd5();
+	
+		if(!isset($_POST["destination_msisdn"])){return "";}
+	
+		$url = $this->recarga->getUrl().
+		"?login=".$login
+		."&key=".$key
+		."&md5=".$md5
+		."&destination_msisdn=".$_POST["destination_msisdn"]
+		."&currency=USD
+		&destination_currency=USD
+		&action=".$_POST["action"];
+	
+		try {
+			$response = file_get_contents($url);
+		} catch (Exception $e) {
+			return "";
+		}
+	
+		$responses = explode("\n", $response );
+		$values = $this->model_recargas->setResponse($responses);
+	
+		//foreach ($values as $key => $item){
+		//echo $key."=".$item."\n";
+		//}
+	
+		if($values['error_code']!=0){return "";}
+		
+		$salida = $this->getOperators ($values);
+	
+		//$salida = isset($values['product_list']) ? $this->get_productlist ($values) : $this->get_products($values);
+	
+		echo ($values['error_code']==0) ? $salida : "";//  $values['operator']; //$response; $values['error_code'];//
+	
+	}
+	
+
+	private function getOperators($values) {
+		
+		$this->recarga->setKey(time().rand());
+		$this->recarga->setMd5();
+	
+		$login= $this->recarga->getLogin();
+		$key = $this->recarga->getKey();
+		$md5 = $this->recarga->getMd5();
+		
+		$url = $this->recarga->getUrl().
+		"?login=".$login
+		."&key=".$key
+		."&md5=".$md5
+		."&info_type=country"
+		."&content=".$values['countryid']
+		."&action=pricelist";
+		
+		try {
+			$response = file_get_contents($url);
+		} catch (Exception $e) {
+			return "";
+		}
+		
+		$responses = explode("\n", $response );
+		$values = $this->model_recargas->setResponse($responses);
+		
+		$operator_list =  explode(",", $values['operator']);
+		$operator_id =  explode(",", $values['operatorid']);
+		
+		$salida='';
+		$i=0;
+		foreach ($operator_id as $operator)
+		{
+			$img = 'https://fm.transfer-to.com/logo_operator/logo-'.$operator.'-2.png';
+$salida.=
+'<div class="padding-2"><div class=" txt-color-black text-center col-xs-3 col-md-3  margin2">
+		<img src="'.$img.'" height="70em" width="90%" alt="'.$operator_list[$i].'"/>'.			
+			'<input type="radio" value="'.$operator
+			.'|'.$operator_list[$i]
+			.'" id="operator" name="operator" />
+					</div><div>';
+			$i++;
+		}
+		return $salida;
+	}
+
+	
+	function response_operator(){	
 		
 		$this->recarga->setKey(time().rand());
 		$this->recarga->setMd5();
@@ -371,9 +462,9 @@ class billetera3 extends CI_Controller
 		
 		if($values['error_code']!=0){return "";}
 		
-		$salida = isset($values['product_list']) ? $this->get_productlist ($values) : $this->get_products($values);		 
+		//$salida = isset($values['product_list']) ? $this->get_productlist ($values) : $this->get_products($values);		 
 		
-		echo ($values['error_code']==0) ? $salida : "";// $values['error_code'];//$responses;
+		echo ($values['error_code']==0) ? $values['operator'] : "";// $values['error_code'];//$responses;
 		
 	}
 	

@@ -131,8 +131,11 @@
 													<div class="margin_top5"> &nbsp;</div>  
 												</label>
 											</section>
-											<hr/>
+											<div id="operador">
+												
+												</div>
 											<section id="productos">
+												
 												<label class="label"><b>Monto</b></label> <label
 													class="input"> <i class="icon-prepend fa fa-money"></i> <input
 													name="delivered_amount_info" type="number" min="1" step="0.01" class="from-control" readonly required
@@ -217,7 +220,7 @@
 				pageSetUp();
 
 				$("#validar").click(msisdn);	
-				$("#mr_phone_no").change(validarCampos);
+				//$("#mr_phone_no").change(validarCampos);
 				if(monto!=""){$('#foo').show();$('#enviar').attr("disabled", false);};
 				$("#pais").change(getmsisdn);	
 				$("#pais").before(getmsisdn);	
@@ -286,6 +289,39 @@ function getproduct(msg){
 		})
 }
 
+function getOperator(msg){
+	var zip = $("#mr_phone_prefix").val();
+	var tel = $("#mr_phone_no").val(); 
+	numero = zip+""+tel;
+	
+	
+	if(msg){
+		iniciarSpinner();
+		$.ajax({
+			type: "POST",
+			url: "response_operator",
+			data: {
+				destination_msisdn:numero,
+				action:'msisdn_info'
+				}
+		})
+		.done(function( msg2 )
+		{
+			FinalizarSpinner();	
+			if(msg2){
+				$("#operador").append(msg2);	
+				//getproduct(msg);
+			}else{
+				$('#productos').hide();
+				$('#foo').hide();
+			}
+		});//Fin callback bootbox
+	}else{
+		$('#productos').hide();
+		$('#foo').hide();
+	}
+}
+
 function msisdn(evt){
 	var zip = $("#mr_phone_prefix").val();
 	var tel = $("#mr_phone_no").val(); 
@@ -306,7 +342,9 @@ function msisdn(evt){
 		{
 			FinalizarSpinner();	
 			if(msg){
-				getproduct(msg);	
+				$("#operador").html(msg);	
+				//getOperator(msg);
+				//getproduct(msg);	
 			}else{
 				$('#productos').hide();
 				$('#foo').hide();
