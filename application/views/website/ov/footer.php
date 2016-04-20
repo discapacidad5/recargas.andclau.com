@@ -3,8 +3,8 @@
 			<div class="row">
 				<div class="col-xs-8 col-sm-8">
 					<span class="txt-color-white">
-			Copyright © 2016 Networksoft S.A.S Todos los derechos reservados.
-		<a href="http://www.networksoft.com.co/" target="_BLANK">Networksoft S.A.S</a></span>
+			Copyright © 2016 AndClau Soluciones Tecnológicas S.A.S Todos los derechos reservados.
+		<a href="http://www.andclau.com/" target="_BLANK">AndClau.com</a></span>
 				</div>
 				<div class="col-xs-4 col-sm-4">
 					<span class="txt-color-white">

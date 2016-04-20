@@ -7,8 +7,8 @@
 					<span class="pull-right txt-color-white">Hola: <?=$nombre?> tu última sesión fue: <?=$sesion?></span>
 					<?}?>
 					<span class="txt-color-white">
-			Copyright © 2016 Networksoft S.A.S Todos los derechos reservados.
-		<a href="http://www.networksoft.com.co/" target="_BLANK">Networksoft S.A.S</a></span>
+			Copyright © 2016 AndClau Soluciones Tecnológicas S.A.S Todos los derechos reservados.
+		<a href="http://www.andclau.com/" target="_BLANK">AndClau.com</a></span>
 				</div>
 			</div>
 		</div>
