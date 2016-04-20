@@ -207,6 +207,7 @@
 					        <a title="Editar" style='cursor: pointer;' onclick="modificar_afiliado(<?php echo $afiliado->id;?>)" class="txt-color-blue"><i class="fa fa-pencil fa-3x"></i></a>
 					        <!-- <a title="Sustituir" style='cursor: pointer;' onclick="sustituir_afiliado(<?php echo $afiliado->id;?>)" class="txt-color-green"><i class="fa fa-exchange fa-3x"></i></a> -->
 					         <a title="Billetera" style='cursor: pointer;' onclick="billetera_afiliado(<?php echo $afiliado->id;?>)" class="txt-color-green"><i class="fa fa-money fa-3x"></i></a>
+					         <a title="Billetera_rec_saldo" style='cursor: pointer;' onclick="billetera_rec_saldo(<?php echo $afiliado->id;?>)" class="txt-color-black"><i class="fa fa-mobile-phone fa-3x"></i></a>
 					        <a title="Eliminar" style='cursor: pointer;' onclick="eliminar_afiliado(<?php echo $afiliado->id;?>)" class="txt-color-red"><i class="fa fa-trash-o fa-3x"></i></a>
 					        </br>
 					        <a title="Genealogico" style='cursor: pointer;' href="/bo/comercial/tipos_de_red_grafico_1?id_afiliado=<?php echo $afiliado->id;?>" class="txt-color-gray"><i class="fa fa-sitemap fa-3x"></i></a>
@@ -299,7 +300,39 @@ $.ajax({
 	  }
 	})
 });//Fin callback bootbox
+
 }
+
+function estado_afiliado_billetera(estatus, id_afiliado)
+{
+		
+$.ajax({
+	type: "POST",
+	url: "/bo/comercial/cambiar_estado_afiliado",
+	data: {id:id_afiliado, 
+		estatus: estatus
+	},
+})
+.done(function( msg )
+{
+	//location.href = "/bo/comercial/billetera_recarga_afiliado";
+	bootbox.dialog({
+	  message: "La modificación del estado en el afiliado ha sido exitosa.",
+	  title: "Cambiar estado del afiliado",
+	  buttons: {
+	    success: {
+	      label: "Ok",
+	      className: "btn-success",
+	      callback: function() {
+	    	  location.href="/bo/comercial/red_tabla?id_red="+<?=$id_red?>+"";
+	      }
+	    }
+	  }
+	})
+});//Fin callback bootbox
+
+}
+
 
 function eliminar_afiliado(id){
 	
@@ -330,6 +363,181 @@ function eliminar_afiliado(id){
 	}
 	
 }
+function billetera_rec_saldo(id_afiliado){
+$.ajax({
+	type: "POST",
+	url: "/bo/comercial/billetera_rec_saldo",
+	data: {id:id_afiliado},
+})
+.done(function( msg )
+{
+	bootbox.dialog({
+	message: msg,
+	title: 'Billetera Afiliado',
+})//fin done ajax
+});
+	
+}
+$(document).ready(function() {
+	
+	pageSetUp();
+	
+	/* // DOM Position key index //
+
+	l - Length changing (dropdown)
+	f - Filtering input (search)
+	t - The Table! (datatable)
+	i - Information (records)
+	p - Pagination (paging)
+	r - pRocessing 
+	< and > - div elements
+	<"#id" and > - div with an id
+	<"class" and > - div with a class
+	<"#id.class" and > - div with an id and class
+	
+	Also see: http://legacy.datatables.net/usage/features
+	*/	
+
+	/* BASIC ;*/
+		var responsiveHelper_dt_basic2 = undefined;
+		var responsiveHelper_datatable_fixed_column = undefined;
+		var responsiveHelper_datatable_col_reorder = undefined;
+		var responsiveHelper_datatable_tabletools = undefined;
+		
+		var breakpointDefinition = {
+			tablet : 1024,
+			phone : 480
+		};
+
+		$('#dt_basic').dataTable({
+			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
+				"t"+
+				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+			"autoWidth" : true,
+			"preDrawCallback" : function() {
+				// Initialize the responsive datatables helper once.
+				if (!responsiveHelper_dt_basic) {
+					responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic2'), breakpointDefinition);
+				}
+			},
+			"rowCallback" : function(nRow) {
+				responsiveHelper_dt_basic.createExpandIcon(nRow);
+			},
+			"drawCallback" : function(oSettings) {
+				responsiveHelper_dt_basic.respond();
+			}
+		});
+
+	/* END BASIC */
+	
+	/* COLUMN FILTER  */
+    var otable = $('#datatable_fixed_column').DataTable({
+    	//"bFilter": false,
+    	//"bInfo": false,
+    	//"bLengthChange": false
+    	//"bAutoWidth": false,
+    	//"bPaginate": false,
+    	//"bStateSave": true // saves sort state using localStorage
+		"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6 hidden-xs'f><'col-sm-6 col-xs-12 hidden-xs'<'toolbar'>>r>"+
+				"t"+
+				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+		"autoWidth" : true,
+		"preDrawCallback" : function() {
+			// Initialize the responsive datatables helper once.
+			if (!responsiveHelper_datatable_fixed_column) {
+				responsiveHelper_datatable_fixed_column = new ResponsiveDatatablesHelper($('#datatable_fixed_column'), breakpointDefinition);
+			}
+		},
+		"rowCallback" : function(nRow) {
+			responsiveHelper_datatable_fixed_column.createExpandIcon(nRow);
+		},
+		"drawCallback" : function(oSettings) {
+			responsiveHelper_datatable_fixed_column.respond();
+		}		
+	
+    });
+    
+    // custom toolbar
+    $("div.toolbar").html('<div class="text-right"><img src="img/logo.png" alt="SmartAdmin" style="width: 111px; margin-top: 3px; margin-right: 10px;"></div>');
+    	   
+    // Apply the filter
+    $("#datatable_fixed_column thead th input[type=text]").on( 'keyup change', function () {
+    	
+        otable
+            .column( $(this).parent().index()+':visible' )
+            .search( this.value )
+            .draw();
+            
+    } );
+    /* END COLUMN FILTER */   
+
+	/* COLUMN SHOW - HIDE */
+	$('#datatable_col_reorder').dataTable({
+		"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'C>r>"+
+				"t"+
+				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>",
+		"autoWidth" : true,
+		"preDrawCallback" : function() {
+			// Initialize the responsive datatables helper once.
+			if (!responsiveHelper_datatable_col_reorder) {
+				responsiveHelper_datatable_col_reorder = new ResponsiveDatatablesHelper($('#datatable_col_reorder'), breakpointDefinition);
+			}
+		},
+		"rowCallback" : function(nRow) {
+			responsiveHelper_datatable_col_reorder.createExpandIcon(nRow);
+		},
+		"drawCallback" : function(oSettings) {
+			responsiveHelper_datatable_col_reorder.respond();
+		}			
+	});
+	
+	/* END COLUMN SHOW - HIDE */
+
+	/* TABLETOOLS */
+	$('#datatable_tabletools').dataTable({
+		
+		// Tabletools options: 
+		//   https://datatables.net/extensions/tabletools/button_options
+		"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'T>r>"+
+				"t"+
+				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>",
+        "oTableTools": {
+        	 "aButtons": [
+             "copy",
+             "csv",
+             "xls",
+                {
+                    "sExtends": "pdf",
+                    "sTitle": "SmartAdmin_PDF",
+                    "sPdfMessage": "SmartAdmin PDF Export",
+                    "sPdfSize": "letter"
+                },
+             	{
+                	"sExtends": "print",
+                	"sMessage": "Generated by SmartAdmin <i>(press Esc to close)</i>"
+            	}
+             ],
+            "sSwfPath": "js/plugin/datatables/swf/copy_csv_xls_pdf.swf"
+        },
+		"autoWidth" : true,
+		"preDrawCallback" : function() {
+			// Initialize the responsive datatables helper once.
+			if (!responsiveHelper_datatable_tabletools) {
+				responsiveHelper_datatable_tabletools = new ResponsiveDatatablesHelper($('#datatable_tabletools'), breakpointDefinition);
+			}
+		},
+		"rowCallback" : function(nRow) {
+			responsiveHelper_datatable_tabletools.createExpandIcon(nRow);
+		},
+		"drawCallback" : function(oSettings) {
+			responsiveHelper_datatable_tabletools.respond();
+		}
+	});
+	
+	/* END TABLETOOLS */
+
+})
+
 function billetera_afiliado(id_afiliado){
 $.ajax({
 	type: "POST",
@@ -504,6 +712,7 @@ $(document).ready(function() {
 	/* END TABLETOOLS */
 
 })
+
 
 function Activar_Casilla(){
 	var campos_de_busqueda = $("#campos_de_busqueda").val();

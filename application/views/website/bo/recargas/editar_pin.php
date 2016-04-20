@@ -4,7 +4,11 @@
 							<label class="input">
 								<input type="text" class="hide"  value="<?php echo $_POST['id']; ?>" name="id2">
 								<label class="input"> PIN
+<<<<<<< HEAD
+								<input type="text" name="id" required placeholder="id" style="width: 50%;" size="10" class="form-control" value="<?php echo $pin[0]->id; ?>" required>
+=======
 								<input type="number" size="10" pattern="[0-9]{10}" id="id" name="id" required placeholder="id" style="width: 50%;" class="form-control" value="<?php echo $pin[0]->id; ?>" required>
+>>>>>>> 10e48bbb14e40faa84379a908072521fa8db9562
 								<label class="input"> Descripcion
 								<input type="text" name="descripcion"  placeholder="Descripcion" style="width: 50%;" class="form-control" value="<?php echo $pin[0]->descripcion; ?>" required>
 								<label class="input"> Valor

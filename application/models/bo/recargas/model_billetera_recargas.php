@@ -21,6 +21,9 @@ class model_billetera_recargas extends CI_Model
 									from billetera_recargas_canjeo 
 									where id_billetera = b.id and estatus = 'ACT') disponible,
 								(select sum(valor) 
+									from billetera_recargas_canjeo 
+									where id_billetera = b.id) quitado,
+								(select sum(valor) 
 									from billetera_recargas_retiro 
 									where id_billetera = b.id) consumo
 								FROM billetera_recargas b, users u
@@ -30,7 +33,7 @@ class model_billetera_recargas extends CI_Model
 		$q=$q->result();
 		
 		$disponible = $q[0]->disponible - $q[0]->consumo;
-		$saldo = $q[0]->saldo - $q[0]->disponible;
+		$saldo = $q[0]->saldo - $q[0]->quitado;
 		
 		$Saldos = array(
 				#'billetera' => $q[0]->saldo,
@@ -65,6 +68,18 @@ class model_billetera_recargas extends CI_Model
 		return $this->db->insert_id();
 	}
 	
+	function agregarSaldo_BilleteraRec($id,$monto){
+		$data = array(
+				'id_billetera' => $this->getId_($id),
+				'valor' => number_format(($monto),2),
+				'tipo' => 'TRANSFER'
+		);
+	
+		$this->db->insert("billetera_recargas_saldo",$data);
+		return $this->db->insert_id();
+	}
+	
+	
 	function agregarCanjeo(){
 		$this->getId();
 		$data = array(
@@ -75,6 +90,26 @@ class model_billetera_recargas extends CI_Model
 	
 		$this->db->insert("billetera_recargas_canjeo",$data);
 		return $this->db->insert_id();
+	}
+	
+	function agregarCanjeo_BilleteraRec($id,$monto){
+		$data = array(
+				'id_billetera' => $this->getId_($id),
+				'valor' => number_format(($monto),2),
+				'estatus' => 'DES'
+		);
+	
+		$this->db->insert("billetera_recargas_canjeo",$data);
+		return $this->db->insert_id();
+	}
+	
+	function add_sub_billeteraRec($tipo,$id,$monto){
+	  if ($tipo == "ADD") {
+			$id_transac = $this->agregarSaldo_BilleteraRec ( $id, $monto );
+		} else {
+			$id_transac = $this->agregarCanjeo_BilleteraRec ( $id, $monto );
+		}
+	return $id_transac;
 	}
 	
 	function agregarRetiro(){
@@ -95,5 +130,12 @@ class model_billetera_recargas extends CI_Model
 		$q=$q->result();
 		$this->billetera_recargas->setId($q[0]->id);
 	}
+		
+	function getId_($id){
+		$q=$this->db->query("SELECT id from billetera_recargas where id_user = ".$id);
+		$q=$q->result();
+		return $q[0]->id;
+	}
+		
 	
 }
