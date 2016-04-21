@@ -3,15 +3,15 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
 						<h1 class="page-title txt-color-blueDark">
-						<a class="backHome" href="/bo"><i class="fa fa-home"></i> Menu</a>
-							<span> >
-								<a href="/bo/comercial">Comercial</a> 
+							
+							<!-- PAGE HEADER -->
+								<a class="backHome" href="/bo"><i class="fa fa-home"></i> Menu</a>
+							<span>>
+								<a href="#">Comercial</a> > 
+								<a href="/bo/comercial/red">Red de Afiliacion</a> >
+								<a href="/bo/recargas/">Recargas</a> > Historial
+								
 							</span>
-							<span>> 
-								<a href="/bo/comercial/red">Red de Afiliacion</a>
-							</span>	
-							<span>> Recargas
-							</span>	
 						</h1>
 					</div>
 				</div>
@@ -37,32 +37,35 @@
                 <fieldset>
                   <div class="contenidoBotones">
 										<div class="row">
-											<div class="col-sm-2 link">
+											<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 link">
 											</div>
-											<div class="col-sm-8 link">
-												<div class="col-sm-3 link">
-													<a href="/bo/recargas/pines/">
-														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>">
-															<i class="fa fa-th fa-3x"></i>
-															<h1>Pines <br>&nbsp</h1>
+											<div class="col-xs-11 col-sm-12 col-md-6 col-lg-8 link">
+												<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 link">
+													<a href="/bo/recargas/listar_historialRecargaGeneral/">
+														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>;">
+															<i class="fa fa-edit fa-3x"></i>
+															<h1>Recargas</h1>
+															<br>
 														</div>
 													</a>
 												</div>
-												<div class="col-sm-3 link">
-													<a href="/bo/recargas/historialRec/">
-														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>">
+												<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 link">
+													<a href="/bo/recargas/listar_pines/">
+														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>;">
 															<i class="fa fa-list-alt fa-3x"></i>
-															<h1>Historial<br>&nbsp</h1>
+															<h1>Transferencias</h1>
+															<br>
 														</div>
 													</a>
 												</div>
-												<div class="col-sm-3 link">
-													<a href="/bo/recargas/#">
-														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>">
-															<i class="fa fa-money fa-3x"></i>
-															<h1>Billetera<br>&nbsp</h1>
+												<!-- <div class="col-xs-12 col-sm-5 col-md-5 col-lg-3 link">	
+													<a href="/bo/capacidadRed/index">
+														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>;  padding-bottom: 19%;">
+															<i class="fa fa-sort-numeric-asc fa-3x"></i>
+															<h1>Frontalidad / Profundidad</h1>
 														</div>
-													</a>											
+													</a>
+												</div> -->
 											</div>
 										 </div>
 									</div>
@@ -100,4 +103,4 @@
 	text-decoration: none !important;
 }
 </style>
-
+			

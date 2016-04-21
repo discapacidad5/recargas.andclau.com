@@ -18,6 +18,8 @@ class recargas extends CI_Controller
 		$this->load->model('bo/general');
 		$this->load->model('bo/recargas/pin');
 		$this->load->model('bo/recargas/model_pin');
+		$this->load->model('bo/recargas/model_recargas');
+		$this->load->model('bo/recargas/factura_recargas');
 	}
 	
 	function index(){
@@ -195,6 +197,61 @@ $this->pin->setValor($_POST['valor']);
 				
 		}
 		echo $this->model_pin->eliminar_pin() ? "Pin eliminado Exitosamente" : "Pin no pudo ser eliminado";
+	}
+	
+	function historialRec(){
+		if (!$this->tank_auth->is_logged_in())
+		{																		// logged in
+			redirect('/auth');
+		}
+	
+		$id=$this->tank_auth->get_user_id();
+		$usuario=$this->general->get_username($id);
+	
+		if($usuario[0]->id_tipo_usuario!=1)
+		{
+			redirect('/auth/logout');
+		}
+	
+		$style=$this->modelo_dashboard->get_style($id);
+	
+		$this->template->set("style",$style);
+	
+		$this->template->set_theme('desktop');
+		$this->template->set_layout('website/main');
+		$this->template->set_partial('header', 'website/bo/header');
+		$this->template->set_partial('footer', 'website/bo/footer');
+		$this->template->build('website/bo/recargas/historial_recargas_transfer');
+	
+	}
+	
+	
+	
+	function listar_historialRecargaGeneral()
+	{
+		if (!$this->tank_auth->is_logged_in())
+		{																		// logged in
+			redirect('/auth');
+		}
+		$id              = $this->tank_auth->get_user_id();
+		$style=$this->modelo_dashboard->get_style($id);
+	
+		$this->template->set("style",$style);
+	
+		$this->model_recargas->listar_facturaRecargasGeneral();
+		$factura_recG = $this->factura_recargas->getFactura_recG();
+	
+		#echo var_dump($pin);exit();
+	
+		$this->template->set("facturas_recG",$factura_recG);
+	
+	
+	
+		$this->template->set_theme('desktop');
+		$this->template->set_layout('website/main');
+		$this->template->set_partial('header', 'website/bo/header');
+		$this->template->set_partial('footer', 'website/bo/footer');
+		$this->template->build('website/bo/recargas/historialGeneralR');
 	}
 	
 	
