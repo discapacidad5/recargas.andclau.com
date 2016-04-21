@@ -121,19 +121,30 @@
 															class="from-control mr_phone_no margin_bottom0 pagination-left"
 															min="1" value="" type="number" required>
 													</div> 
-													<div class="margin_top5"> &nbsp;</div> 
-													<div class="margin_top5 ">  
+													  <div class="margin_top5"> &nbsp;</div> 
+													  <div class="margin_top5 ">  
 														<div class="col col-6" id="validacion"></div>
-														<div class="col col-6">
-															<input type="button" class="btn btn-primary" value="Elegir Monto" id="validar"/>
+														<div class="col-md-6">
+															<input type="button" class="btn btn-primary" value="Comprobar" id="comprobar"/>
 														</div>
 													</div>
-													<div class="margin_top5"> &nbsp;</div>  
+													<div class="margin_top5"> &nbsp;</div> 
 												</label>
 											</section>
-											<div id="operador">
+											<section id="operator_div">
+											<div class="margin_top5"> &nbsp;</div> 
+												<div id="option_operator">
 												
 												</div>
+												<div class="margin_top5"> &nbsp;</div>
+												<div class="margin_top5 ">  
+														
+														<div class="col-md-12">
+															<input type="button" class="btn btn-primary pull-right" value="Elegir Monto" id="elegir"/>
+														</div>
+												</div>
+												<div class="margin_top5"> &nbsp;</div>
+											</section>
 											<section id="productos">
 												
 												<label class="label"><b>Monto</b></label> <label
@@ -202,7 +213,7 @@
 
 <script type="text/javascript">
 			// PAGE RELATED SCRIPTS
-
+//$("#operator").imagepicker();
 			/*
 			 * Run all morris chart on this page
 			 */
@@ -212,25 +223,43 @@
 			var neto ="";
 			var pago="";
 			var saldo=""; 
+			var img="";
+			var operator="";
 			var r=0;
+			var temp="";
 			
 			$(document).ready(function() {
 				
 				// DO NOT REMOVE : GLOBAL FUNCTIONS!
 				pageSetUp();
 
-				$("#validar").click(msisdn);	
-				//$("#mr_phone_no").change(validarCampos);
-				if(monto!=""){$('#foo').show();$('#enviar').attr("disabled", false);};
 				$("#pais").change(getmsisdn);	
-				$("#pais").before(getmsisdn);	
+				$("#pais").before(getmsisdn);
+				
+				$("#mr_phone_no").change(validarCampos);//msisdn
+				$("#comprobar").click(validarCampos);	
+				
+				$("#operator").select(operator_img);
+				$("#elegir").click(validarCampos);	
+				
+				if(monto!=""&&operator!=""){$('#foo').show();$('#enviar').attr("disabled", false);};
+					
+				$('#operator_div').hide();
 				$('#productos').hide();
 				$('#foo').hide();
+				
 				$('#enviar').attr("disabled", true);
 			});
 
 			//setup_flots();
 			/* end flot charts */
+			
+function operator_img(){
+	operator = $("#operator option:selected").val().split("|");	
+	img = operator[2];
+	//alert("hola");
+	$("#ope_img").attr("src", img);			
+}
 			
 function selector(html,param){
 
@@ -290,10 +319,10 @@ function getproduct(msg){
 }
 
 function getOperator(msg){
+	
 	var zip = $("#mr_phone_prefix").val();
 	var tel = $("#mr_phone_no").val(); 
-	numero = zip+""+tel;
-	
+	numero = zip+""+tel;	
 	
 	if(msg){
 		iniciarSpinner();
@@ -305,12 +334,11 @@ function getOperator(msg){
 				action:'msisdn_info'
 				}
 		})
-		.done(function( msg2 )
+		.done(function( msg )
 		{
 			FinalizarSpinner();	
-			if(msg2){
-				$("#operador").append(msg2);	
-				//getproduct(msg);
+			if(msg){	
+				getproduct(msg);
 			}else{
 				$('#productos').hide();
 				$('#foo').hide();
@@ -342,7 +370,8 @@ function msisdn(evt){
 		{
 			FinalizarSpinner();	
 			if(msg){
-				$("#operador").html(msg);	
+				$("#option_operator").html(msg);	
+				$('#operator_div').show();	
 				//getOperator(msg);
 				//getproduct(msg);	
 			}else{
@@ -376,12 +405,14 @@ function getmsisdn(evt){
 							
 			}else{
 				$('#numero_telefono').hide();
+				$('#operator_div').hide();
 			}
 			validarCampos();
 		});//Fin callback bootbox
 		FinalizarSpinner();
 	}else{
 		$('#numero_telefono').hide();
+		$('#operator_div').hide();
 	}
 }
 
@@ -415,7 +446,7 @@ function cobrar() {
 			label: "Aceptar",
 			className: "btn-success",
 			callback: function() {
-					
+					alert(operator[0]);
 
 					$.ajax({
 						type: "POST",
@@ -425,7 +456,8 @@ function cobrar() {
 							destination_msisdn:numero,
 							neto:neto,
 							pago:pago,
-							saldo:saldo
+							saldo:saldo,
+							operator:operator
 							} 
 					})
 					.done(function( msg2 )
@@ -466,6 +498,8 @@ function validarCampos(){
 	var zip = $("#mr_phone_prefix").val();
 	var tel = $("#mr_phone_no").val();
 	numero = zip+""+tel;
+	
+	
 	iniciarSpinner();
 	$.ajax({
 		type: "POST",
@@ -480,20 +514,42 @@ function validarCampos(){
 		if(r==0){
 			FinalizarSpinner();
 		}	
-		$('#productos').hide();
-		$('#foo').hide();
-		if(!tel){		
+
+		if(temp!==numero){
+			temp=numero;
+			$('#operator_div').hide();
+			$('#productos').hide();
+			$('#foo').hide();
+			operator="";monto="";
+		}
+		
+		if(!tel){			
+			$('#operator_div').hide();
+			$('#productos').hide();
+			$('#foo').hide();		
 			$("#msg_tel").remove();
-			$('#validacion').append("<div id='msg_tel' >Digite Número de telefono</div>");
+			$('#validacion').append("<div id='msg_tel' >Digite Número de telefono</div>");			
+			FinalizarSpinner();
 			return false;
 		}else if(!msg){	
+			$('#operator_div').hide();
+			$('#productos').hide();
+			$('#foo').hide();
 			$("#msg_tel").remove();
-			$('#validacion').append("<div id='msg_tel' class='txt-color-red'>Número de telefono no valido</div>");
+			$('#validacion').append("<div id='msg_tel' class='txt-color-red'>Número de telefono no valido</div>");			
+			FinalizarSpinner();
 			return false;			
 		}else{
-			if(!monto){
-				getproduct(msg);				
-			}			
+			if(!operator){
+				$("#option_operator").html(msg);	
+				$('#operator_div').show();
+				operator = $("#operator option:selected").val().split("|");		
+			}
+						
+			if(!monto&&operator){
+				getOperator(msg);				
+			}	
+					
 			$("#msg_tel").remove();
 			$('#validacion').append("<div id='msg_tel' class='txt-color-green'>Número de telefono Correcto</div>");
 			
@@ -507,10 +563,7 @@ function validarCampos(){
 	
 	<style>
 	
-	#validar{
-		color: #fff;
-		background: #3276b1;
-	}
+	
 	
 	</style>
 	
