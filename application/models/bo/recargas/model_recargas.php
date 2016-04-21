@@ -77,4 +77,26 @@ class model_recargas extends CI_Model
 		return $values['transactionid'];
 	}
 	
+	
+	function listar_facturaRecargas($id)
+	{
+		$q=$this->db->query('select  transactionid,msisdn,destination_msisdn,Country,
+                             countryid,operator,operatorid,
+                             originating_currency,destination_currency,wholesale_price,
+                            retail_price,skuid from erpMatamala.factura_recarga where id_user='.$id.';');
+		$result=$q->result();
+		$this->factura_recargas->setFactura_rec($result);
+	}
+	
+	function listar_facturaRecargasGeneral()
+	{
+		$q=$this->db->query('select   user_profiles.nombre,transactionid,msisdn,destination_msisdn,Country,
+countryid,operator,operatorid,
+originating_currency,destination_currency,wholesale_price,
+retail_price,skuid from erpMatamala.factura_recarga,erpMatamala.user_profiles where 
+factura_recarga.id_user=user_profiles.user_id; ');
+		$result=$q->result();
+		$this->factura_recargas->setFactura_recG($result);
+	}
+	
 }

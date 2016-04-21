@@ -33,45 +33,25 @@
 	<div class="well">
 		<fieldset>
 			<legend>Menú Recargas</legend>
-
+           <div aling="center">
 			<div class="col-lg-2 col-sm-4 col-md-4 col-xs-12"></div>
-			<div class="col-lg-2 col-sm-4 col-md-4 col-xs-12">
-				<a href="<?php echo $disponible>0 ? "/ov/billetera3/billeteraMenugsm" : "/ov/billetera3/#" ?>">
+			<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 link"">
+				<a href="<?php echo $disponible>0 ? "/ov/billetera3/gsm" : "/ov/billetera3/#" ?>">
 					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
 						<i class="fa fa-mobile-phone fa-3x"></i>
-						<h5>Recargas GSM</h5>
+						<h5>Nueva Recarga</h5>
 					</div>
 				</a>
 			</div>
-			<div class="col-lg-2 col-sm-4 col-md-4 col-xs-12">
-				<a href="/ov/billetera3/#">
+			<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 link">
+				<a href="/ov/billetera3/listar_historialRecarga">
 					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
-						<i class="fa fa-rss fa-3x"></i>
-						<h5>Recargar VOIP</h5>
+						<i class="fa fa-list-alt fa-3x"></i>
+						<h5>Historial Recarga</h5>
 					</div>
 				</a>
 			</div>
-			<div class="col-lg-2 col-sm-4 col-md-4 col-xs-12">
-				<a href="/ov/billetera3/#">
-					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
-						<i class="fa fa-laptop fa-2x"></i><i class="fa fa-desktop fa-3x"></i><i
-							class="fa fa-tablet fa-2x"></i>
-						<h5>Recargas Multimedia</h5>
-					</div>
-				</a>
 			</div>
-
-			<div class="col-lg-2 col-sm-4 col-md-4 col-xs-12">
-				<a href="/ov/billetera3/#">
-					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
-						<i class="fa fa-file-text-o fa-3x"></i><i
-							class="fa fa-refresh fa-3x"></i><i
-							class="fa  fa-file-text-o fa-3x"></i>
-						<h5>TRANSFER</h5>
-					</div>
-				</a>
-			</div>
-
 		</fieldset>
 	</div>
 </div>

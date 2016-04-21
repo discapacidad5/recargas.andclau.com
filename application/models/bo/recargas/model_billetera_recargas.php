@@ -53,7 +53,7 @@ class model_billetera_recargas extends CI_Model
 		);
 		
 		$this->db->insert("billetera_recargas_saldo",$data);
-		return $this->db->insert_id();
+		return true;
 	}
 	
 	function agregarSaldo(){
@@ -65,7 +65,7 @@ class model_billetera_recargas extends CI_Model
 		);
 	
 		$this->db->insert("billetera_recargas_saldo",$data);
-		return $this->db->insert_id();
+		return true;
 	}
 	
 	function agregarSaldo_BilleteraRec($id,$monto){
@@ -76,7 +76,7 @@ class model_billetera_recargas extends CI_Model
 		);
 	
 		$this->db->insert("billetera_recargas_saldo",$data);
-		return $this->db->insert_id();
+		return true;
 	}
 	
 	
@@ -89,7 +89,7 @@ class model_billetera_recargas extends CI_Model
 		);
 	
 		$this->db->insert("billetera_recargas_canjeo",$data);
-		return $this->db->insert_id();
+		return true;
 	}
 	
 	function agregarCanjeo_BilleteraRec($id,$monto){
@@ -100,7 +100,7 @@ class model_billetera_recargas extends CI_Model
 		);
 	
 		$this->db->insert("billetera_recargas_canjeo",$data);
-		return $this->db->insert_id();
+		return true;
 	}
 	
 	function add_sub_billeteraRec($tipo,$id,$monto){
@@ -122,7 +122,7 @@ class model_billetera_recargas extends CI_Model
 		);
 	
 		$this->db->insert("billetera_recargas_retiro",$data);
-		return $this->db->insert_id();
+		return true;
 	}
 	
 	function getId(){

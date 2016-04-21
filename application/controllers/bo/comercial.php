@@ -40,7 +40,7 @@ class comercial extends CI_Controller
 
 	function index()
 	{
-		echo "aqui!";
+	//	echo "aqui!";
 		if (!$this->tank_auth->is_logged_in()) 
 		{																		// logged in
 			redirect('/auth');
@@ -163,7 +163,7 @@ class comercial extends CI_Controller
 		$id = $_POST['id'];
 		$monto = $_POST['cobro'];
 		$tipo = $_POST['tipo'];
-	echo "dentro de la funcion ".$id."|".$tipo."|".$monto;
+	//echo "dentro de la funcion ".$id."|".$tipo."|".$monto;
 		$transact = $this->model_billetera_recargas->add_sub_billeteraRec($tipo,$id,$monto);
 	 
 		/*$data = array(
@@ -180,6 +180,8 @@ class comercial extends CI_Controller
 		//echo $email ? "Email Enviado" : "Falló envio de Email";
 	
 	}
+	
+	
 	
 	function transacciones_billetera(){
 		
