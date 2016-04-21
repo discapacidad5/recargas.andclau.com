@@ -477,7 +477,7 @@ function cobrar() {
 								className: "btn-success",
 								callback: function() {
 										FinalizarSpinner();
-										location.href='/ov/billetera3/';
+										location.href='/ov/billetera3/listar_historialRecarga';
 										}
 									}
 								}
