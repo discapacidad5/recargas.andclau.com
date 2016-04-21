@@ -258,7 +258,10 @@ function operator_img(){
 	operator = $("#operator option:selected").val().split("|");	
 	img = operator[2];
 	//alert("hola");
-	$("#ope_img").attr("src", img);			
+	$("#ope_img").attr("src", img);
+	monto="";
+	$('#productos').hide();
+	$('#foo').hide();
 }
 			
 function selector(html,param){
@@ -331,7 +334,8 @@ function getOperator(msg){
 			url: "response_operator",
 			data: {
 				destination_msisdn:numero,
-				action:'msisdn_info'
+				action:'msisdn_info',
+				operator:operator
 				}
 		})
 		.done(function( msg )
@@ -340,11 +344,12 @@ function getOperator(msg){
 			if(msg){	
 				getproduct(msg);
 			}else{
+				alert('Operador no permitido para este Número');
 				$('#productos').hide();
 				$('#foo').hide();
 			}
 		});//Fin callback bootbox
-	}else{
+	}else{		
 		$('#productos').hide();
 		$('#foo').hide();
 	}
@@ -446,11 +451,11 @@ function cobrar() {
 			label: "Aceptar",
 			className: "btn-success",
 			callback: function() {
-					alert(operator[0]);
+					//alert(operator[0]);
 
 					$.ajax({
 						type: "POST",
-						url: "/ov/billetera3/recargar_gsm",
+						url: "/ov/billetera3/testRecarga",
 						data: {
 							sku:monto,
 							destination_msisdn:numero,
@@ -462,21 +467,24 @@ function cobrar() {
 					})
 					.done(function( msg2 )
 					{
-						//iniciarSpinner();
-						bootbox.dialog({
-						message: msg2,
-						title: 'ATENCION!!!',
-						buttons: {
-							success: {
-							label: "Aceptar",
-							className: "btn-success",
-							callback: function() {
-								FinalizarSpinner();
-								location.href='/ov/billetera3/';
+						if(msg2){//iniciarSpinner();
+							bootbox.dialog({
+							message: msg2,
+							title: 'ATENCION!!!',
+							buttons: {
+								success: {
+								label: "Aceptar",
+								className: "btn-success",
+								callback: function() {
+										FinalizarSpinner();
+										location.href='/ov/billetera3/';
+										}
+									}
 								}
-							}
-						}
-						})//fin done ajax
+							})//fin done ajax
+						}else{
+							alert("Los datos de la operación estan incompletos o erroneos");
+						}						
 					});//Fin callback bootbox
 
 				}

@@ -254,6 +254,62 @@ class billetera3 extends CI_Controller
 
 	}
 	
+	function testRecarga()
+	{
+	
+		//$id = $this->tank_auth->get_user_id();
+	
+		$this->recarga->setKey(time().rand());
+		$this->recarga->setMd5();
+	
+		$login= $this->recarga->getLogin();
+		$key = $this->recarga->getKey();
+		$md5 = $this->recarga->getMd5();
+	
+		if(!isset($_POST["destination_msisdn"])){return "No digitó numero!";}
+	
+		$sku = $_POST["sku"];
+		$operator = $_POST["operator"];
+		$action = "simulation";
+	
+		$url = $this->recarga->getUrl().
+		"?login=".$login
+		."&key=".$key
+		."&md5=".$md5
+		."&destination_msisdn=".$_POST["destination_msisdn"]
+		."&operatorid=".$operator[0]
+		."&currency=USD"
+		."&destination_currency=USD"
+		."&skuid=".intval($sku[0])
+		."&product=".$sku[1]
+		."&delivered_amount_info=".$sku[1]
+		."&retail_price=".$sku[2]
+		."&wholesale_price=".$sku[3]
+		."&msisdn=AndClau_ST"
+		."&action=".$action;
+	
+						
+		try {
+			$response = file_get_contents ( $url );
+		} catch ( Exception $e ) {
+			return "";
+		}
+		
+		$responses = explode ( "\n", $response );
+		$values = $this->model_recargas->setResponse ( $responses );
+		
+		// foreach ($values as $key => $item){
+		// echo $key."=".$item."\n";
+		// }exit();
+		
+		echo  ($values['error_code']==0 ) ? $this->recargar_gsm() : ""; //$values ['error_code'];$response;
+	
+		//echo $sku[0]."|".$sku[1]."|".$response;//"dentro de recargar_gsm";
+	
+		// $values['error_code'];//$responses;	
+	
+	}
+	
 	function recargar_gsm() 
 	{
 		
@@ -306,9 +362,9 @@ class billetera3 extends CI_Controller
 			$responses = explode("\n", $response );
 			$values = $this->model_recargas->setResponse($responses);	
 			
-			foreach ($values as $key => $item){
-				echo $key."=".$item."\n";
-			}exit();			
+			//foreach ($values as $key => $item){
+				//echo $key."=".$item."\n";
+			//}exit();			
 			
 			$transaccion = ($values['error_code']==0) 
 			? $this->model_recargas->insertar_gsm($values) : $values['transactionid'];
@@ -319,15 +375,14 @@ class billetera3 extends CI_Controller
 			$this->model_billetera_recargas->agregarRetiro();
 			
 			
-			//echo ($values['error_code']==0 ) ? "Transaccion Exitosa" : "Transacción No pudo realizarse";
+			return ($values['error_code']==0 ) ? "Transaccion Exitosa" : "Transacción No pudo realizarse";
 		}else {
-			//echo "ERROR <br>No hay saldo para realizar la Recarga.";
+			return "ERROR <br>No hay saldo para realizar la Recarga.";
 		}
 		
 		//echo $sku[0]."|".$sku[1]."|".$response;//"dentro de recargar_gsm";
 		
 		// $values['error_code'];//$responses;
-		
 		
 	}
 	
@@ -452,10 +507,13 @@ $salida.= ($operator == $selected)
 		
 		if(!isset($_POST["destination_msisdn"])){return "";}
 		
+		$operator = $_POST["operator"];
+		
 		$url = $this->recarga->getUrl().
 		"?login=".$login
 		."&key=".$key
 		."&md5=".$md5
+		."&operatorid=".$operator[0]
 		."&destination_msisdn=".$_POST["destination_msisdn"]		
 		."&currency=USD
 		&destination_currency=USD
