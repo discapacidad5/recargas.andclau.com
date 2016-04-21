@@ -338,13 +338,16 @@ class billetera3 extends CI_Controller
 		if(!isset($_POST["destination_msisdn"])){return "No digitó numero!";}
 		
 		$sku = $_POST["sku"];
+		$operator = $_POST["operator"];
 		$action = "simulation";//"topup";
 		
 		$url = $this->recarga->getUrl().
 		"?login=".$login
 		."&key=".$key
 		."&md5=".$md5
-		."&destination_msisdn=".$_POST["destination_msisdn"]		
+		."&destination_msisdn=".$_POST["destination_msisdn"]	
+		."&operatorid=".$operator[0]
+		//."&operator=".$operator[1]
 		."&currency=USD"
 		."&destination_currency=USD"
 		."&skuid=".intval($sku[0])		
@@ -371,9 +374,9 @@ class billetera3 extends CI_Controller
 			$responses = explode("\n", $response );
 			$values = $this->model_recargas->setResponse($responses);	
 			
-			//foreach ($values as $key => $item){
-				//echo $key."=".$item."\n";
-			//}exit();			
+			foreach ($values as $key => $item){
+				echo $key."=".$item."\n";
+			}exit();			
 			
 			$transaccion = ($values['error_code']==0) 
 			? $this->model_recargas->insertar_gsm($values) : $values['transactionid'];
@@ -384,9 +387,9 @@ class billetera3 extends CI_Controller
 			$this->model_billetera_recargas->agregarRetiro();
 			
 			
-			echo ($values['error_code']==0 ) ? "Transaccion Exitosa" : "Transacción No pudo realizarse";
+			//echo ($values['error_code']==0 ) ? "Transaccion Exitosa" : "Transacción No pudo realizarse";
 		}else {
-			echo "ERROR <br>No hay saldo para realizar la Recarga.";
+			//echo "ERROR <br>No hay saldo para realizar la Recarga.";
 		}
 		
 		//echo $sku[0]."|".$sku[1]."|".$response;//"dentro de recargar_gsm";
@@ -404,8 +407,110 @@ class billetera3 extends CI_Controller
 	
 	}
 	
-	function response_numero(){	
+	function response_numero(){
+	
+		$this->recarga->setKey(time().rand());
+		$this->recarga->setMd5();
+	
+		$login= $this->recarga->getLogin();
+		$key = $this->recarga->getKey();
+		$md5 = $this->recarga->getMd5();
+	
+		if(!isset($_POST["destination_msisdn"])){return "";}
+	
+		$url = $this->recarga->getUrl().
+		"?login=".$login
+		."&key=".$key
+		."&md5=".$md5
+		."&destination_msisdn=".$_POST["destination_msisdn"]
+		."&currency=USD
+		&destination_currency=USD
+		&action=".$_POST["action"];
+	
+		try {
+			$response = file_get_contents($url);
+		} catch (Exception $e) {
+			return "";
+		}
+	
+		$responses = explode("\n", $response );
+		$values = $this->model_recargas->setResponse($responses);
+	
+		//foreach ($values as $key => $item){
+		//echo $key."=".$item."\n";
+		//}
+	
+		if($values['error_code']!=0){return "";}
 		
+		$salida = $this->getOperators ($values);
+	
+		//$salida = isset($values['product_list']) ? $this->get_productlist ($values) : $this->get_products($values);
+	
+		echo ($values['error_code']==0) ? $salida : "";//  $values['operator']; //$response; $values['error_code'];//
+	
+	}
+	
+
+	private function getOperators($values) {
+		
+		$selected = intval($values['operatorid']);
+		
+		$this->recarga->setKey(time().rand());
+		$this->recarga->setMd5();
+	
+		$login= $this->recarga->getLogin();
+		$key = $this->recarga->getKey();
+		$md5 = $this->recarga->getMd5();
+		
+		$url = $this->recarga->getUrl().
+		"?login=".$login
+		."&key=".$key
+		."&md5=".$md5
+		."&info_type=country"
+		."&content=".$values['countryid']
+		."&action=pricelist";
+		
+		try {
+			$response = file_get_contents($url);
+		} catch (Exception $e) {
+			return "";
+		}
+		
+		$responses = explode("\n", $response );
+		$values = $this->model_recargas->setResponse($responses);
+		
+		$operator_list =  explode(",", $values['operator']);
+		$operator_id =  explode(",", $values['operatorid']);
+		
+		
+		$salida='<div title="" class="padding-2"><div class=" txt-color-black text-center col-xs-3 col-md-3  margin2">
+		<img id="ope_img" src="https://fm.transfer-to.com/logo_operator/logo-'.$selected.'-2.png" height="70em" width="90%" alt=""/>
+					</div>';
+		$salida.='<label class="col-md-9 select"><b>Operador</b> 
+				<select style="width: 100%" onchange="operator_img()" id="operator" required	name="operator">';//'';
+		$i=0;
+		foreach ($operator_id as $operator)
+		{
+			$img = 'https://fm.transfer-to.com/logo_operator/logo-'.$operator.'-2.png';
+			
+$salida.= ($operator == $selected)
+? '<option selected value="'.$operator.'|'.$operator_list[$i].'|'.$img.'">'.$operator_list[$i].'</option>'
+: '<option value="'.$operator.'|'.$operator_list[$i].'|'.$img.'">'.$operator_list[$i].'</option>';
+/*'<div title="'.$operator_list[$i].'" class="padding-2"><div class=" txt-color-black text-center col-xs-3 col-md-3  margin2">
+		<img src="'.$img.'" height="70em" width="90%" alt="'.$operator_list[$i].'"/>'.			
+			'<input type="radio" value="'.$operator
+			.'|'.$operator_list[$i]
+			.'" id="operator" name="operator" />
+					</div><div>';*/
+			$i++;
+		}
+		$salida.="</select></label><div>";
+		return $salida;
+	}
+
+	
+	function response_operator(){	
+		//echo "aqui!";
 		$this->recarga->setKey(time().rand());
 		$this->recarga->setMd5();
 		
@@ -435,13 +540,13 @@ class billetera3 extends CI_Controller
 		
 		//foreach ($values as $key => $item){
 			//echo $key."=".$item."\n";
-		//}
+		//}exit();
 		
 		if($values['error_code']!=0){return "";}
 		
 		$salida = isset($values['product_list']) ? $this->get_productlist ($values) : $this->get_products($values);		 
 		
-		echo ($values['error_code']==0) ? $salida : "";// $values['error_code'];//$responses;
+		echo ($values['error_code']==0) ? $salida : "";//$values['operator'] $values['error_code'];//$responses;
 		
 	}
 	
