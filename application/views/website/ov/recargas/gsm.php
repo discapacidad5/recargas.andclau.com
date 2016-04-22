@@ -75,7 +75,7 @@
 										<fieldset><?php // echo $api['url'];?>
 
 												<section class="col-xs-12 col-md-6">
-													<label class="label "><b>Saldo Disponible</b></label> 
+													<label class="label "><b>Saldo Disponible USD</b></label> 
 													<label
 														class="input input state-success"> <input type="text"
 														name="saldo" class="from-control" id="saldo"
@@ -84,10 +84,10 @@
 													</label>
 												</section>
 												<section class="col-xs-12 col-md-6">
-													<label class="label"><b>Saldo Final</b></label> 
+													<label class="label"><b>Saldo Final USD</b></label> 
 													<label
 														class="input state-disabled state-error"> <input
-														type="number" disabled="disabled" name="neto" id="neto"
+														type="text" disabled="disabled" name="neto" id="neto"
 														value="<?php echo number_format($disponible,2)  ?>"
 														class="from-control" readonly />
 													</label>
@@ -149,7 +149,7 @@
 												
 												<label class="label"><b>Monto</b></label> <label
 													class="input"> <i class="icon-prepend fa fa-money"></i> <input
-													name="delivered_amount_info" type="number" min="1" step="0.01" class="from-control" readonly required
+													name="delivered_amount_info" type="text" min="1" step="0.01" class="from-control" readonly required
 													id="cobro" />
 												</label>
 											</section>
@@ -258,7 +258,10 @@ function operator_img(){
 	operator = $("#operator option:selected").val().split("|");	
 	img = operator[2];
 	//alert("hola");
-	$("#ope_img").attr("src", img);			
+	$("#ope_img").attr("src", img);
+	monto="";
+	$('#productos').hide();
+	$('#foo').hide();
 }
 			
 function selector(html,param){
@@ -273,8 +276,7 @@ function selector(html,param){
 }
 			
 function CalcularSaldo(){
-				saldo = $("#saldo").val();
-				pago = $("#cobro").val(); 
+				saldo = <?=$disponible?>;
 				neto = saldo-pago;
 				$("#neto").val(neto);
 				var tel = $("#mr_phone_no").val();
@@ -297,7 +299,7 @@ function getproduct(msg){
 						if($("#monto:checked")){
 							monto = $("#monto:checked").val().split("|");
 							pago = monto[1];
-							$("#cobro").val(pago);								
+							$("#cobro").val(monto[5]+" "+monto[6]);								
 							$('#productos').show();	
 							$('#foo').show();
 							CalcularSaldo();
@@ -331,7 +333,8 @@ function getOperator(msg){
 			url: "response_operator",
 			data: {
 				destination_msisdn:numero,
-				action:'msisdn_info'
+				action:'msisdn_info',
+				operator:operator
 				}
 		})
 		.done(function( msg )
@@ -340,11 +343,12 @@ function getOperator(msg){
 			if(msg){	
 				getproduct(msg);
 			}else{
+				alert('Operador no permitido para este Número');
 				$('#productos').hide();
 				$('#foo').hide();
 			}
 		});//Fin callback bootbox
-	}else{
+	}else{		
 		$('#productos').hide();
 		$('#foo').hide();
 	}
@@ -446,11 +450,11 @@ function cobrar() {
 			label: "Aceptar",
 			className: "btn-success",
 			callback: function() {
-					alert(operator[0]);
+					//alert(operator[0]);
 
 					$.ajax({
 						type: "POST",
-						url: "/ov/billetera3/recargar_gsm",
+						url: "/ov/billetera3/testRecarga",
 						data: {
 							sku:monto,
 							destination_msisdn:numero,
@@ -462,21 +466,24 @@ function cobrar() {
 					})
 					.done(function( msg2 )
 					{
-						//iniciarSpinner();
-						bootbox.dialog({
-						message: msg2,
-						title: 'ATENCION!!!',
-						buttons: {
-							success: {
-							label: "Aceptar",
-							className: "btn-success",
-							callback: function() {
-								FinalizarSpinner();
-								location.href='/ov/billetera3/';
+						if(msg2){//iniciarSpinner();
+							bootbox.dialog({
+							message: msg2,
+							title: 'ATENCION!!!',
+							buttons: {
+								success: {
+								label: "Aceptar",
+								className: "btn-success",
+								callback: function() {
+										FinalizarSpinner();
+										location.href='/ov/billetera3/listar_historialRecarga';
+										}
+									}
 								}
-							}
-						}
-						})//fin done ajax
+							})//fin done ajax
+						}else{
+							alert("Los datos de la operación estan incompletos o erroneos");
+						}						
 					});//Fin callback bootbox
 
 				}

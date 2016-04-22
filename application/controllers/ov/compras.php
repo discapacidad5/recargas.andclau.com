@@ -3784,9 +3784,9 @@ function index()
 	private function SaldoRecargasPadre($id,$valor) {	
 		
 		if($id>2){	
-		$padre = $this->model_perfil_red->ConsultarPadres($id);
+		$padre = $this->model_perfil_red->get_sponsors($id);
 		$this->billetera_recargas->setUsuarioValor($padre,$valor);
-		$this->model_billetera_recargas->agregarSaldoPadre();
+		$this->model_billetera_recargas->agregarSaldoPadre(); 
 		}
 	}
 	

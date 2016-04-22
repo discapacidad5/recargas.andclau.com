@@ -29,9 +29,10 @@
 												<?php }?>
 											</select> <i></i> </label>
 											<br>
-										<i class="fa fa-mobile-phone"></i>&nbsp;&nbsp;Recarga
-										<label class="input" style="width: 25rem;"> 
-											<input style="width: 25rem;" type="checkbox" <?php echo $categoria[0]->recarga ?> name="recarga" placeholder="Nombre" class="form-control" >
+										<label><i class="fa fa-mobile-phone"></i>&nbsp;&nbsp;Recarga</label>
+										<br>
+										<label class="" style="width: 10rem;"> 
+											<input  type="checkbox" <?php echo $categoria[0]->recarga ?> name="recarga" placeholder="Nombre" class="form-control" >
 										 </label>
 											<br><br>
 									<div class="row">

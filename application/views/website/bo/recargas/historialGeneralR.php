@@ -9,7 +9,7 @@
 								<a href="bo/comercial">Comercial</a> >
 								<a href="/bo/comercial/red">Red de Afiliacion</a> >  
 								<a href="/bo/recargas/">Recargas</a> >
-								<a href="/bo/recargas/pines">Pines</a> > Listar
+								<a href="/bo/recargas/historialRec">Historial</a> > Recargas
 							</span>
 						</h1>
 		</div>

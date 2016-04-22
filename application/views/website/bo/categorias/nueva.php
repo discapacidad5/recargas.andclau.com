@@ -82,9 +82,10 @@
 												<option value="DES">Desactivado</option>
 											</select> <i></i> </label>
 											<br>
-										<i class="fa fa-mobile-phone"></i>&nbsp;&nbsp;Recarga
-										<label class="input" style="width: 25rem;"> 
-											<input style="width: 25rem;" type="checkbox" name="recarga" placeholder="Nombre" class="form-control" >
+										<label><i class="fa fa-mobile-phone"></i>&nbsp;&nbsp;Recarga</label>
+										<br>
+										<label class="" style="width: 10rem;"> 
+											<input  type="checkbox" name="recarga" placeholder="Nombre" class="form-control" >
 										 </label>
 							<br>
 										<div class="row">
