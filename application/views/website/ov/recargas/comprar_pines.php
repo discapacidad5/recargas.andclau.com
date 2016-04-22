@@ -7,76 +7,77 @@
 					Billetera Recargas </span>
 			</h1>
 		</div>
-		<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-			<h1 class="page-title txt-color-blueDark">
-				<i style="color: #5B835B;" class="fa fa-money"></i> Saldo Billetera
-				<span class="txt-color-black"><b>$ <?=number_format($saldo,2)?> </b></span>
-			</h1>
-		</div>
-		<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" >
-			
-					<h1 class="page-title txt-color-blueDark " style="padding: 2.7%;"><i style="color: #5B835B;" class="fa fa-mobile-phone"></i> 
-					Saldo Recargas <span class="txt-color-black">
-					<b>$ <?=number_format($disponible,2)?> </b>
-					</span>&nbsp;&nbsp;<span><a onclick='<?php echo $saldo<>0 ? "agregar()" : "notice()" ?>' style="cursor: pointer;" >
-						<div class=" btn btn-success txt-color-white text-center " style="width: 7.5em;padding: 0px;">
-							<h5>
-								<i class="fa fa-plus "></i><i class="fa fa-mobile-phone "></i>&nbsp;&nbsp;Agregar
-							</h5>
-						</div>
-					</a></span></h1>
-			
-		</div>
+		
 
 
 	</div>
 	<div class="well">
-		<fieldset>
+		
 			<legend>Comprar Pines</legend>
-			<form action="" method="post">
 			<div class="col-lg-2 col-sm-4 col-md-4 col-xs-12"></div>
-			 <?php  foreach ($creditos as $credito) {   ?>
+			<form  class="smart-form" action="" method="POST" id="pin" role="form">
+		<fieldset>
+				 <?php  foreach ($creditos as $credito) {   ?>
 			
 			<div class="well well-sm txt-color-white text-center col-xs-12 col-sm-4 col-md-4 col-lg-3 link primary margin2" >
 						<h6>$ <?php echo $credito->credito;?></h6>
-						<input type="radio" value="<?php echo $credito->id;?>" />		
+						<input id="credit" type="radio" name="id" value="<?php echo $credito->id."|".$credito->valor;?>" required="required" />		
 					</div>
 			<?} ?>
+			<br>
+			<br>
+			<br>
+			<br><br><br>
+			<div class="col-lg-3 col-sm-4 col-md-4 col-xs-12"></div>
+			<input style="margin: 1rem;margin-bottom: 4rem;" type="submit" value="Comprar" class="btn btn-success">
+		</fieldset>	
 			</form>
 			
-			
-			
-		</fieldset>
+		
 	</div>
 </div>
 
 <script type="text/javascript">
+var credito="";
+var id=<?=$id?>;
+$( "#pin" ).submit(function( event ) {
+	credito=$("#credit:checked").val().split("|");	
+	event.preventDefault();		
+	setiniciarSpinner();
+	enviar();
+		
+});
 
-function comprar(){
-	$.ajax({
-		type: "POST",
-		url: "/ov/billetera3/canjear",
-		data: {}
-	})
-	.done(function( msg )
-	{					
-		bootbox.dialog({
-			message: msg,
-			title: 'Agregar Saldo',
-			buttons: {
-				danger: {
-					label: "Volver",
-					className: "btn-danger",
-					callback: function() {
 
-						}
-			}
-		}})//fin done ajax
-	});//Fin callback bootbox
-}	
+function enviar() {
 
-function notice(){
-	alert("No hay saldo para Canjear.")
+	//alert(credito+"|"+id);
+	 $.ajax({
+							type: "POST",
+							url: "/ov/billetera3/comprar_pin",
+							data: {
+                                id:id,
+								credito:credito[0],
+								valor:credito[1]
+								}
+						})
+						.done(function( msg ) {
+							//alert(credito+"|"+id);
+									bootbox.dialog({
+										message: msg,
+										title: "Atención",
+										buttons: {
+											success: {
+											label: "Ok!",
+											className: "btn-success",
+											callback: function() {
+												location.href="/ov/billetera3/";
+												FinalizarSpinner();
+												}
+											}
+										}
+									});
+						});//fin Done ajax
+		
 }
-
 </script>

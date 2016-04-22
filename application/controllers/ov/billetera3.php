@@ -22,6 +22,8 @@ class billetera3 extends CI_Controller
 		$this->load->model('bo/recargas/billetera_recargas');
 		$this->load->model('bo/recargas/model_recargas');
 		$this->load->model('bo/recargas/recarga');
+		$this->load->model('bo/recargas/model_pin');
+		$this->load->model('bo/recargas/pin');
 		$this->load->model('bo/recargas/model_billetera_recargas');
 		$this->load->model('bo/recargas/factura_recargas');
 		$this->load->model('ov/modelo_recargas');
@@ -365,6 +367,7 @@ function comprar_pines()
 	
 		$this->template->set("style",$style);
 		$this->template->set("usuario",$usuario);
+		$this->template->set("id",$id);
 		$this->template->set("saldo",$this->saldo);
 		$this->template->set("disponible",$this->disponible);
 		$this->template->set("api",$account);
@@ -384,6 +387,26 @@ function comprar_pines()
 		$this->template->set_partial('header', 'website/ov/header');
 		$this->template->set_partial('footer', 'website/ov/footer');
 		$this->template->build('website/ov/recargas/comprar_pines');
+	}
+	
+	function comprar_pin(){
+	
+		#echo "aqui!";
+		
+		$this->pin->setId($_POST['credito']);
+		
+		#echo $_POST['id']."|".$_POST['credito']."|".$_POST['valor'];
+		
+		$id = $_POST['id'];
+		$credito  = $_POST['credito'];
+		$monto  = intval($_POST['valor'])*0.05;
+		
+		$this->model_billetera_recargas->agregarCanjeo_BilleteraRec($id,$monto);
+	
+		echo $this->model_pin->pin_comprar() ? "Pin Comprado Exitosamente <br/> <ul><li>Numero de Pin : ".$credito."</li></ul>" : "Pin no pudo ser Comprado ";
+		
+		//redirect('bo/recargas/listar_pines');
+	
 	}
 	
 	

@@ -60,4 +60,21 @@ class model_pin extends CI_Model
 		$this->db->query('delete from pin where id = '.$this->pin->getId());
 	}
 	
+	function pin_comprar(){
+		$datos = array(
+					'estatus' => 'DES'	
+		);
+		$this->db->update("pin",$datos,"id = ".$this->pin->getId());
+		return true;
+	}
+	
+	function infoPin_comprado()
+	{
+		$q=$this->db->query("select pin.id,descripcion
+				 from pin,pin_tarifas where pin.id_pin_tarifas=pin_tarifas.id
+				and pin.id=".$this->pin->getId());
+		$result=$q->result();
+		$this->pin->setPin($result);
+	}
+	
 }

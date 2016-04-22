@@ -448,8 +448,8 @@ from transaccion_billetera where id_user = ".$id." order by fecha desc ");
 	
 	function listar_pines_deCompra()
 	{
-		$q=$this->db->query("select  pin.id,pin_tarifas.credito from pin_tarifas,pin 
-                            where pin_tarifas.id=.pin.id_pin_tarifas and pin.estatus='ACT' 
+		$q=$this->db->query("select  pin.id,pin_tarifas.credito,pin_tarifas.valor from pin_tarifas,pin 
+                            where pin_tarifas.id=pin.id_pin_tarifas and pin.estatus='ACT' 
 				            group by pin_tarifas.credito order by credito asc;");
 		$result=$q->result();
 		$this->factura_recargas->setCredito($result);

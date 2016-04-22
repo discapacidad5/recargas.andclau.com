@@ -207,7 +207,9 @@
 					        <a title="Editar" style='cursor: pointer;' onclick="modificar_afiliado(<?php echo $afiliado->id;?>)" class="txt-color-blue"><i class="fa fa-pencil fa-3x"></i></a>
 					        <!-- <a title="Sustituir" style='cursor: pointer;' onclick="sustituir_afiliado(<?php echo $afiliado->id;?>)" class="txt-color-green"><i class="fa fa-exchange fa-3x"></i></a> -->
 					         <a title="Billetera" style='cursor: pointer;' onclick="billetera_afiliado(<?php echo $afiliado->id;?>)" class="txt-color-green"><i class="fa fa-money fa-3x"></i></a>
+					        <?php   if($afiliado->id!=2) {?>
 					         <a title="Billetera_rec_saldo" style='cursor: pointer;' onclick="billetera_rec_saldo(<?php echo $afiliado->id;?>)" class="txt-color-black"><i class="fa fa-mobile-phone fa-3x"></i></a>
+					             <? } ?>
 					        <a title="Eliminar" style='cursor: pointer;' onclick="eliminar_afiliado(<?php echo $afiliado->id;?>)" class="txt-color-red"><i class="fa fa-trash-o fa-3x"></i></a>
 					        </br>
 					        <a title="Genealogico" style='cursor: pointer;' href="/bo/comercial/tipos_de_red_grafico_1?id_afiliado=<?php echo $afiliado->id;?>" class="txt-color-gray"><i class="fa fa-sitemap fa-3x"></i></a>
