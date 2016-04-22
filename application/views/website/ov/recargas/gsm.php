@@ -75,7 +75,7 @@
 										<fieldset><?php // echo $api['url'];?>
 
 												<section class="col-xs-12 col-md-6">
-													<label class="label "><b>Saldo Disponible</b></label> 
+													<label class="label "><b>Saldo Disponible USD</b></label> 
 													<label
 														class="input input state-success"> <input type="text"
 														name="saldo" class="from-control" id="saldo"
@@ -84,10 +84,10 @@
 													</label>
 												</section>
 												<section class="col-xs-12 col-md-6">
-													<label class="label"><b>Saldo Final</b></label> 
+													<label class="label"><b>Saldo Final USD</b></label> 
 													<label
 														class="input state-disabled state-error"> <input
-														type="number" disabled="disabled" name="neto" id="neto"
+														type="text" disabled="disabled" name="neto" id="neto"
 														value="<?php echo number_format($disponible,2)  ?>"
 														class="from-control" readonly />
 													</label>
@@ -149,7 +149,7 @@
 												
 												<label class="label"><b>Monto</b></label> <label
 													class="input"> <i class="icon-prepend fa fa-money"></i> <input
-													name="delivered_amount_info" type="number" min="1" step="0.01" class="from-control" readonly required
+													name="delivered_amount_info" type="text" min="1" step="0.01" class="from-control" readonly required
 													id="cobro" />
 												</label>
 											</section>
@@ -276,8 +276,7 @@ function selector(html,param){
 }
 			
 function CalcularSaldo(){
-				saldo = $("#saldo").val();
-				pago = $("#cobro").val(); 
+				saldo = <?=$disponible?>;
 				neto = saldo-pago;
 				$("#neto").val(neto);
 				var tel = $("#mr_phone_no").val();
@@ -300,7 +299,7 @@ function getproduct(msg){
 						if($("#monto:checked")){
 							monto = $("#monto:checked").val().split("|");
 							pago = monto[1];
-							$("#cobro").val(pago);								
+							$("#cobro").val(monto[5]+" "+monto[6]);								
 							$('#productos').show();	
 							$('#foo').show();
 							CalcularSaldo();

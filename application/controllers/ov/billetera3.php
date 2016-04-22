@@ -54,13 +54,20 @@ class billetera3 extends CI_Controller
 		$usuario=$this->general->get_username($id);
 		$style=$this->general->get_style($id);
 		
-		$this->billetera_recargas->setUsuario($id);	
-		$this->model_billetera_recargas->getSaldos();	
-		$this->saldo = $this->billetera_recargas->getSaldo();	
-		$this->disponible = $this->billetera_recargas->getDisponible();	
+		if($id == 2){ 
+			$wallet = $this->check_wallet();
+			$this->saldo = intval($wallet['balance']);
+			$this->disponible = intval($wallet['wallet']);
+		}else{
+			$this->billetera_recargas->setUsuario($id);
+			$this->model_billetera_recargas->getSaldos();
+			$this->saldo = $this->billetera_recargas->getSaldo();	
+			$this->disponible = $this->billetera_recargas->getDisponible();	
+		}
 		
 		$this->template->set("style",$style);
 		$this->template->set("usuario",$usuario);
+		$this->template->set("id",$id);
 		$this->template->set("saldo",$this->saldo);
 		$this->template->set("disponible",$this->disponible);
 
@@ -70,6 +77,36 @@ class billetera3 extends CI_Controller
 		$this->template->set_partial('footer', 'website/ov/footer');
 		$this->template->build('website/ov/billetera/dashboard');
 		$this->template->build('website/ov/recargas/billetera');
+	}
+	
+	function check_wallet(){
+		$this->recarga->setKey(time().rand());
+		$this->recarga->setMd5();
+		
+		$login= $this->recarga->getLogin();
+		$key = $this->recarga->getKey();
+		$md5 = $this->recarga->getMd5();
+		
+		$url = $this->recarga->getUrl().
+		"?login=".$login
+		."&key=".$key
+		."&md5=".$md5
+		."&action=check_wallet";		
+		
+		try {
+			$response = file_get_contents ( $url );
+		} catch ( Exception $e ) {
+			return "";
+		}
+		
+		$responses = explode ( "\n", $response );
+		$values = $this->model_recargas->setResponse ( $responses );
+		
+		//foreach ($values as $key => $item){
+			//echo $key."=".$item."<br/>";
+		//}exit();
+		
+		return $values;
 	}
 	
 	function canjear()
@@ -244,10 +281,16 @@ class billetera3 extends CI_Controller
 		$this->recarga->setAccount();
 		$account=$this->recarga->getAccount();
 		
-		$this->billetera_recargas->setUsuario($id);
-		$this->model_billetera_recargas->getSaldos();
-		$this->saldo = $this->billetera_recargas->getSaldo();
-		$this->disponible = $this->billetera_recargas->getDisponible();
+		if($id == 2){ 
+			$wallet = $this->check_wallet();
+			$this->saldo = intval($wallet['balance']);
+			$this->disponible = intval($wallet['wallet']);
+		}else{
+			$this->billetera_recargas->setUsuario($id);
+			$this->model_billetera_recargas->getSaldos();
+			$this->saldo = $this->billetera_recargas->getSaldo();	
+			$this->disponible = $this->billetera_recargas->getDisponible();	
+		}
 		
 		$usuario=$this->general->get_username($id);
 		$style=$this->general->get_style($id);
@@ -360,14 +403,15 @@ class billetera3 extends CI_Controller
 		try {
 			$response = file_get_contents ( $url );
 		} catch ( Exception $e ) {
-			return "";
+			redirect("/auth/login");
+			exit();
 		}
 		
 		$responses = explode ( "\n", $response );
 		$values = $this->model_recargas->setResponse ( $responses );
 		
 		// foreach ($values as $key => $item){
-		// echo $key."=".$item."\n";
+		// echo $key."=".$item."<br/>";
 		// }exit();
 		
 		echo  ($values['error_code']==0 ) ? $this->recargar_gsm() : ""; //$values ['error_code'];$response;
@@ -408,7 +452,7 @@ class billetera3 extends CI_Controller
 		."&destination_currency=USD"
 		."&skuid=".intval($sku[0])		
 		."&product=".$sku[1]	
-		."&delivered_amount_info=".$sku[1]	
+		."&delivered_amount_info=1"//.$sku[1]	
 		."&retail_price=".$sku[2]
 		."&wholesale_price=".$sku[3]
 		."&msisdn=AndClau_ST"
@@ -424,14 +468,15 @@ class billetera3 extends CI_Controller
 			try {
 				$response = file_get_contents($url);
 			} catch (Exception $e) {
-				return "";
+				redirect("/auth/login");
+				exit();
 			}
 			
 			$responses = explode("\n", $response );
 			$values = $this->model_recargas->setResponse($responses);	
 			
 			//foreach ($values as $key => $item){
-				//echo $key."=".$item."\n";
+				//echo $key."=".$item."<br/>";
 			//}exit();			
 			
 			$transaccion = ($values['error_code']==0) 
@@ -443,7 +488,15 @@ class billetera3 extends CI_Controller
 			$this->model_billetera_recargas->agregarRetiro();
 			
 			
-			return ($values['error_code']==0 ) ? "Transaccion Exitosa" : "Transacción No pudo realizarse";
+			return ($values['error_code']==0 ) 
+				? "<ul>"
+					."<li>"
+					."<h3>Valor: </b>$ ".$values['local_info_amount']
+								." ".$values['local_info_currency']."</b><h3>"
+					."</li>"
+				."</ul><br/>
+					Transaccion Exitosa" 
+				: "Transacción No pudo realizarse";
 		}else {
 			return "ERROR <br>No hay saldo para realizar la Recarga.";
 		}
@@ -478,14 +531,15 @@ class billetera3 extends CI_Controller
 		."&key=".$key
 		."&md5=".$md5
 		."&destination_msisdn=".$_POST["destination_msisdn"]
-		."&currency=USD
-		&destination_currency=USD
-		&action=".$_POST["action"];
+		."&currency=USD"
+		."&destination_currency=USD"
+		."&action=".$_POST["action"];
 	
 		try {
 			$response = file_get_contents($url);
 		} catch (Exception $e) {
-			return "";
+			redirect("/auth/login");
+			exit();
 		}
 	
 		$responses = explode("\n", $response );
@@ -528,7 +582,8 @@ class billetera3 extends CI_Controller
 		try {
 			$response = file_get_contents($url);
 		} catch (Exception $e) {
-			return "";
+			redirect("/auth/login");
+			exit();
 		}
 		
 		$responses = explode("\n", $response );
@@ -582,22 +637,24 @@ $salida.= ($operator == $selected)
 		."&key=".$key
 		."&md5=".$md5
 		."&operatorid=".$operator[0]
-		."&destination_msisdn=".$_POST["destination_msisdn"]		
-		."&currency=USD
-		&destination_currency=USD
-		&action=".$_POST["action"];
+		."&destination_msisdn=".$_POST["destination_msisdn"]
+		."&delivered_amount_info=1"
+		."&currency=USD"
+		."&destination_currency=USD"
+		."&action=".$_POST["action"];
 		
 		try {
 			$response = file_get_contents($url);
 		} catch (Exception $e) {
-			return "";
+			redirect("/auth/login");
+			exit();
 		}
 		
 		$responses = explode("\n", $response );
 		$values = $this->model_recargas->setResponse($responses);
 		
 		//foreach ($values as $key => $item){
-			//echo $key."=".$item."\n";
+			//echo $key."=".$item."<br/>";
 		//}exit();
 		
 		if($values['error_code']!=0){return "";}
@@ -624,15 +681,17 @@ $salida.= ($operator == $selected)
 		."&key=".$key
 		."&md5=".$md5
 		."&destination_msisdn=".$_POST["destination_msisdn"]
-		."&currency=USD
-		&destination_currency=USD
-		&action=".$_POST["action"];
+		."&currency=USD"
+		."&destination_currency=USD"
+		."&action=".$_POST["action"];
 	
 		try {
 			$response = file_get_contents($url);
 		} catch (Exception $e) {
-			return "";
+			redirect("/auth/login");
+			exit();
 		}
+		
 		$responses = explode("\n", $response );
 		$values = $this->model_recargas->setResponse($responses);
 	
@@ -645,34 +704,44 @@ $salida.= ($operator == $selected)
 		#$maximum_local =  $values['open_range_maximum_amount_local_currency'];
 		$minimum =  $values['open_range_minimum_amount_requested_currency'];
 		$maximum =  $values['open_range_maximum_amount_requested_currency'];
-		$increment_local =  $values['open_range_increment_local_currency'];
-		$increment =  (($increment_local*$minimum)/$minimum_local);
+		$increment_local = $values['open_range_increment_local_currency'];
+		$increment = (($increment_local*$minimum)/$minimum_local);
 		$skuid = $values['skuid'];
 		#$open_range = $values['open_range'];
-		#$requested_currency = $values['requested_currency'];
+		$origin_currency = $values['open_range_requested_currency'];
+		$local_currency = $values['destination_currency'];
 		#$operator= $values['operator'];
 		#$operatorid= $values['operatorid'];
 		#$countryid = $values['countryid'];
 		#$country = $values['country'];
 		
 		$salida="";		
-		$j=2;
+		$j=1;
+		$local=$minimum_local;
 		$salida.='<div style="overflow-y: scroll; height:200px;">';
 		for ($i=($minimum ? $minimum : $increment);$i<$maximum;$i=$i+$increment)
-		{
-			if($i>$minimum){
+		{	
+			if(($local/$j)==$minimum_local){
+			
 			error_reporting(0);
 			$salida.='<div class="well well-sm txt-color-white text-center col-xs-3 col-md-3 primary margin2">
-						<h6>$ '.number_format($i,2).'</h6>
+						<h6>$ '.$local.' '.$local_currency.'</h6>
+						<p>$ '.number_format($i,2).' '.$origin_currency.'</p>
 						'.//<h6>'.$retail_price_list[$i].'</h4>
 						//<p>'.$wholesale_price_list[$i].'</p>
-						'<input type="radio" value="'.intval($skuid).'|'.number_format($i,2).'|'.number_format($i,2).'|'.number_format($i,2).'|2'
+						'<input type="radio" value="'.intval($skuid)
+						.'|'.number_format($i,2)
+						.'|'.number_format($i,2)
+						.'|'.number_format($i,2)
+						.'|2|'.$local
+						.'|'.$local_currency
 						.'" id="monto" name="delivered_amount_info" />		
 					</div>';
 			
-			//$j++;
-			$i*=$j;
+			$j++;
+			//$i*=$j;			
 			}
+			$local+=$increment_local;
 		}
 		$salida.='</div>';
 		return $salida;
@@ -682,8 +751,11 @@ $salida.= ($operator == $selected)
 		$product_list =  explode(",", $values['product_list']);
 		$retail_price_list = explode(",", $values['retail_price_list']);
 		$wholesale_price_list = explode(",", $values['wholesale_price_list']);
+		$local_list =  explode(",", $values['local_info_amount_list']);
 		$skuid_list = explode(",", $values['skuid_list']);
 		#$open_range = $values['open_range'];
+		$origin_currency = $values['destination_currency'];
+		$local_currency = $values['local_info_currency'];
 		#$requested_currency = $values['requested_currency'];
 		#$operator= $values['operator'];
 		#$operatorid= $values['operatorid'];
@@ -692,21 +764,25 @@ $salida.= ($operator == $selected)
 	
 		$salida="";
 		$i=0;
+		$j=0;
 		$salida.='<div style="overflow-y: scroll; height:200px;">';
 		foreach ($product_list as $product)
 		{
-			if($i%5==0){
+			if($i==$j){
 			$salida.='<div class="well well-sm txt-color-white text-center col-xs-3 col-md-3 primary margin2">
-						<h6>$ '.$product.'</h6>
+						<h6>$ '.$local_list[$i].' '.$local_currency.'</h6>
+						<p>$ '.$product.' '.$origin_currency.'</p>
 						'.//<h6>'.$retail_price_list[$i].'</h4>
 							//<p>'.$wholesale_price_list[$i].'</p>
 			'<input type="radio" value="'.$skuid_list[$i]
 			.'|'.$product
 			.'|'.$retail_price_list[$i]
 			.'|'.$wholesale_price_list[$i]
-			.'|1'
+			.'|1|'.$local_list[$i]
+			.'|'.$local_currency
 			.'" id="monto" name="delivered_amount_info" />
 					</div>';
+			($i==0) ? $j+=4 : $j+=5;
 			}
 			$i++;
 		}
