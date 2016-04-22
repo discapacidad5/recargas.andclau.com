@@ -46,8 +46,7 @@
 													<th data-hide="phone,tablet">country</th>
 													<th data-hide="phone,tablet">countryid</th>
 													<th data-hide="phone,tablet">operator</th>
-													
-													<th data-hide="phone,tablet">reference_operator</th>
+													<th data-hide="phone,tablet">operatorid</th>
 													<th data-hide="phone,tablet">originating_currency</th>
 													<th data-hide="phone,tablet">destination_currency</th>
 													<th data-hide="phone,tablet">whole_price</th>
@@ -63,15 +62,15 @@
 														<td><?php echo $factura_recG->transactionid; ?></td>
 														<td><?php  echo $factura_recG->msisdn; ?></td>
 														<td><?php  echo $factura_recG->destination_msisdn; ?></td>
-														<td><?php  echo $factura_recG->operator; ?></td>
+														<td><?php  echo $factura_recG->Country; ?></td>
 														<td><?php  echo $factura_recG->countryid; ?></td>
 														<td><?php  echo $factura_recG->operator; ?></td>
 														<td><?php  echo $factura_recG->operatorid; ?></td>
-														<td><?php  echo $factura_recG->operator; ?></td>
+														<td><?php  echo $factura_recG->originating_currency; ?></td>
 														<td><?php  echo $factura_recG->destination_currency;?></td>
+														<td><?php  echo $factura_recG->wholesale_price; ?></td>
 														<td><?php  echo $factura_recG->retail_price; ?></td>
-														<td><?php  echo $factura_recG->retail_price; ?></td>
-														<td><?php  echo $factura_recG->skuid; ?></td>
+														<td><?php  echo $factura_recG->skuid;?></td>
 													</tr>
 												<?}?>
 											</tbody>
@@ -135,7 +134,7 @@ $(document).ready(function() {
 			phone : 480
 		};
 
-		$('#dt_basic').dataTable({
+		$('#dt_basic1').dataTable({
 			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
 				"t"+
 				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",

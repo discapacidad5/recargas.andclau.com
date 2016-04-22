@@ -1,7 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 class factura_recargas extends CI_Model
 {
-private	$factura_rec,$msisdn,$factura_recG;
+private	$factura_rec,$msisdn,$factura_recG,$credito;
 	function __construct()
 	{
 		parent::__construct();
@@ -33,7 +33,12 @@ private	$factura_rec,$msisdn,$factura_recG;
 	public function setDestination_msisdn($destination_msisdn) {
 		$this->destination_msisdn= $destination_msisdn;
 	}
-	
+	public function getCredito() {
+		return $this->credito;
+	}
+	public function setCredito($credito) {
+		$this->credito= $credito;
+	}
 	
 }
 

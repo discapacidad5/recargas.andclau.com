@@ -34,8 +34,9 @@
 		<fieldset>
 			<legend>Menú Recargas</legend>
 
-			<div class="col-lg-2 col-sm-4 col-md-4 col-xs-12"></div>
-			<div class="col-lg-2 col-sm-4 col-md-4 col-xs-12">
+			<div class="col-lg-1 col-sm-4 col-md-4 col-xs-12"></div>
+			
+			<div class="col-lg-1.3 col-sm-2 col-md-2 col-xs-12">
 				<a href="<?php echo $disponible>0 ? "/ov/billetera3/billeteraMenugsm" : "/ov/billetera3/#" ?>">
 					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
 						<i class="fa fa-mobile-phone fa-3x"></i>
@@ -43,7 +44,7 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-lg-2 col-sm-4 col-md-4 col-xs-12">
+			<div class="col-lg-1.3 col-sm-2 col-md-2 col-xs-12">
 				<a href="/ov/billetera3/#">
 					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
 						<i class="fa fa-rss fa-3x"></i>
@@ -51,7 +52,7 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-lg-2 col-sm-4 col-md-4 col-xs-12">
+			<div class="col-lg-1.3 col-sm-2 col-md-2 col-xs-12">
 				<a href="/ov/billetera3/#">
 					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
 						<i class="fa fa-laptop fa-2x"></i><i class="fa fa-desktop fa-3x"></i><i
@@ -60,8 +61,17 @@
 					</div>
 				</a>
 			</div>
-
-			<div class="col-lg-2 col-sm-4 col-md-4 col-xs-12">
+			
+			<div class="col-lg-1.3 col-sm-2 col-md-2 col-xs-12">
+				<a href="<?php echo $disponible>0 ? "/ov/billetera3/comprar_pines" : "/ov/billetera3/#" ?>">
+					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
+						<i class="fa fa-th fa-3x"></i>
+						<h5>Comprar Pines</h5>
+					</div>
+				</a>
+			</div>
+          
+			<div class="col-lg-1.5 col-sm-2 col-md-2 col-xs-12">
 				<a href="/ov/billetera3/#">
 					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
 						<i class="fa fa-file-text-o fa-3x"></i><i

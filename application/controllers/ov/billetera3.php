@@ -24,6 +24,7 @@ class billetera3 extends CI_Controller
 		$this->load->model('bo/recargas/recarga');
 		$this->load->model('bo/recargas/model_billetera_recargas');
 		$this->load->model('bo/recargas/factura_recargas');
+		$this->load->model('ov/modelo_recargas');
 
 		if (!$this->tank_auth->is_logged_in())
 		{																		// logged in
@@ -291,6 +292,57 @@ class billetera3 extends CI_Controller
 		$this->template->set_partial('footer', 'website/ov/footer');
 		$this->template->build('website/ov/recargas/listar_historial_recargas');
 	}
+	
+function comprar_pines()
+	{
+		if (!$this->tank_auth->is_logged_in())
+		{																		// logged in
+			redirect('/auth');
+		}
+	
+		$id              = $this->tank_auth->get_user_id();
+	
+		if($this->general->isActived($id)!=0){
+			redirect('/ov/compras/carrito');
+		}
+	
+		$pais  = $this->model_recargas->get_pais();
+		$this->template->set("pais",$pais);
+	
+		$this->recarga->setAccount();
+		$account=$this->recarga->getAccount();
+	
+		$this->billetera_recargas->setUsuario($id);
+		$this->model_billetera_recargas->getSaldos();
+		$this->saldo = $this->billetera_recargas->getSaldo();
+		$this->disponible = $this->billetera_recargas->getDisponible();
+	
+		$usuario=$this->general->get_username($id);
+		$style=$this->general->get_style($id);
+	
+		$this->template->set("style",$style);
+		$this->template->set("usuario",$usuario);
+		$this->template->set("saldo",$this->saldo);
+		$this->template->set("disponible",$this->disponible);
+		$this->template->set("api",$account);
+	
+		$this->modelo_recargas->listar_pines_deCompra();
+		$credito = $this->factura_recargas->getCredito();
+		
+		#echo var_dump($pin);exit();
+		
+		$this->template->set("creditos",$credito);
+		
+		
+		
+		
+		$this->template->set_theme('desktop');
+		$this->template->set_layout('website/main');
+		$this->template->set_partial('header', 'website/ov/header');
+		$this->template->set_partial('footer', 'website/ov/footer');
+		$this->template->build('website/ov/recargas/comprar_pines');
+	}
+	
 	
 	function agregar_saldo()
 	{

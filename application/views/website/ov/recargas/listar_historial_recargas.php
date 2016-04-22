@@ -63,16 +63,15 @@
 														<td><?php echo $factura_rec->transactionid; ?></td>
 														<td><?php  echo $factura_rec->msisdn; ?></td>
 														<td><?php  echo $factura_rec->destination_msisdn; ?></td>
-														<td><?php  echo $factura_rec->operator; ?></td>
+														<td><?php  echo $factura_rec->Country; ?></td>
 														<td><?php  echo $factura_rec->countryid; ?></td>
 														<td><?php  echo $factura_rec->operator; ?></td>
 														<td><?php  echo $factura_rec->operatorid; ?></td>
-														<td><?php  echo $factura_rec->operator; ?></td>
+														<td><?php  echo $factura_rec->originating_currency; ?></td>
 														<td><?php  echo $factura_rec->destination_currency;?></td>
+														<td><?php  echo $factura_rec->wholesale_price; ?></td>
 														<td><?php  echo $factura_rec->retail_price; ?></td>
-														<td><?php  echo $factura_rec->retail_price; ?></td>
-														<td><?php  echo $factura_rec->skuid; ?></td>
-													</tr>
+														<td><?php  echo $factura_rec->skuid;?></td></tr>
 												<?}?>
 											</tbody>
 										</table>

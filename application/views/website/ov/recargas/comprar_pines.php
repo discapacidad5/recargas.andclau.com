@@ -32,33 +32,27 @@
 	</div>
 	<div class="well">
 		<fieldset>
-			<legend>Menú Recargas</legend>
-           <div aling="center">
+			<legend>Comprar Pines</legend>
+			<form action="" method="post">
 			<div class="col-lg-2 col-sm-4 col-md-4 col-xs-12"></div>
-			<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 link"">
-				<a href="<?php echo $disponible>0 ? "/ov/billetera3/gsm" : "/ov/billetera3/#" ?>">
-					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
-						<i class="fa fa-mobile-phone fa-3x"></i>
-						<h5>Nueva Recarga</h5>
+			 <?php  foreach ($creditos as $credito) {   ?>
+			
+			<div class="well well-sm txt-color-white text-center col-xs-12 col-sm-4 col-md-4 col-lg-3 link primary margin2" >
+						<h6>$ <?php echo $credito->credito;?></h6>
+						<input type="radio" value="<?php echo $credito->id;?>" />		
 					</div>
-				</a>
-			</div>
-			<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 link">
-				<a href="/ov/billetera3/listar_historialRecarga">
-					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
-						<i class="fa fa-list-alt fa-3x"></i>
-						<h5>Historial Recarga</h5>
-					</div>
-				</a>
-			</div>
-			</div>
+			<?} ?>
+			</form>
+			
+			
+			
 		</fieldset>
 	</div>
 </div>
 
 <script type="text/javascript">
 
-function agregar(){
+function comprar(){
 	$.ajax({
 		type: "POST",
 		url: "/ov/billetera3/canjear",
