@@ -32,7 +32,7 @@ class model_recargas extends CI_Model
 		return $q->result();
 	}
 	
-	function insertar_gsm($values){
+	function insertar_gsm($values,$id){
 		
 		foreach ($values as $key => $item){
 			$values[$key] = trim ($item," \t\n\r\0\x0B");
@@ -68,7 +68,8 @@ class model_recargas extends CI_Model
 				  'skuid' => $values['skuid'],
 				  'authentication_key' => $values['authentication_key'],
 				  'error_code' => $values['error_code'],
-				  'error_txt' => $values['error_txt']
+				  'error_txt' => $values['error_txt'],
+				  'id_user' => $id
 				
 		);		
 		

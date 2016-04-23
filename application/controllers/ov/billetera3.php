@@ -533,10 +533,21 @@ function comprar_pines()
 		."&msisdn=AndClau_ST"
 		."&action=".$action;
 		
+		
+		if($id == 2){
+			$wallet = $this->check_wallet();
+			#$this->saldo = intval($wallet['balance']);
+			$this->disponible = intval($wallet['wallet']);
+		}else{
+			$this->billetera_recargas->setUsuario($id);
+			$this->model_billetera_recargas->getSaldos();
+			#$this->saldo = number_format($this->billetera_recargas->getSaldo(),2);
+			$this->disponible = number_format($this->billetera_recargas->getDisponible(),2);
+		}
+		
 		$this->billetera_recargas->setUsuario($id);
 		$this->model_billetera_recargas->getSaldos();
-		#$this->saldo = number_format($this->billetera_recargas->getSaldo(),2);
-		$this->disponible = number_format($this->billetera_recargas->getDisponible(),2);
+		
 			
 		if(($this->disponible-$sku[1])>=0){
 			
@@ -555,7 +566,7 @@ function comprar_pines()
 			//}exit();			
 			
 			$transaccion = ($values['error_code']==0) 
-			? $this->model_recargas->insertar_gsm($values) : $values['transactionid'];
+			? $this->model_recargas->insertar_gsm($values,$id) : $values['transactionid'];
 			$this->recarga->setId($transaccion);
 			//echo $transaccion;//exit();
 			
