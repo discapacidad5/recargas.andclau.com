@@ -70,9 +70,10 @@
 												<tr>
 													
 													<th data-class="expand">PIN</th>
-													<th data-hide="phone,tablet">descripcion</th>
-													<th data-hide="phone,tablet">Valor</th>
-													<th data-hide="phone,tablet">credito</th>
+													<th data-hide="phone,tablet">Descripcion</th>
+													<th data-hide="phone,tablet">Costo en Dólares</th>
+													<th data-hide="phone,tablet">Creditos</th>
+													<th data-hide="phone,tablet">Estado</th>
 													<th data-hide="phone,tablet">Acciones</th>
 												</tr>
 											</thead>
@@ -82,11 +83,13 @@
 													<tr>
 														<td><?php echo $pin->id; ?></td>
 														<td><?php echo $pin->descripcion; ?></td>
-														<td>$ <?php echo $pin->valor; ?></td>
-														<td>$ <?php echo $pin->credito; ?></td>
+														<td>$ <?php echo $pin->costo; ?></td>
+														<td> <?php echo $pin->credito; ?></td>
+														<td> <?php echo ($pin->estatus=='ACT') ? 'Disponible' : 'Vendido'; ?></td>
 														<td>
+														<?php if($pin->estatus=='ACT'){ ?>
 															<a title="Editar" style="cursor: pointer" class="txt-color-blue" onclick="editar('<?php echo $pin->id; ?>');"><i class="fa fa-pencil fa-3x"></i></a>
-															
+														<?php }?>	
 															
 															<a title="Eliminar" style="cursor: pointer" class="txt-color-red" onclick="eliminar('<?php echo $pin->id; ?>');"><i class="fa fa-trash-o fa-3x"></i></a>
 														</td>

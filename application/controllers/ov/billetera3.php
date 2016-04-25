@@ -15,6 +15,7 @@ class billetera3 extends CI_Controller
 		$this->load->library('cart');
 		$this->lang->load('tank_auth');
 		$this->load->model('ov/general');
+		$this->load->model('ov/model_perfil_red');
 		$this->load->model('ov/modelo_billetera');
 		$this->load->model('ov/modelo_dashboard');
 		$this->load->model('bo/model_bonos');
@@ -338,7 +339,7 @@ class billetera3 extends CI_Controller
 		$this->template->build('website/ov/recargas/listar_historial_recargas');
 	}
 	
-function comprar_pines()
+function multimedia()
 	{
 		if (!$this->tank_auth->is_logged_in())
 		{																		// logged in
@@ -372,15 +373,14 @@ function comprar_pines()
 		$this->template->set("disponible",$this->disponible);
 		$this->template->set("api",$account);
 	
-		$this->modelo_recargas->listar_pines_deCompra();
+		$this->model_pin->listar_pines_deCompra();
 		$credito = $this->factura_recargas->getCredito();
+		
+		if(count($credito)==0){redirect('/ov/billetera3');}
 		
 		#echo var_dump($pin);exit();
 		
 		$this->template->set("creditos",$credito);
-		
-		
-		
 		
 		$this->template->set_theme('desktop');
 		$this->template->set_layout('website/main');
@@ -393,18 +393,50 @@ function comprar_pines()
 	
 		#echo "aqui!";
 		
-		$this->pin->setId($_POST['credito']);
+		$id = $_POST['id'];
+		#$credito  = $_POST['credito'];
+		$pin  = $_POST['pin'];
+		$monto  = intval($_POST['valor'])*0.1;
+		$costo  = intval($_POST['valor']);	
 		
 		#echo $_POST['id']."|".$_POST['credito']."|".$_POST['valor'];
 		
-		$id = $_POST['id'];
-		$credito  = $_POST['credito'];
-		$monto  = intval($_POST['valor'])*0.05;
+		if($id == 2){
+			$wallet = $this->check_wallet();
+			$this->saldo = intval($wallet['balance']);
+			$this->disponible = intval($wallet['wallet']);
+		}else{
+			$this->billetera_recargas->setUsuario($id);
+			$this->model_billetera_recargas->getSaldos();
+			$this->saldo = $this->billetera_recargas->getSaldo();
+			$this->disponible = $this->billetera_recargas->getDisponible();
+		}
 		
-		$this->model_billetera_recargas->agregarCanjeo_BilleteraRec($id,$monto);
+		if(($this->disponible-$costo)<0){
+			echo "ERROR <br>No hay saldo para realizar la Compra.";
+			exit(); 
+		}
+		#echo "aqui!";exit();
+		$this->pin->setId($pin);
+		
+		$this->model_billetera_recargas->agregarRetiro_BilleteraRec($id,$costo,'MEDIA',$pin);
+		$this->model_billetera_recargas->agregarSaldo_BilleteraRec($id,$monto,'PIN');
 	
-		echo $this->model_pin->pin_comprar() ? "Pin Comprado Exitosamente <br/> <ul><li>Numero de Pin : ".$credito."</li></ul>" : "Pin no pudo ser Comprado ";
+		/*$data = array(
+		 'email' => $this->model_perfil_red->get_email($id),
+		 'username' => $this->model_perfil_red->get_username($id),
+		 'pin' => $pin,
+		 'credito' => $credito,
+		 'costo' => $costo
+		 );
 		
+		$email = $this->cemail->send_email(12, $data['email'], $data);
+		*/
+		echo $this->model_pin->pin_comprar() 
+		? "Pin Comprado Exitosamente <br/> <ul><li>Numero de Pin 
+		: ".$pin."</li></ul>" : "Pin no pudo ser Comprado ";
+		
+		//echo $email ? "Email Enviado" : "Falló envio de Email";
 		//redirect('bo/recargas/listar_pines');
 	
 	}
@@ -417,7 +449,7 @@ function comprar_pines()
 			redirect('/auth');
 		}
 		
-		if(intval($_POST['cobro'])<=0){
+		if(intval($_POST['cobro'])<0){
 			echo "ERROR <br>Valor del cobro invalido.";
 			exit();
 		}	

@@ -36,23 +36,30 @@
     <fieldset id="pswd">
 		<form class="smart-form" action="" method="POST" id="pin" role="form">
 			<legend>Nuevo PIN </legend><br>
-			<div class="form-group" style="width: 20rem;">
-			<label style="margin: 1rem;" class="input"><i class="icon-prepend fa fa-check-circle-o"></i>
-				<input id='id'  class="form-control" name="id" size="10" pattern="[0-9]{10}" type="number" placeholder="PIN"  required>
+			<div class="form-group" style="width: 20rem;">	
+			<label style="margin-left: 1rem;" >PIN</label>		
+			<label style="margin: 1rem;" class="input">
+			<i class="icon-prepend fa fa-check-circle-o"></i>
+				<input id='id'  class="form-control" name="id" size="10" pattern="[0-9]{10}" type="number" placeholder="10 digitos"  required>
 	        </label>
 	        <label style="margin: 1rem;" class="input">
-	       <TEXTAREA id='desc'  class="form-control" name="descripcion" placeholder="Descripcion" rows="3" cols="30" >
-</TEXTAREA> 
+	        Descripcion
+	       <TEXTAREA id='descripcion' style="padding-left: 3%;" class="form-control" name="descripcion" placeholder="Descripcion" rows="3" cols="30" >
+			</TEXTAREA> 
 	        </label>
-			<label style="margin: 1rem;" class="select"><i class="icon-prepend fa fa-check-circle-o"></i>	        
-	        <select id='porc' class="form-control" name="valor" required>
-	        <option value="1">valor: € 10 cubre 2000 créditos </option>
-	        <option value="2">valor: € 25 cubre 5000 créditos </option>
-	        <option value="3">valor: € 50 cubre 10000 créditos </option>
-	        </select>
+			<label style="margin: 1rem;" class="select">       
+		       Valor <select id='porc' class="form-control" name="valor" required>
+		        <?php foreach ($tarifas as $tarifa){?>
+			        <option value="<?=$tarifa->id?>">Valor: € <?=$tarifa->valor?> cubre <?=$tarifa->credito?> créditos </option>
+			     <?php }?>
+		        </select>
 	        </label>
-	       
-			<button style="margin: 1rem;margin-bottom: 4rem;" type="submit" class="btn btn-success">Crear</button>
+	       	<label style="margin-left: 1rem;" >Costo en Dólares</label>		
+			<label style="margin: 1rem;" class="input">
+			<i class="icon-prepend fa fa-dollar"></i>
+				<input id='costo'  class="form-control" name="costo" min="0" step="0.01" type="number" placeholder="" required>
+	        </label>
+			<input style="margin: 1rem;margin-bottom: 4rem;" type="submit" class="btn btn-success" value="Crear" >
 			</div>
 		</form>
     </fieldset>
@@ -84,7 +91,7 @@
 
 function validar(){
 	var id = $("#id").val();
-	if(id.length<=10){
+	if(id.length==10){
 		return true;
 	}
 }
@@ -95,7 +102,7 @@ $( "#pin" ).submit(function( event ) {
 		iniciarSpinner();
 		enviar();
 	}else{
-		alert("la longitud del PIN no debe superar los 10 digitos!")
+		alert("la longitud del PIN debe tener los 10 digitos!")
 	}	
 });
 

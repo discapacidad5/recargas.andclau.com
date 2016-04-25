@@ -26,7 +26,7 @@
 																		<label class="label"><b>Disponer saldo</b></label>
 																		<label class="input">
 																			<i class="icon-prepend fa fa-money"></i>
-																			<input name="cobro" type="number" min="1" step="0.01" class="from-control" id="cobro" required/>
+																			<input name="cobro" type="number" min="0" value="0" step="0.01" class="from-control" id="cobro" required/>
 																		</label>
 																	</section>
 																	<section class="col col-10">
@@ -80,7 +80,7 @@ $(document).ready(function() {
 
 function CalcularSaldo(evt){
 	
-	var saldo = $("#saldo").val();
+	var saldo = <?=$saldo?>;
 	var pago = $("#cobro").val() /*+ (String.fromCharCode(evt.charCode)*/;
 	var neto = saldo-pago;
 	$("#neto").val(neto);

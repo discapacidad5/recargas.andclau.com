@@ -1,30 +1,41 @@
 <div id="spinner-div"></div>
-<form id="pin" action="/bo/recargas/actualizar_pin" class="smart-form"  role="form" >
-							<fieldset>
-							<label class="input">
-								<input type="text" class="hide"  value="<?php echo $_POST['id']; ?>" name="id2">
-								<label class="input"> PIN
-<<<<<<< HEAD
-								<input type="text" name="id" required placeholder="id" style="width: 50%;" size="10" class="form-control" value="<?php echo $pin[0]->id; ?>" required>
-=======
-								<input type="number" size="10" pattern="[0-9]{10}" id="id" name="id" required placeholder="id" style="width: 50%;" class="form-control" value="<?php echo $pin[0]->id; ?>" required>
->>>>>>> 10e48bbb14e40faa84379a908072521fa8db9562
-								<label class="input"> Descripcion
-								<input type="text" name="descripcion"  placeholder="Descripcion" style="width: 50%;" class="form-control" value="<?php echo $pin[0]->descripcion; ?>" required>
-								<label class="input"> Valor
-							        <select id='porc' class="form-control" name="valor" required>
-								        <option value="<?php echo $pin[0]->id_pin_tarifas; ?>" >Seleccione el valor</option>
-								        <option value="1">valor: € 10 cubre 2000 créditos </option>
-								        <option value="2">valor: € 25 cubre 5000 créditos </option>
-								        <option value="3">valor: € 50 cubre 10000 créditos </option>
-							        </select>
-						        </label>
-							</fieldset>
-							<footer>
-								<button style="margin: 1rem;margin-bottom: 4rem;" type="input" class="btn btn-success">Guardar</button>
-								
-							</footer>
-						</form>
+<form id="pin" action="/bo/recargas/actualizar_pin" class="smart-form"
+	role="form">
+	<fieldset style="width: 20rem;">
+		<label class="input"> <input type="text" class="hide"
+			value="<?php echo $_POST['id']; ?>" name="id2">
+		</label>	
+		<label class="input">
+			PIN <input type="text" name="id" id="id" required placeholder="id" size="10" class="form-control"
+				value="<?php echo $pin[0]->id; ?>" required> 
+		</label>
+		<label class="input">
+			Descripcion  <TEXTAREA id='desc'  
+			class="form-control" name="descripcion" 
+			placeholder="Descripcion" style="padding-left: 3%;"
+			rows="3" cols="30" ><?php echo $pin[0]->descripcion; ?></TEXTAREA>
+		</label>
+		<label class="select"> 
+			Valor <select id='porc' class="form-control" name="valor" required>
+			<?php foreach ($tarifas as $tarifa){?>							
+				<option <?=($pin[0]->id_pin_tarifas==$tarifa->id) ? "selected" : "" ?>  value="<?=$tarifa->id?>">
+					Valor: € <?=$tarifa->valor?> cubre <?=$tarifa->credito?> créditos 
+				</option>
+			<?php }?>
+			</select>
+		</label>
+		<label >Costo en Dólares</label>		
+			<label class="input">
+			<i class="icon-prepend fa fa-dollar"></i>
+				<input id='costo' class="form-control" name="costo" step="0.01" min="0" type="number" value="<?=$pin[0]->costo?>" placeholder="" required>
+	       </label>
+	</fieldset>
+	<footer>
+		<input style="margin: 1rem; margin-bottom: 4rem;" type="submit"
+			class="btn btn-success" value="Guardar">
+
+	</footer>
+</form>
 
 <script src="/template/js/plugin/jquery-form/jquery-form.min.js"></script>
 <script src="/template/js/validacion.js"></script>
@@ -33,7 +44,7 @@
 
 function validar(){
 	var id = $("#id").val();
-	if(id.length<=10){
+	if(id.length==10){
 		return true;
 	}
 }
@@ -44,7 +55,7 @@ $( "#pin" ).submit(function( event ) {
 		setiniciarSpinner();
 		enviar();
 	}else{
-		alert("la longitud del PIN no debe superar los 10 digitos!")
+		alert("la longitud del PIN debe tener los 10 digitos!")
 	}	
 });
 

@@ -4,7 +4,7 @@
 	<div class="row">
 		<div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
 						<h1 class="page-title txt-color-blueDark">
-						<a class="backHome" href="/bo"><i class="fa fa-home"></i> Menu</a>
+						<a class="backHome" href="/ov"><i class="fa fa-home"></i> Menu</a>
 							<span>>
 								<a href="/ov/billetera3">Billetera Recargas</a> > Historial Recargas
 							</span>
