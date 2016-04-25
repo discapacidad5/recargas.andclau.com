@@ -13,7 +13,7 @@ class model_billetera_recargas extends CI_Model
 	
 	function getSaldos(){
 		$q=$this->db->query("SELECT 
-								u.id,u.username,
+								u.id,u.username,b.id bill,
 								(select sum(valor) 
 									from billetera_recargas_saldo 
 									where id_billetera = b.id) saldo,
@@ -35,6 +35,11 @@ class model_billetera_recargas extends CI_Model
 		$disponible = $q[0]->disponible - $q[0]->consumo;
 		$saldo = $q[0]->saldo - $q[0]->quitado;
 		
+		($disponible<=0) ? $this->limpiar("canjeo", $q[0]->bill): '';
+		($saldo<=0) ? $this->limpiar("saldo", $q[0]->bill): '';
+		($disponible<=0) ? $this->limpiar("retiro", $q[0]->bill): '';
+		
+		
 		$Saldos = array(
 				#'billetera' => $q[0]->saldo,
 				'disponible' => ($disponible<0) ? 0 : $disponible,
@@ -48,7 +53,7 @@ class model_billetera_recargas extends CI_Model
 		$this->getId();
 		$data = array(
 				'id_billetera' => $this->billetera_recargas->getId(),
-				'valor' => number_format(($this->billetera_recargas->getValor()*0.2),2),
+				'valor' => $this->billetera_recargas->getValor()*0.2,
 				'tipo' => 'CATEGORIA'
 		);
 		
@@ -60,7 +65,7 @@ class model_billetera_recargas extends CI_Model
 		$this->getId();
 		$data = array(
 				'id_billetera' => $this->billetera_recargas->getId(),
-				'valor' => number_format(($this->billetera_recargas->getValor()),2),
+				'valor' => $this->billetera_recargas->getValor(),
 				'tipo' => 'CARRITO'
 		);
 	
@@ -68,11 +73,11 @@ class model_billetera_recargas extends CI_Model
 		return true;
 	}
 	
-	function agregarSaldo_BilleteraRec($id,$monto){
+	function agregarSaldo_BilleteraRec($id,$monto,$tipo){
 		$data = array(
 				'id_billetera' => $this->getId_($id),
-				'valor' => number_format(($monto),2),
-				'tipo' => 'TRANSFER'
+				'valor' => $monto,
+				'tipo' => $tipo
 		);
 	
 		$this->db->insert("billetera_recargas_saldo",$data);
@@ -84,7 +89,7 @@ class model_billetera_recargas extends CI_Model
 		$this->getId();
 		$data = array(
 				'id_billetera' => $this->billetera_recargas->getId(),
-				'valor' => number_format(($this->billetera_recargas->getValor()*1.05),2),
+				'valor' => $this->billetera_recargas->getValor()*1.05,
 				'estatus' => 'ACT'
 		);
 	
@@ -92,11 +97,12 @@ class model_billetera_recargas extends CI_Model
 		return true;
 	}
 	
-	function agregarCanjeo_BilleteraRec($id,$monto){
+	function agregarCanjeo_BilleteraRec($id,$monto,$estado){
 		$data = array(
 				'id_billetera' => $this->getId_($id),
-				'valor' => number_format(($monto),2),
-				'estatus' => 'DES'
+				'valor' => $monto,
+				'estatus' => $estado
+				
 		);
 	
 		$this->db->insert("billetera_recargas_canjeo",$data);
@@ -105,18 +111,30 @@ class model_billetera_recargas extends CI_Model
 	
 	function add_sub_billeteraRec($tipo,$id,$monto){
 	  if ($tipo == "ADD") {
-			$id_transac = $this->agregarSaldo_BilleteraRec ( $id, $monto );
+			$id_transac = $this->agregarSaldo_BilleteraRec ( $id, $monto,'EMPRESA');
 		} else {
-			$id_transac = $this->agregarCanjeo_BilleteraRec ( $id, $monto );
+			$id_transac = $this->agregarCanjeo_BilleteraRec ( $id, $monto ,'EMPRESA' );
 		}
 	return $id_transac;
+	}
+	
+	function agregarRetiro_BilleteraRec($id,$monto,$tipo,$transac){
+		$data = array(
+				'id_billetera' => $this->getId_($id),
+				'valor' => $monto,
+				'tipo' => $tipo,
+				'id_transaccion' => $transac
+		);
+	
+		$this->db->insert("billetera_recargas_retiro",$data);
+		return true;
 	}
 	
 	function agregarRetiro(){
 		$this->getId();
 		$data = array(
 				'id_billetera' => $this->billetera_recargas->getId(),
-				'valor' => number_format(($this->billetera_recargas->getValor()),2),
+				'valor' => $this->billetera_recargas->getValor(),
 				'tipo' => 'GSM',
 				'id_transaccion' => $this->recarga->getId()
 		);
@@ -137,5 +155,7 @@ class model_billetera_recargas extends CI_Model
 		return $q[0]->id;
 	}
 		
-	
+	function limpiar($tabla,$id){
+		$this->db->query("DELETE FROM billetera_recargas_".$tabla."  where id_billetera = ".$id);
+	}
 }

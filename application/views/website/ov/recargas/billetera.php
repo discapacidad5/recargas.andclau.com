@@ -3,7 +3,7 @@
 	<div class="row">
 		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
 			<h1 class="page-title txt-color-blueDark">
-				<a class="backHome" href="/bo"><i class="fa fa-home"></i> Menu</a> <span>>
+				<a class="backHome" href="/ov"><i class="fa fa-home"></i> Menu</a> <span>>
 					Billetera Recargas </span>
 			</h1>
 		</div>
@@ -44,7 +44,7 @@
 		<fieldset>
 			<legend>Menú Recargas</legend>
 
-			<div class="col-lg-1 col-sm-4 col-md-4 col-xs-12"></div>
+			<div class="col-lg-2  col-md-2 col-xs-12"></div>
 			
 			<div class="col-lg-1.3 col-sm-2 col-md-2 col-xs-12">
 				<a href="<?php echo $disponible>0 ? "/ov/billetera3/billeteraMenugsm" : "/ov/billetera3/#" ?>">
@@ -63,7 +63,7 @@
 				</a>
 			</div>
 			<div class="col-lg-1.3 col-sm-2 col-md-2 col-xs-12">
-				<a href="/ov/billetera3/#">
+				<a href="<?php echo $disponible>0 ? "/ov/billetera3/multimedia" : "/ov/billetera3/#" ?>">
 					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
 						<i class="fa fa-laptop fa-2x"></i><i class="fa fa-desktop fa-3x"></i><i
 							class="fa fa-tablet fa-2x"></i>
@@ -72,14 +72,6 @@
 				</a>
 			</div>
 			
-			<div class="col-lg-1.3 col-sm-2 col-md-2 col-xs-12">
-				<a href="<?php echo $disponible>0 ? "/ov/billetera3/comprar_pines" : "/ov/billetera3/#" ?>">
-					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
-						<i class="fa fa-th fa-3x"></i>
-						<h5>Comprar Pines</h5>
-					</div>
-				</a>
-			</div>
           
 			<div class="col-lg-1.5 col-sm-2 col-md-2 col-xs-12">
 				<a href="/ov/billetera3/#">

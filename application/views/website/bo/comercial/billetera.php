@@ -273,7 +273,7 @@ function enviar(){
 	{
 		bootbox.dialog({
 		message: msg,
-		title: 'Eliminar Afiliado',
+		title: 'Agregar o Quitar Saldo',
 		buttons: {
 			success: {
 				label: "Aceptar",

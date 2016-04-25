@@ -7,17 +7,21 @@ class model_pin extends CI_Model
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('ov/model_perfil_red');
 		
 	}
 	
 	function ingresar_pin(){
+				
 		$dato=array(
 				"id" =>				$this->pin->getId(),
 				"descripcion" => 	$this->pin->getDescripcion(),
-				"id_pin_tarifas" =>  $this->pin->getValor()
+				"id_pin_tarifas" =>  $this->pin->getValor(),
+				"costo" =>  $this->pin->getCosto()
 			//	"credito" => 		$this->pin->getCredito()
 		);
+		
+		#echo $dato['id']."|".$dato['descripcion']."|".$dato['id_pin_tarifas']."|".$dato['costo'];exit();
+		
 		$this->db->insert("pin",$dato);
 		
 		return true;
@@ -25,20 +29,20 @@ class model_pin extends CI_Model
 	
 	function listar_pin()
 	{
-			$q=$this->db->query('select pin.id,descripcion,pin_tarifas.valor,pin_tarifas.credito  from pin,pin_tarifas where pin.id_pin_tarifas=pin_tarifas.id;
+			$q=$this->db->query('select pin.id,descripcion,pin_tarifas.valor,pin_tarifas.credito, pin.costo,pin.estatus from pin,pin_tarifas where pin.id_pin_tarifas=pin_tarifas.id;
 					');
 			$result=$q->result();
 			$this->pin->setPin($result);
 	}
 	function listar_tarifa()
 	{
-		$q=$this->db->query('select id,valor,credito from pin_tarifas;');
+		$q=$this->db->query('select * from pin_tarifas;');
 		$result=$q->result();
 		$this->pin->setTarifa($result);
 	}
 	function editar_pin()
 	{
-		$q=$this->db->query('select id,descripcion,id_pin_tarifas from pin where id ='.$this->pin->getId());
+		$q=$this->db->query('select id,descripcion,id_pin_tarifas,costo from pin where id ='.$this->pin->getId());
 		$result=$q->result();
 		$this->pin->setPin($result);
 	}
@@ -47,7 +51,8 @@ class model_pin extends CI_Model
 		$datos = array(
 				'id' =>              $this->pin->getId(),
 				'descripcion' =>     $this->pin->getDescripcion(),
-				'id_pin_tarifas' =>  $this->pin->getValor()
+				'id_pin_tarifas' =>  $this->pin->getValor(),
+				"costo" =>  $this->pin->getCosto()
 			//	'credito' =>         $this->pin->getCredito()
 				
 		);
@@ -75,6 +80,16 @@ class model_pin extends CI_Model
 				and pin.id=".$this->pin->getId());
 		$result=$q->result();
 		$this->pin->setPin($result);
+	}
+	
+	function listar_pines_deCompra()
+	{
+		$q=$this->db->query("select p.id,t.credito,t.valor,min(p.costo) costo
+								from pin_tarifas t, pin p
+								where t.id = p.id_pin_tarifas and estatus = 'ACT'
+								group by p.id_pin_tarifas;");
+		$result=$q->result();
+		$this->factura_recargas->setCredito($result);
 	}
 	
 }

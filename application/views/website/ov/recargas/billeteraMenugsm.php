@@ -3,7 +3,7 @@
 	<div class="row">
 		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
 			<h1 class="page-title txt-color-blueDark">
-				<a class="backHome" href="/bo"><i class="fa fa-home"></i> Menu</a> <span>>
+				<a class="backHome" href="/ov"><i class="fa fa-home"></i> Menu</a> <span>>
 					Billetera Recargas </span>
 			</h1>
 		</div>
