@@ -53,11 +53,11 @@
 
 										<div class="table-responsive">
 										<div class="header">
-												<div class="col-xs-4 col-md-4" >
+												<div class="col-xs-3 col-md-3" >
 												</div>
                     							
                         			    <a class="col-xs-5 col-md-5" href="http://andclau.com/" target="_blank">
-											<img alt="" width="90%" src="/media/imagenes/andclau/andclau-negro-1.png">
+											<img alt="" width="150%" src="/logo.png">
 										</a>
                         					
                 						</div>

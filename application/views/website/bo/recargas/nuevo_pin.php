@@ -84,7 +84,7 @@
 
 function validar(){
 	var id = $("#id").val();
-	if(id.length<=10){
+	if(id.length==10){
 		return true;
 	}
 }

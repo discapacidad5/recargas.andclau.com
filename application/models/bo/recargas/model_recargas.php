@@ -94,7 +94,7 @@ class model_recargas extends CI_Model
 		$q=$this->db->query('select   user_profiles.nombre,transactionid,msisdn,destination_msisdn,Country,
            countryid,operator,operatorid,
            originating_currency,destination_currency,wholesale_price,
-           retail_price,skuid from erpMatamala.factura_recarga,erpMatamala.user_profiles where 
+           retail_price,skuid from factura_recarga,user_profiles where 
            factura_recarga.id_user=user_profiles.user_id ;');
 		
 		$result=$q->result();
