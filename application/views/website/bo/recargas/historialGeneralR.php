@@ -36,7 +36,7 @@
 						<div class="widget-body">
 							<div class="tab-pane">
 							
-														<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
+														<table id="dt_basic1" class="table table-striped table-bordered table-hover" width="100%">
 											<thead>			                
 												<tr>
 													<th data-class="expand">Nombre Afiliado</th>
@@ -52,13 +52,14 @@
 													<th data-hide="phone,tablet">whole_price</th>
 													<th data-hide="phone,tablet">retail_price</th>
 													<th data-hide="phone,tablet">skuid</th>
+													<th data-hide="phone,tablet">fecha</th>
 												</tr>
 											</thead>
 											<tbody>
 												
 												<?foreach ($facturas_recG as $factura_recG) {?>
 													<tr>
-														<td><?php echo $factura_recG->nombre; ?></td>
+														<td><?php echo $factura_recG->Nombre; ?></td>
 														<td><?php echo $factura_recG->transactionid; ?></td>
 														<td><?php  echo $factura_recG->msisdn; ?></td>
 														<td><?php  echo $factura_recG->destination_msisdn; ?></td>
@@ -71,6 +72,7 @@
 														<td><?php  echo $factura_recG->wholesale_price; ?></td>
 														<td><?php  echo $factura_recG->retail_price; ?></td>
 														<td><?php  echo $factura_recG->skuid;?></td>
+														<td><?php  echo $factura_recG->fecha;?></td>
 													</tr>
 												<?}?>
 											</tbody>
@@ -142,7 +144,7 @@ $(document).ready(function() {
 			"preDrawCallback" : function() {
 				// Initialize the responsive datatables helper once.
 				if (!responsiveHelper_dt_basic) {
-					responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
+					responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic1'), breakpointDefinition);
 				}
 			},
 			"rowCallback" : function(nRow) {

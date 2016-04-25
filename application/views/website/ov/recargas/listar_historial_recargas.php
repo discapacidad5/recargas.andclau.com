@@ -47,9 +47,9 @@
 													<th data-hide="phone,tablet">reference_operator</th>
 													<th data-hide="phone,tablet">originating_currency</th>
 													<th data-hide="phone,tablet">destination_currency</th>
-													<th data-hide="phone,tablet">whole_price</th>
 													<th data-hide="phone,tablet">retail_price</th>
 													<th data-hide="phone,tablet">skuid</th>
+													<th data-hide="phone,tablet">fecha</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -66,9 +66,9 @@
 														<td><?php  echo $factura_rec->operatorid; ?></td>
 														<td><?php  echo $factura_rec->originating_currency; ?></td>
 														<td><?php  echo $factura_rec->destination_currency;?></td>
-														<td><?php  echo $factura_rec->wholesale_price; ?></td>
 														<td><?php  echo $factura_rec->retail_price; ?></td>
 														<td><?php  echo $factura_rec->skuid;?></td></tr>
+														<td><?php  echo $factura_rec->fecha;?></td></tr>
 												<?}?>
 											</tbody>
 										</table>

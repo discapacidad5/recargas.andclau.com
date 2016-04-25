@@ -83,8 +83,8 @@ class model_recargas extends CI_Model
 	{
 		$q=$this->db->query('select  transactionid,msisdn,destination_msisdn,Country,
                              countryid,operator,operatorid,
-                             originating_currency,destination_currency,wholesale_price,
-                            retail_price,skuid from factura_recarga where id_user='.$id.';');
+                             originating_currency,destination_currency,
+                            retail_price,skuid,fecha from factura_recarga where id_user='.$id.' order by fecha desc;');
 		$result=$q->result();
 		$this->factura_recargas->setFactura_rec($result);
 	}
@@ -94,8 +94,8 @@ class model_recargas extends CI_Model
 		$q=$this->db->query('select   user_profiles.nombre,transactionid,msisdn,destination_msisdn,Country,
            countryid,operator,operatorid,
            originating_currency,destination_currency,wholesale_price,
-           retail_price,skuid from factura_recarga,user_profiles where 
-           factura_recarga.id_user=user_profiles.user_id ;');
+           retail_price,skuid,fecha from factura_recarga,user_profiles where 
+           factura_recarga.id_user=user_profiles.user_id order by fecha desc ;');
 		
 		$result=$q->result();
 		$this->factura_recargas->setFactura_recG($result);

@@ -92,4 +92,20 @@ class model_pin extends CI_Model
 		$this->factura_recargas->setCredito($result);
 	}
 	
+	function listar_pinesComprados($id){
+	
+		$dato=array(
+				"id_user" => 	$this->tank_auth->get_user_id(),
+				"id_pin" =>				$this->pin->getId()
+				
+		);
+	
+		#echo $dato['id']."|".$dato['descripcion']."|".$dato['id_pin_tarifas']."|".$dato['costo'];exit();
+	
+		$this->db->insert("histo_pinescompra",$dato);
+	
+		return true;
+	}
+	
+	
 }
