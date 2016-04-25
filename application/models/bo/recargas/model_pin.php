@@ -84,7 +84,7 @@ class model_pin extends CI_Model
 	
 	function listar_pines_deCompra()
 	{
-		$q=$this->db->query("select p.id,t.credito,t.valor,min(p.costo) costo
+		$q=$this->db->query("select p.id,t.credito,t.valor,round(min(p.costo),2) costo
 								from pin_tarifas t, pin p
 								where t.id = p.id_pin_tarifas and estatus = 'ACT'
 								group by p.id_pin_tarifas;");

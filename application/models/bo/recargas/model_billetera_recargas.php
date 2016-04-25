@@ -14,16 +14,16 @@ class model_billetera_recargas extends CI_Model
 	function getSaldos(){
 		$q=$this->db->query("SELECT 
 								u.id,u.username,b.id bill,
-								(select sum(valor) 
+								(select round(sum(valor),2) 
 									from billetera_recargas_saldo 
 									where id_billetera = b.id) saldo,
-								(select sum(valor) 
+								(select round(sum(valor))
 									from billetera_recargas_canjeo 
 									where id_billetera = b.id and estatus = 'ACT') disponible,
-								(select sum(valor) 
+								(select round(sum(valor),2) 
 									from billetera_recargas_canjeo 
 									where id_billetera = b.id) quitado,
-								(select sum(valor) 
+								(select round(sum(valor),2) 
 									from billetera_recargas_retiro 
 									where id_billetera = b.id) consumo
 								FROM billetera_recargas b, users u

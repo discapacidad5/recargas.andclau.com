@@ -44,8 +44,10 @@
 	        </label>
 	        <label style="margin: 1rem;" class="input">
 	        Descripcion
-	       <TEXTAREA id='descripcion' style="padding-left: 3%;" class="form-control" name="descripcion" placeholder="Descripcion" rows="3" cols="30" >
-			</TEXTAREA> 
+	       <TEXTAREA id='descripcion' 
+	       style="padding-left: 3%;" 
+	       class="form-control" name="descripcion" 
+	       placeholder="Descripcion" rows="3" cols="30" ></TEXTAREA> 
 	        </label>
 			<label style="margin: 1rem;" class="select">       
 		       Valor <select id='porc' class="form-control" name="valor" required>

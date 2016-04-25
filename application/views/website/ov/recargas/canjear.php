@@ -19,7 +19,7 @@
 																		<label class="label "><b>Saldo Billetera</b></label>
 																		<label class="input input state-success">
 																			<input type="text" name="saldo"  class="from-control" id="saldo" 
-																			value="<?php echo number_format($saldo,2) ?>" readonly />
+																			value="<?php echo $saldo ?>" readonly />
 																		</label>
 																	</section>
 																	<section class="col col-10">
@@ -32,7 +32,7 @@
 																	<section class="col col-10">
 																		<label class="label"><b>Saldo Billetera Final</b></label>
 																		<label class="input state-disabled state-error">
-																			<input value="<?php echo number_format($saldo,2) ?>"  type="number" disabled="disabled" name="neto" id="neto" class="from-control" readonly />
+																			<input value="<?php echo $saldo ?>"  type="number" disabled="disabled" name="neto" id="neto" class="from-control" readonly />
 																		</label>
 																	</section>
 																</fieldset>	

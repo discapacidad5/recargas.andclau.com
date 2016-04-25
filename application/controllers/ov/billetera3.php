@@ -458,7 +458,7 @@ function multimedia()
 		
 		$this->billetera_recargas->setUsuario($id);
 		$this->model_billetera_recargas->getSaldos();
-		$this->saldo = number_format($this->billetera_recargas->getSaldo(),2);
+		$this->saldo = $this->billetera_recargas->getSaldo();
 		#$this->disponible = $this->billetera_recargas->getDisponible();
 		
  
