@@ -79,7 +79,7 @@
 													<label
 														class="input input state-success"> <input type="text"
 														name="saldo" class="from-control" id="saldo"
-														value="<?php echo number_format($disponible,2)  ?>"
+														value="<?php echo $disponible  ?>"
 														readonly />
 													</label>
 												</section>
@@ -88,7 +88,7 @@
 													<label
 														class="input state-disabled state-error"> <input
 														type="text" disabled="disabled" name="neto" id="neto"
-														value="<?php echo number_format($disponible,2)  ?>"
+														value="<?php echo $disponible  ?>"
 														class="from-control" readonly />
 													</label>
 												</section>
@@ -482,7 +482,7 @@ function cobrar() {
 								}
 							})//fin done ajax
 						}else{
-							alert("Los datos de la operación estan incompletos o erroneos");
+							alert("Algun dato esta incompleto o erroneo");
 						}						
 					});//Fin callback bootbox
 

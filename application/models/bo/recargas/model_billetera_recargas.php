@@ -34,16 +34,11 @@ class model_billetera_recargas extends CI_Model
 		
 		$disponible = $q[0]->disponible - $q[0]->consumo;
 		$saldo = $q[0]->saldo - $q[0]->quitado;
-		
-		($disponible<=0) ? $this->limpiar("canjeo", $q[0]->bill): '';
-		($saldo<=0) ? $this->limpiar("saldo", $q[0]->bill): '';
-		($disponible<=0) ? $this->limpiar("retiro", $q[0]->bill): '';
-		
-		
+				
 		$Saldos = array(
 				#'billetera' => $q[0]->saldo,
-				'disponible' => ($disponible<0) ? 0 : $disponible,
-				'saldo' => ($saldo<0) ? 0 : $saldo
+				'disponible' => ($disponible<=0.011) ? 0 : $disponible,
+				'saldo' => ($saldo<=0.011) ? 0 : $saldo
 		);
 		
 		$this->billetera_recargas->setSaldos($Saldos);
@@ -89,7 +84,7 @@ class model_billetera_recargas extends CI_Model
 		$this->getId();
 		$data = array(
 				'id_billetera' => $this->billetera_recargas->getId(),
-				'valor' => $this->billetera_recargas->getValor()*1.05,
+				'valor' => $this->billetera_recargas->getValor(),
 				'estatus' => 'ACT'
 		);
 	
@@ -157,5 +152,6 @@ class model_billetera_recargas extends CI_Model
 		
 	function limpiar($tabla,$id){
 		$this->db->query("DELETE FROM billetera_recargas_".$tabla."  where id_billetera = ".$id);
+		return 0;
 	}
 }

@@ -28,6 +28,7 @@ class billetera3 extends CI_Controller
 		$this->load->model('bo/recargas/model_billetera_recargas');
 		$this->load->model('bo/recargas/factura_recargas');
 		$this->load->model('ov/modelo_recargas');
+		$this->load->model('cemail');
 
 		if (!$this->tank_auth->is_logged_in())
 		{																		// logged in
@@ -394,7 +395,7 @@ function multimedia()
 		#echo "aqui!";
 		
 		$id = $_POST['id'];
-		#$credito  = $_POST['credito'];
+		$credito  = $_POST['credito'];
 		$pin  = $_POST['pin'];
 		$monto  = intval($_POST['valor'])*0.1;
 		$costo  = intval($_POST['valor']);	
@@ -422,7 +423,7 @@ function multimedia()
 		$this->model_billetera_recargas->agregarRetiro_BilleteraRec($id,$costo,'MEDIA',$pin);
 		$this->model_billetera_recargas->agregarSaldo_BilleteraRec($id,$monto,'PIN');
 	
-		/*$data = array(
+		$data = array(
 		 'email' => $this->model_perfil_red->get_email($id),
 		 'username' => $this->model_perfil_red->get_username($id),
 		 'pin' => $pin,
@@ -431,7 +432,7 @@ function multimedia()
 		 );
 		
 		$email = $this->cemail->send_email(12, $data['email'], $data);
-		*/
+		
 		echo $this->model_pin->pin_comprar() 
 		? "Pin Comprado Exitosamente <br/> <ul><li>Numero de Pin 
 		: ".$pin."</li></ul>" : "Pin no pudo ser Comprado ";
@@ -449,7 +450,9 @@ function multimedia()
 			redirect('/auth');
 		}
 		
-		if(intval($_POST['cobro'])<0){
+		$monto = $_POST['cobro']-0.01;
+		
+		if($monto<0){
 			echo "ERROR <br>Valor del cobro invalido.";
 			exit();
 		}	
@@ -461,10 +464,10 @@ function multimedia()
 		$this->saldo = $this->billetera_recargas->getSaldo();
 		#$this->disponible = $this->billetera_recargas->getDisponible();
 		
- 
-		if(($this->saldo-$_POST['cobro'])>=0){
-			$this->billetera_recargas->setValor($_POST['cobro']);
+		if(($this->saldo-$monto)>0){
+			$this->billetera_recargas->setValor($monto*1.05);
 			$this->model_billetera_recargas->agregarCanjeo();
+			$this->model_billetera_recargas->agregarSaldo_BilleteraRec($id,($monto*0.05),'ADICIONAL');
 			echo "Felicitaciones<br> Tu Canjeo se ha Realizado.";
 		}else {
 			echo "ERROR <br>No hay saldo para realizar el Canjeo.";
@@ -600,7 +603,7 @@ function multimedia()
 			$transaccion = ($values['error_code']==0) 
 			? $this->model_recargas->insertar_gsm($values,$id) : $values['transactionid'];
 			$this->recarga->setId($transaccion);
-			//echo $transaccion;//exit();
+			//echo $transaccion."|".$sku[1];exit();
 			
 			$this->billetera_recargas->setValor($sku[1]);
 			$this->model_billetera_recargas->agregarRetiro();
@@ -820,7 +823,7 @@ $salida.= ($operator == $selected)
 	private function get_products($values) {
 		$minimum_local =  $values['open_range_minimum_amount_local_currency'];
 		#$maximum_local =  $values['open_range_maximum_amount_local_currency'];
-		$minimum =  $values['open_range_minimum_amount_requested_currency'];
+		$minimum =  $values['open_range_minimum_amount_requested_currency']+0.01;
 		$maximum =  $values['open_range_maximum_amount_requested_currency'];
 		$increment_local = $values['open_range_increment_local_currency'];
 		$increment = (($increment_local*$minimum)/$minimum_local);
@@ -848,9 +851,9 @@ $salida.= ($operator == $selected)
 						'.//<h6>'.$retail_price_list[$i].'</h4>
 						//<p>'.$wholesale_price_list[$i].'</p>
 						'<input type="radio" value="'.intval($skuid)
-						.'|'.number_format($i,2)
-						.'|'.number_format($i,2)
-						.'|'.number_format($i,2)
+						.'|'.$i
+						.'|'.$i
+						.'|'.$i
 						.'|2|'.$local
 						.'|'.$local_currency
 						.'" id="monto" name="delivered_amount_info" />		
