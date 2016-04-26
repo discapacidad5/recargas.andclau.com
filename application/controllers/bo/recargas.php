@@ -188,6 +188,35 @@ class recargas extends CI_Controller {
 		echo $this->model_pin->eliminar_pin () ? "Pin eliminado Exitosamente" : "Pin no pudo ser eliminado";
 	}
 	
+	function listar_pinescompra2()
+	{
+		if (!$this->tank_auth->is_logged_in())
+		{																		// logged in
+			redirect('/auth');
+		}
+	
+		$id              = $this->tank_auth->get_user_id();
+		$style=$this->modelo_dashboard->get_style($id);
+	
+		$this->template->set("style",$style);
+	
+		$this->model_pin->listar_pinscompra2();
+		$pinc = $this->pin->getPinc();
+	
+		#echo var_dump($pinc);exit();
+	
+		$this->template->set("pinesc",$pinc);
+	
+	
+	
+	
+		$this->template->set_theme('desktop');
+		$this->template->set_layout('website/main');
+		$this->template->set_partial('header', 'website/bo/header');
+		$this->template->set_partial('footer', 'website/bo/footer');
+		$this->template->build('website/bo/recargas/listar_pinescomprados');
+	}
+	
 	function historialRec() {
 		if (! $this->tank_auth->is_logged_in ()) { // logged in
 			redirect ( '/auth' );
@@ -233,4 +262,7 @@ class recargas extends CI_Controller {
 		$this->template->set_partial ( 'footer', 'website/bo/footer' );
 		$this->template->build ( 'website/bo/recargas/historialGeneralR' );
 	}
+	
+	
+	
 }
