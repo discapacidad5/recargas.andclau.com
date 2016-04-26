@@ -160,7 +160,7 @@
 													<section class="col col-3">
 														<label class="input">
 														Puntos comisionables
-															<input type="number" min="1" max="" name="puntos_com" id="puntos_com">
+															<input type="number" min="0" max="" name="puntos_com" id="puntos_com">
 														</label>
 													</section>
 													<legend>Impuestos</legend>

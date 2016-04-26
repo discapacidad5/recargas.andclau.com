@@ -198,7 +198,7 @@
 													<section class="col col-3">
 														<label class="input">
 															Puntos comisionables
-															<input type="number" min="1" max="" name="puntos_com" id="puntos_com">
+															<input type="number" min="0" max="" name="puntos_com" id="puntos_com">
 														</label>
 													</section>
 													
@@ -642,7 +642,7 @@ $(function()
 	});
 });
 
-function new_product()
+/*function new_product()
 {
 	$('#prods').append('<section class="col col-8">Productos'
 		+'<label class="select">'
@@ -848,7 +848,7 @@ function dato_pais(codigo,nombre)
 			}
 		})
 	});
-}
+}*/
 function dato_pais_multiple()
 {
 	/*bootbox.dialog({
@@ -1595,7 +1595,7 @@ $("#mercancia").submit(function(event){
 
 	});
 
-function new_pack()
+/*function new_pack()
 {
 	bootbox.dialog({
 		message: '<form id="form_paquete" method="post" action="/bo/admin/alta_paquete" class="smart-form">'
@@ -1719,7 +1719,7 @@ function new_pack()
 			}
 		}
 	})
-}
+}*/
 
 function ImpuestosPais(){
 	var pa = $("#pais").val();

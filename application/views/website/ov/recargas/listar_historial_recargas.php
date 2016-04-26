@@ -36,19 +36,15 @@
 														<table id="dt_basic2" class="table table-striped table-bordered table-hover" width="100%">
 											<thead>			                
 												<tr>
-													
+													<th data-class="expand">fecha</th>
 													<th data-class="expand">Transactionid</th>
 													<th data-hide="phone,tablet">msisdn</th>
 													<th data-hide="phone,tablet">destination_msisdn</th>
 													<th data-hide="phone,tablet">country</th>
-													<th data-hide="phone,tablet">countryid</th>
 													<th data-hide="phone,tablet">operator</th>
-													<th data-hide="phone,tablet">operatorid</th>
-													<th data-hide="phone,tablet">originating_currency</th>
-													<th data-hide="phone,tablet">destination_currency</th>
 													<th data-hide="phone,tablet">retail_price</th>
-													<th data-hide="phone,tablet">skuid</th>
-													<th data-hide="phone,tablet">fecha</th>
+													<th data-hide="phone,tablet">Precio local</th>
+													
 												</tr>
 											</thead>
 											<tbody>
@@ -56,18 +52,15 @@
 												<?foreach ($facturas_rec as $factura_rec) {?>
 													<tr>
 														
+														<td><?php  echo $factura_rec->fecha;?></td>
 														<td><?php echo $factura_rec->transactionid; ?></td>
 														<td><?php  echo $factura_rec->msisdn; ?></td>
 														<td><?php  echo $factura_rec->destination_msisdn; ?></td>
 														<td><?php  echo $factura_rec->Country; ?></td>
-														<td><?php  echo $factura_rec->countryid; ?></td>
 														<td><?php  echo $factura_rec->operator; ?></td>
-														<td><?php  echo $factura_rec->operatorid; ?></td>
-														<td><?php  echo $factura_rec->originating_currency; ?></td>
-														<td><?php  echo $factura_rec->destination_currency;?></td>
 														<td><?php  echo $factura_rec->retail_price; ?></td>
-														<td><?php  echo $factura_rec->skuid;?></td>
-														<td><?php  echo $factura_rec->fecha;?></td></tr>
+														<td><?php  echo $factura_rec->local;?></td>
+														</tr>
 												<?}?>
 											</tbody>
 										</table>
@@ -130,7 +123,17 @@ $(document).ready(function() {
 			phone : 480
 		};
 
+<<<<<<< HEAD
 		$('#dt_basic2').dataTable({
+=======
+		$('#dt_basic').dataTable({
+			//"bFilter": true,
+	    	//"bInfo": false,
+	    	//"bLengthChange": false
+	    	//"bAutoWidth": false,
+	    	//"bPaginate": false,
+	    	"bSort": false,
+>>>>>>> f1bb275bf72753b762aed3dc5300a8f7d872e908
 			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
 				"t"+
 				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
@@ -163,6 +166,7 @@ $(document).ready(function() {
 		};
 
 		$('#dt_basic_paquete').dataTable({
+			
 			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
 				"t"+
 				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",

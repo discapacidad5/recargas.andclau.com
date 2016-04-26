@@ -3,7 +3,7 @@
 	
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
-		<form action="/bo/comercial/add_sub_billetera_afiliado" onmouseenter="" method="POST" id="edit" role="form" class="smart-form">
+		<form action="" onmouseenter="" method="POST" id="edit" role="form" class="smart-form">
 		
 			<legend>Modificar Saldo del Afiliado</legend>
 
@@ -252,15 +252,18 @@
 var tipo = "";
 $( "#ADD" ).click(function( event ) {
 	tipo = "ADD";
+	event.preventDefault();	
+	enviar();
 });
 
 $( "#SUB" ).click(function( event ) {
 	tipo = "SUB";
+	event.preventDefault();	
+	enviar();
 });
 
 $( "#edit" ).submit(function( event ) {
 	event.preventDefault();	
-	enviar();
 });
 
 function enviar(){
