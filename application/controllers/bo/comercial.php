@@ -163,10 +163,12 @@ class comercial extends CI_Controller
 		$id = $_POST['id'];
 		$monto = $_POST['cobro'];
 		$tipo = $_POST['tipo'];
-	//echo "dentro de la funcion ".$id."|".$tipo."|".$monto;
+		
+		//echo "dentro de la funcion ".$id."|".$tipo."|".$monto;
+		
 		$transact = $this->model_billetera_recargas->add_sub_billeteraRec($tipo,$id,$monto);
 	 
-		/*$data = array(
+		$data = array(
 				'email' => $this->model_perfil_red->get_email($id),
 				'username' => $this->model_perfil_red->get_username($id),
 				'id_transaccion' => $transact,
@@ -174,7 +176,7 @@ class comercial extends CI_Controller
 				'monto_t' => $monto
 		);
 	
-		$email = $this->cemail->send_email(11, $data['email'], $data);*/
+		$email = $this->cemail->send_email(11, $data['email'], $data);
 	
 		echo $transact ? "Transacción Exitosa" : "Falló la Transacción";
 		//echo $email ? "Email Enviado" : "Falló envio de Email";

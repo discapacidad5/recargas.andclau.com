@@ -3,7 +3,7 @@
 	
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
-		<form action="/bo/comercial/add_sub_billetera_afiliado" onmouseenter="" method="POST" id="edit" role="form" class="smart-form">
+		<form action="" onmouseenter="" method="POST" id="edit" role="form" class="smart-form">
 		
 			<legend>Modificar Recarga Saldo del Afiliado</legend>
 
@@ -59,10 +59,10 @@
 					<br/>					
 					<section class="col col-8"></section>
 					<section class="col col-2">
-							<button type="submit" id="ADD" class="btn btn-success  btn-next"  >Agregar</button>				
+							<button type="button" id="ADD" class="btn btn-success  btn-next" disabled >Agregar</button>				
 					</section>
 					<section class="col col-2">
-							<button type="submit" id="SUB" class="btn btn-danger btn-prev"  >Quitar</button>						
+							<button type="button" id="SUB" class="btn btn-danger btn-prev" disabled >Quitar</button>						
 					</section>						
 					
 				</div>
@@ -87,17 +87,30 @@
 
 <script type="text/javascript">
 var tipo = "";
+$("#cobro").keyup(function(){
+	if($("#cobro").val()>0){
+		$('.btn').attr("disabled", false);
+	}else{
+		$('.btn').attr("disabled", true);
+	}	
+});
 $( "#ADD" ).click(function( event ) {
 	tipo = "ADD";
+	event.preventDefault();	
+	enviar();
 });
 
 $( "#SUB" ).click(function( event ) {
 	tipo = "SUB";
+	event.preventDefault();	
+	enviar();
 });
 
 $( "#edit" ).submit(function( event ) {
 	event.preventDefault();	
-	enviar();
+	if(tipo){
+		enviar();
+	}
 });
 
 function enviar(){

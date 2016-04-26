@@ -39,40 +39,34 @@
 														<table id="dt_basic1" class="table table-striped table-bordered table-hover" width="100%">
 											<thead>			                
 												<tr>
-													<th data-class="expand">Nombre Afiliado</th>
+													<th data-hide="phone,tablet">fecha</th>
+													<th data-class="expand">Afiliado</th>
 													<th data-class="expand">Transactionid</th>
 													<th data-hide="phone,tablet">msisdn</th>
 													<th data-hide="phone,tablet">destination_msisdn</th>
 													<th data-hide="phone,tablet">country</th>
-													<th data-hide="phone,tablet">countryid</th>
 													<th data-hide="phone,tablet">operator</th>
-													<th data-hide="phone,tablet">operatorid</th>
-													<th data-hide="phone,tablet">originating_currency</th>
-													<th data-hide="phone,tablet">destination_currency</th>
 													<th data-hide="phone,tablet">whole_price</th>
 													<th data-hide="phone,tablet">retail_price</th>
-													<th data-hide="phone,tablet">skuid</th>
-													<th data-hide="phone,tablet">fecha</th>
+													<th data-hide="phone,tablet">Precio local</th>
+													
 												</tr>
 											</thead>
 											<tbody>
 												
 												<?foreach ($facturas_recG as $factura_recG) {?>
 													<tr>
-														<td><?php echo $factura_recG->Nombre; ?></td>
+														<td><?php  echo $factura_recG->fecha;?></td>
+														<td><?php echo $factura_recG->nombre; ?></td>
 														<td><?php echo $factura_recG->transactionid; ?></td>
 														<td><?php  echo $factura_recG->msisdn; ?></td>
 														<td><?php  echo $factura_recG->destination_msisdn; ?></td>
 														<td><?php  echo $factura_recG->Country; ?></td>
-														<td><?php  echo $factura_recG->countryid; ?></td>
 														<td><?php  echo $factura_recG->operator; ?></td>
-														<td><?php  echo $factura_recG->operatorid; ?></td>
-														<td><?php  echo $factura_recG->originating_currency; ?></td>
-														<td><?php  echo $factura_recG->destination_currency;?></td>
 														<td><?php  echo $factura_recG->wholesale_price; ?></td>
 														<td><?php  echo $factura_recG->retail_price; ?></td>
-														<td><?php  echo $factura_recG->skuid;?></td>
-														<td><?php  echo $factura_recG->fecha;?></td>
+														<td><?php  echo $factura_recG->local;?></td>
+														
 													</tr>
 												<?}?>
 											</tbody>
@@ -137,6 +131,7 @@ $(document).ready(function() {
 		};
 
 		$('#dt_basic1').dataTable({
+			"bSort": false,
 			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
 				"t"+
 				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",

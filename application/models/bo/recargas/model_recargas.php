@@ -52,19 +52,8 @@ class model_recargas extends CI_Model
 				  'destination_currency' => $values['destination_currency'],
 				  'wholesale_price' => $values['wholesale_price'],
 				  'retail_price' => $values['retail_price'],
-				  /*'balance' => $values['balance'],
-				  'sms_sent' => $values['sms_sent'],
-				  'info_txt' => $values['info_txt'],
-				  'open_range' => $values['open_range'],
-				  'open_range_local_amount_delivered' => $values['open_range_local_amount_delivered'],
-				  'open_range_local_amount_requested' => $values['open_range_local_amount_requested'],
-				  'open_range_local_currency' => $values['open_range_local_currency'],
-				  'open_range_requested_amount' => $values['open_range_requested_amount'],
-				  'open_range_requested_currency' => $values['open_range_requested_currency'],
-				  'open_range_wholesale_cost' => $values['open_range_wholesale_cost'],
-				  'open_range_wholesale_discount' => $values['open_range_wholesale_discount'],
-				  'open_range_wholesale_currency' => $values['open_range_wholesale_currency'],
-				  'open_range_wholesale_rate' => $values['open_range_wholesale_rate'],*/
+				  'local_info_amount' => $values['local_info_amount'],
+				  'local_info_currency' => $values['local_info_currency'],
 				  'skuid' => $values['skuid'],
 				  'authentication_key' => $values['authentication_key'],
 				  'error_code' => $values['error_code'],
@@ -81,21 +70,51 @@ class model_recargas extends CI_Model
 	
 	function listar_facturaRecargas($id)
 	{
-		$q=$this->db->query('select  transactionid,msisdn,destination_msisdn,Country,
-                             countryid,operator,operatorid,
-                             originating_currency,destination_currency,
-                            retail_price,skuid,fecha from factura_recarga where id_user='.$id.' order by fecha desc;');
+		$q=$this->db->query('select 
+							    transactionid,
+							    msisdn,
+							    destination_msisdn,
+							    Country,
+							    countryid,
+							    operator,
+							    operatorid,
+							    originating_currency,
+							    destination_currency,
+							    concat(retail_price," ",originating_currency) retail_price,
+								concat(local_info_amount," ",local_info_currency) local,
+							    skuid,
+							    fecha
+							from
+							    factura_recarga
+							where id_user='.$id.' order by fecha desc');
 		$result=$q->result();
 		$this->factura_recargas->setFactura_rec($result);
 	}
 	
 	function listar_facturaRecargasGeneral()
 	{ 
-		$q=$this->db->query('select   user_profiles.nombre,transactionid,msisdn,destination_msisdn,Country,
-           countryid,operator,operatorid,
-           originating_currency,destination_currency,wholesale_price,
-           retail_price,skuid,fecha from factura_recarga,user_profiles where 
-           factura_recarga.id_user=user_profiles.user_id order by fecha desc ;');
+		$q=$this->db->query('select 
+							    p.nombre,
+							    transactionid,
+							    msisdn,
+							    destination_msisdn,
+							    Country,
+							    countryid,
+							    operator,
+							    operatorid,
+							    originating_currency,
+							    destination_currency,
+							    wholesale_price,
+							    concat(retail_price," ",originating_currency) retail_price,
+								concat(local_info_amount," ",local_info_currency) local,
+							    skuid,
+							    fecha
+							from
+							    factura_recarga,
+							    user_profiles p								
+							where
+							    factura_recarga.id_user = p.user_id
+							order by fecha desc');
 		
 		$result=$q->result();
 		$this->factura_recargas->setFactura_recG($result);
