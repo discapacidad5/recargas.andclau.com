@@ -33,41 +33,27 @@
 						<div class="widget-body">
 							<div class="tab-pane">
 							
-														<table id="dt_basic2" class="table table-striped table-bordered table-hover" width="100%">
+														<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
 											<thead>			                
 												<tr>
 													
-													<th data-class="expand">Transactionid</th>
-													<th data-hide="phone,tablet">msisdn</th>
-													<th data-hide="phone,tablet">destination_msisdn</th>
-													<th data-hide="phone,tablet">country</th>
-													<th data-hide="phone,tablet">countryid</th>
-													<th data-hide="phone,tablet">operator</th>
-													<th data-hide="phone,tablet">operatorid</th>
-													<th data-hide="phone,tablet">originating_currency</th>
-													<th data-hide="phone,tablet">destination_currency</th>
-													<th data-hide="phone,tablet">retail_price</th>
-													<th data-hide="phone,tablet">skuid</th>
-													<th data-hide="phone,tablet">fecha</th>
+													<th data-class="expand">Numero de Pin</th>
+													<th data-hide="phone,tablet">Creditos</th>
+													<th data-hide="phone,tablet">Costo</th>
+													<th data-hide="phone,tablet">Fecha</th>
+													
 												</tr>
 											</thead>
 											<tbody>
 												
-												<?foreach ($facturas_rec as $factura_rec) {?>
+												<?foreach ($pinesc as $pinc) {?>
 													<tr>
 														
-														<td><?php echo $factura_rec->transactionid; ?></td>
-														<td><?php  echo $factura_rec->msisdn; ?></td>
-														<td><?php  echo $factura_rec->destination_msisdn; ?></td>
-														<td><?php  echo $factura_rec->Country; ?></td>
-														<td><?php  echo $factura_rec->countryid; ?></td>
-														<td><?php  echo $factura_rec->operator; ?></td>
-														<td><?php  echo $factura_rec->operatorid; ?></td>
-														<td><?php  echo $factura_rec->originating_currency; ?></td>
-														<td><?php  echo $factura_rec->destination_currency;?></td>
-														<td><?php  echo $factura_rec->retail_price; ?></td>
-														<td><?php  echo $factura_rec->skuid;?></td>
-														<td><?php  echo $factura_rec->fecha;?></td></tr>
+														<td><?php echo $pinc->id_pin; ?></td>
+														<td><?php  echo $pinc->credito; ?></td>
+														<td><?php  echo $pinc->costo; ?></td>
+														<td><?php  echo $pinc->fecha; ?></td>
+														</tr>
 												<?}?>
 											</tbody>
 										</table>
@@ -130,7 +116,7 @@ $(document).ready(function() {
 			phone : 480
 		};
 
-		$('#dt_basic2').dataTable({
+		$('#dt_basic').dataTable({
 			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
 				"t"+
 				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
@@ -138,7 +124,7 @@ $(document).ready(function() {
 			"preDrawCallback" : function() {
 				// Initialize the responsive datatables helper once.
 				if (!responsiveHelper_dt_basic) {
-					responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic2'), breakpointDefinition);
+					responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
 				}
 			},
 			"rowCallback" : function(nRow) {
