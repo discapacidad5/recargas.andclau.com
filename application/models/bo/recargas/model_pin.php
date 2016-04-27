@@ -118,7 +118,8 @@ class model_pin extends CI_Model
 	
 	function listar_pinscompra2()
 	{
-		$q=$this->db->query("select id_user,id_pin,credito,costo,fecha from histo_pinescompra order by fecha desc;");
+		$q=$this->db->query("select nombre,id_pin,credito,costo,fecha from histo_pinescompra,user_profiles 
+				             where id_user=user_id order by fecha desc;");
 		$result=$q->result();
 		#echo var_dump($result);exit();
 		$this->pin->setPinc($result);

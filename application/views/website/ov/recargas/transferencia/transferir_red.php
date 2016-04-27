@@ -9,7 +9,7 @@ function subred(id,profundidad)
 	$("#"+id).children(".quitar").attr('onclick','');
 	$.ajax({
 		type: "POST",
-		url: "/ov/perfil_red/get_red_afiliar",
+		url: "/ov/billetera3/get_red_afiliar",
 		data: {id: id,
 				red: <?php echo $_GET['id']; ?>,profundidad: profundidad,},
 	})
@@ -140,10 +140,12 @@ function detalles(id)
 														<li id="<?=$key->id_afiliado?>">
 															<a class="quitar" style="background: url('<?=$img?>'); background-size: cover; background-position: center;" onclick="subred(<?=$key->id_afiliado?>, 1)" href="#"></a>
 															<div  onclick="detalles(<?=$key->id_afiliado?>)" class="<?=($key->directo==0) ? 'todo' : 'todo1'?>"><?=$key->afiliado?> <?=$key->afiliado_p?><br />Detalles</div>
-														<div> <input value="Agregar" type="submit" style="background-color:#01DF3A;" onclick="detalles2(<?=$key->id_afiliado?>)" class="<?=($key->directo==0) ? 'todo' : 'todo1'?>"><br /></div>
+														   <div > <input class="btn" value="Agregar" type="button" style="background-color:#01DF3A;" onclick="detalles2(<?=$key->id_afiliado?> ,<?=$id ?>)" class="<?=($key->directo==0) ? 'todo' : 'todo1'?>"><br /></div>
+														
 														</li>
-														<?}
-                                                    }
+														<?}?>	
+														
+														                <?}
 													if($afiliados==null||$id==2||$red_frontales[0]->frontal>count($afiliados))
                                                         {?>
 														<li>
@@ -321,11 +323,11 @@ Thanks :)*/
 	});
 }*/
  
- function detalles2(id){
+ function detalles2(afiliado,id){
 	 $.ajax({
 	 	type: "POST",
 	 	url: "/ov/billetera3/transferencia_usu",
-	 	data: {id:id},
+	 	data: {id:id,afiliado:afiliado},
 	 })
 	 .done(function( msg )
 	 {

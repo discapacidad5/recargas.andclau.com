@@ -1192,37 +1192,45 @@ $salida.= ($operator == $selected)
 	
 	}
 	
-	function enviar_confirmacion(){
+	function enviar_transferencia(){
 	
 		//echo "dentro de enviar";
 	
-		$red = $_POST['red'];
-		$debajo_de = $_POST['debajo_de'];
-		$lado = $_POST['lado'];
-		$email = $_POST['email'];
+		$afiliado = $_POST['id'];
+		$cobro = $_POST['cobro'];
 		$id = $this->tank_auth->get_user_id();
+		
+		if($id == 2){
+			$wallet = $this->check_wallet();
+			$this->saldo = intval($wallet['balance']);
+		}else{
+			$this->billetera_recargas->setUsuario($id);
+			$this->model_billetera_recargas->getSaldos();
+			$this->saldo = $this->billetera_recargas->getSaldo();
+		}		
+		
+		if(($this->saldo-$cobro)<0){
+			echo "ERROR <br>No hay saldo suficiente para realizar la Transferencia.";
+			exit();
+		}
 	
-		$token = $this->general->new_invitacion($email,$red,$id,$debajo_de,$lado);
-	
-		$banner = $this->model_admin->img_banner();
-		$sponsor = array(
-				'name' => $this->model_perfil_red->get_nombres($id),
-				'email' => $this->model_perfil_red->get_email($id),
-				'tel' => $this->model_perfil_red->telefonos_group($id)
-		);
+		$validar = $this->model_billetera_recargas->agregarSaldo_BilleteraRec($afiliado,$cobro,'TRANSFER');
+		$this->model_billetera_recargas->agregarCanjeo_BilleteraRec($id,$cobro,'DES');
 	
 		$data = array(
-				'token' => $token,
-				'email' => $email,
-				'b_img' => $banner[0]->nombre_banner,
-				'b_desc' => $banner[0]->descripcion,
-				'sponsor_name' => $sponsor['name'],
-				'sponsor_email' => $sponsor['email'],
-				'sponsor_tel' => $sponsor['tel']
-		);
-	
-		//$img = site_url(($data['b_img']) ? '/media/Empresa/'.$data['b_img'] : '/logo.png');
-		echo ($this->cemail->send_email(8, $email, $data)) ? "Invitación Realizada con Exito. " : "Error al Enviar Invitación.";
+		 'email' => $this->model_perfil_red->get_email($afiliado),
+		 'username' => $this->model_perfil_red->get_username($afiliado),
+		 'afiliado' => $id,
+		 'cobro' => $cobro
+		 );
+		
+		//$email = $this->cemail->send_email(13, $data['email'], $data);
+		
+		echo $validar
+		? "Transaccion Exitosa" : "Transacción no pudo ser Realizada ";
+		
+		//echo $email ? "Email Enviado" : "Falló envio de Email";
+		//redirect('bo/recargas/listar_pines');
 	
 	}
 	
@@ -1238,6 +1246,8 @@ $salida.= ($operator == $selected)
 		if($this->general->isActived($id)!=0){
 			redirect('/ov/compras/carrito');
 		}
+		
+		$afiliado = $_POST['afiliado'];
 	
 		$pais  = $this->model_recargas->get_pais();
 		$this->template->set("pais",$pais);
@@ -1245,10 +1255,18 @@ $salida.= ($operator == $selected)
 		$this->recarga->setAccount();
 		$account=$this->recarga->getAccount();
 	
-		$this->billetera_recargas->setUsuario($id);
+		if($id == 2){ 
+			$wallet = $this->check_wallet();
+			$this->saldo = intval($wallet['balance']);
+		}else{
+			$this->billetera_recargas->setUsuario($id);
+			$this->model_billetera_recargas->getSaldos();
+			$this->saldo = $this->billetera_recargas->getSaldo();	
+		}
+		
+		$this->billetera_recargas->setUsuario($afiliado);
 		$this->model_billetera_recargas->getSaldos();
-		$this->saldo = $this->billetera_recargas->getSaldo();
-		$this->disponible = $this->billetera_recargas->getDisponible();
+		$this->disponible = $this->billetera_recargas->getSaldo();
 	
 		$usuario=$this->general->get_username($id);
 		$style=$this->general->get_style($id);
@@ -1256,6 +1274,7 @@ $salida.= ($operator == $selected)
 		$this->template->set("style",$style);
 		$this->template->set("usuario",$usuario);
 		$this->template->set("id",$id);
+		$this->template->set("afiliado",$afiliado);
 		$this->template->set("saldo",$this->saldo);
 		$this->template->set("disponible",$this->disponible);
 		$this->template->set("api",$account);
@@ -1274,6 +1293,108 @@ $salida.= ($operator == $selected)
 	//	$this->template->set_partial('header', 'website/ov/header');
 	//	$this->template->set_partial('footer', 'website/ov/footer');
 		$this->template->build('website/ov/recargas/transferencia/transferencia_usu');
+	}
+	
+function get_red_afiliar()
+	{
+		$id_red=$_POST['red'];
+		$id_afiliado=$_POST['id'];
+		
+		$red 	 = $this->model_tipo_red->ObtenerFrontalesRed($id_red);
+		$frontalidadRed= $red[0]->frontal;
+		$profundidadRed=$red[0]->profundidad;
+
+		$INFINITO=0;
+		
+		if($this->tank_auth->get_user_id()>2){
+			$nivel=$_POST['profundidad'];
+		}else {
+			$nivel=$INFINITO;
+			$profundidadRed=$INFINITO;
+		}
+		
+		if(!$this->getHayEspacioParaAfiliarProfundidad ( $nivel ,$profundidadRed))
+			return false;
+
+
+		if($frontalidadRed==$INFINITO){
+			$frontalesUsuario = $this->model_perfil_red->get_cantidad_de_frontales($id_afiliado,$id_red);
+			$frontalesUsuario=$frontalesUsuario[0]->frontales;
+			$frontalidadRed=$frontalesUsuario+1;
+		}
+
+		$this->printRedParaAfiliar ( $id_red,$id_afiliado,$frontalidadRed,$nivel);
+
+		
+	}
+
+	private function getHayEspacioParaAfiliarProfundidad($nivel,$profundidadRed) {
+		if($profundidadRed>0){
+			if($nivel >= $profundidadRed){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private function printRedParaAfiliar($id_red,$id_afiliado, $frontales,$nivel) {
+	
+		echo "<ul>";
+		for($lado=0;$lado<$frontales;$lado++){
+			$afiliado = $this->model_perfil_red->get_afiliado_por_posicion($id_red,$id_afiliado,$lado);
+			
+			if($afiliado){
+				$this->printPosicionAfiliado ( $nivel, $afiliado);
+			}else {
+				$sponsor=$this->model_perfil_red->get_name($id_afiliado);
+				$this->printEspacioParaAfiliar ($sponsor, $id_afiliado, $lado );
+
+			}
+		}
+		echo "</ul>";
+		
+	}
+	
+	private function printPosicionAfiliado($nivel, $afiliado) {
+		$img_perfil = $this->setImagenAfiliado ($afiliado[0]->id_afiliado);
+		$colorDirecto=$this->getDirectoColor($afiliado[0]->directo);
+		
+		echo "  <li id='".$afiliado[0]->id_afiliado."'>
+		        	<a class='quitar' onclick='subred(".$afiliado[0]->id_afiliado.",".($nivel+1).")' style='background: url(".$img_perfil."); background-size: cover; background-position: center;' href='javascript:void(0)'></a>
+		        	  <div onclick='detalles(".$afiliado[0]->id_afiliado.")' class='".$colorDirecto."'>".$afiliado[0]->afiliado."<br />Detalles</div>
+                     <div> <input type='button' style='background-color:#01DF3A;' class='btn' value='Agregar' onclick='detalles2(".$afiliado[0]->id_afiliado.")' class='".$colorDirecto."'><br /></div>
+		            
+            	</li>";
+	}
+	
+	private function getDirectoColor($directo){
+		$id_usuario=$this->tank_auth->get_user_id();
+		if($id_usuario==$directo)
+			return 'todo1';
+		return 'todo';
+	}
+	
+	
+	
+	private function printEspacioParaAfiliar($sponsor,$id_afiliado, $lado) {
+		echo "<li>
+				<a onclick=\"botbox('".$sponsor[0]->nombre."',".$id_afiliado.",".$lado.")\" href='javascript:void(0)'>Afiliar Aqui</a>
+			  </li>	";
+	}
+
+	private function setImagenAfiliado($id_afiliado) {
+		$image 			 = $this->model_perfil_red->get_images($id_afiliado);
+		$img_perfil='/template/img/empresario.jpg';
+		foreach ($image as $img)
+		{
+			$cadena=explode(".", $img->img);
+			if($cadena[0]=="user")
+			{
+				$img_perfil=$img->url;
+			}
+		}
+		
+		return $img_perfil;
 	}
 	
 }

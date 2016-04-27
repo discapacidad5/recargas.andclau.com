@@ -48,7 +48,7 @@
 												
 												<?foreach ($pinesc as $pinc) {?>
 													<tr>
-														<td><?php echo $pinc->id_user; ?></td>
+														<td><?php echo $pinc->nombre; ?></td>
 														<td><?php echo $pinc->id_pin; ?></td>
 														<td><?php  echo $pinc->credito; ?></td>
 														<td><?php  echo $pinc->costo; ?></td>

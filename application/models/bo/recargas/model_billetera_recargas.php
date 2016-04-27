@@ -34,7 +34,7 @@ class model_billetera_recargas extends CI_Model
 		
 		$disponible = $q[0]->disponible - $q[0]->consumo;
 		$saldo = $q[0]->saldo - $q[0]->quitado;
-				
+
 		$Saldos = array(
 				#'billetera' => $q[0]->saldo,
 				'disponible' => ($disponible<=0.011) ? 0 : $disponible,

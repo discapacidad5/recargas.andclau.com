@@ -13,8 +13,8 @@
 													<tbody>
 													
 													<tr class="success">
-														<td><h4><b>Saldo Billetera Recargas</b></h4></td>
-														<td><h4><b>Saldo Disponible </b></h4></td>
+														<td><h4><b>Tú Saldo Billetera </b></h4></td>
+														<td><h4><b>Saldo Billetera Afiliado </b></h4></td>
 													</tr>
 													
 														<tr class="warning">
@@ -35,7 +35,8 @@
 			
 			</div>
 			
-													<input required type="hidden" id="id" name="id" value="<?=$id?>">
+													<input required type="hidden" id="id" name="id" value="<?=$afiliado?>">
+													
 			<div class="row">
 				<div class="form-group">				
 					<legend> </legend>
@@ -59,11 +60,9 @@
 					<br/>					
 					<section class="col col-8"></section>
 					<section class="col col-2">
-							<button type="button" id="ADD" class="btn btn-success  btn-next" disabled >Agregar</button>				
+							<button type="submit" id="dar" class="btn btn-success  btn-next" disabled >Dar Saldo</button>				
 					</section>
-					<section class="col col-2">
-							<button type="button" id="SUB" class="btn btn-danger btn-prev" disabled >Quitar</button>						
-					</section>						
+											
 					
 				</div>
 			</div>
@@ -86,31 +85,39 @@
 <script src="/template/js/plugin/fuelux/wizard/wizard.min.js"></script>
 
 <script type="text/javascript">
-var tipo = "";
+/*
 $("#cobro").keyup(function(){
 	if($("#cobro").val()>0){
-		$('.btn').attr("disabled", false);
+		$('#dar').attr("disabled", false);
 	}else{
-		$('.btn').attr("disabled", true);
+		$('#dar').attr("disabled", true);
 	}	
 });
-$( "#ADD" ).click(function( event ) {
-	tipo = "ADD";
-	event.preventDefault();	
-	enviar();
-});
+*/
 
-$( "#SUB" ).click(function( event ) {
-	tipo = "SUB";
-	event.preventDefault();	
-	enviar();
-});
+
+	$("#cobro").keyup(CalcularSaldo);
+	$('#dar').attr("disabled", true);
+	
+//setup_flots();
+/* end flot charts */
+
+function CalcularSaldo(evt){
+	//alert("aqui!");
+	var saldo = <?=$saldo?>;
+	var pago = $("#cobro").val() /*+ (String.fromCharCode(evt.charCode)*/;
+	var neto = saldo-pago;
+	if(neto >= 0){
+		$('#dar').attr("disabled", false);
+		}else{
+			$('#dar').attr("disabled", true);
+		}
+}
+
 
 $( "#edit" ).submit(function( event ) {
 	event.preventDefault();	
-	if(tipo){
 		enviar();
-	}
 });
 
 function enviar(){
@@ -123,17 +130,16 @@ function enviar(){
 	{
 		bootbox.dialog({
 		message: msg,
-		title: 'Eliminar Afiliado',
+		title: 'Transferir a usuarios',
 		buttons: {
 			success: {
 				label: "Aceptar",
 				className: "btn-success",
 				callback: function() {
 						setiniciarSpinner();	
-						$("#edit").append("<input value='"+tipo+"' type='hidden' name='tipo'>");
 						$.ajax({
 							type: "POST",
-							url: "/bo/comercial/add_sub_billetera_afiliadoRec",
+							url: "/ov/billetera3/enviar_transferencia",
 							data: $('#edit').serialize()
 						}).done(function( msg ) {				
 							bootbox.dialog({
@@ -144,7 +150,7 @@ function enviar(){
 										label: "Aceptar",
 										className: "btn-success",
 										callback: function() {
-												location.href="/bo/comercial/red_tabla";
+												location.href="/ov/billetera3";
 												FinalizarSpinner();
 										}
 									}
