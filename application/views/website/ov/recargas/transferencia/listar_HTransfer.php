@@ -36,14 +36,10 @@
 														<table id="dt_basic2" class="table table-striped table-bordered table-hover" width="100%">
 											<thead>			                
 												<tr>
-													<th data-class="expand">fecha</th>
-													<th data-class="expand">Transactionid</th>
-													<th data-hide="phone,tablet">msisdn</th>
-													<th data-hide="phone,tablet">destination_msisdn</th>
-													<th data-hide="phone,tablet">country</th>
-													<th data-hide="phone,tablet">operator</th>
-													<th data-hide="phone,tablet">retail_price</th>
-													<th data-hide="phone,tablet">Precio local</th>
+													<th data-class="expand">Afiliado</th>
+													<th data-class="expand">Monto de Transferencia</th>
+													<th data-hide="phone,tablet">Fecha</th>
+													
 													
 												</tr>
 											</thead>
@@ -52,14 +48,10 @@
 												<?foreach ($facturas_rec as $factura_rec) {?>
 													<tr>
 														
-														<td><?php  echo $factura_rec->fecha;?></td>
-														<td><?php echo $factura_rec->transactionid; ?></td>
-														<td><?php  echo $factura_rec->msisdn; ?></td>
-														<td><?php  echo $factura_rec->destination_msisdn; ?></td>
-														<td><?php  echo $factura_rec->Country; ?></td>
-														<td><?php  echo $factura_rec->operator; ?></td>
-														<td><?php  echo $factura_rec->retail_price; ?></td>
-														<td><?php  echo $factura_rec->local;?></td>
+														<td><?php  echo $factura_rec->nombre;?></td>
+														<td><?php echo $factura_rec->monto; ?></td>
+														<td><?php  echo $factura_rec->fecha; ?></td>
+														
 														</tr>
 												<?}?>
 											</tbody>
@@ -123,15 +115,16 @@ $(document).ready(function() {
 			phone : 480
 		};
 
-		$('#dt_basic2').dataTable({
+		
 
-		$('#dt_basic').dataTable({
+		$('#dt_basic2').dataTable({
 			//"bFilter": true,
 	    	//"bInfo": false,
 	    	//"bLengthChange": false
 	    	//"bAutoWidth": false,
 	    	//"bPaginate": false,
 	    	"bSort": false,
+
 			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
 				"t"+
 				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
