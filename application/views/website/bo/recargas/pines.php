@@ -53,7 +53,16 @@
 													<a href="/bo/recargas/listar_pines/">
 														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>;">
 															<i class="fa fa-list-alt fa-3x"></i>
-															<h1>listar</h1>
+															<h1>Listar</h1>
+															<br>
+														</div>
+													</a>
+												</div>
+												<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 link">
+													<a href="/bo/recargas/listar_pinescompra2/">
+														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>;">
+															<i class="fa fa-list-alt fa-3x"></i>
+															<h1>Historial</h1>
 															<br>
 														</div>
 													</a>

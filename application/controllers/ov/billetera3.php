@@ -27,7 +27,7 @@ class billetera3 extends CI_Controller
 		$this->load->model('bo/recargas/pin');
 		$this->load->model('bo/recargas/model_billetera_recargas');
 		$this->load->model('bo/recargas/factura_recargas');
-		$this->load->model('ov/modelo_recargas');
+		$this->load->model('ov/modelo_recargas'); 
 		$this->load->model('cemail');
 
 		if (!$this->tank_auth->is_logged_in())
@@ -339,6 +339,59 @@ class billetera3 extends CI_Controller
 		$this->template->set_partial('footer', 'website/ov/footer');
 		$this->template->build('website/ov/recargas/listar_historial_recargas');
 	}
+
+	function Menumultimedia()
+	{
+		if (!$this->tank_auth->is_logged_in())
+		{																		// logged in
+			redirect('/auth');
+		}
+	
+		$id              = $this->tank_auth->get_user_id();
+	
+		if($this->general->isActived($id)!=0){
+			redirect('/ov/compras/carrito');
+		}
+	
+		$pais  = $this->model_recargas->get_pais();
+		$this->template->set("pais",$pais);
+	
+		$this->recarga->setAccount();
+		$account=$this->recarga->getAccount();
+	
+		$this->billetera_recargas->setUsuario($id);
+		$this->model_billetera_recargas->getSaldos();
+		$this->saldo = $this->billetera_recargas->getSaldo();
+		$this->disponible = $this->billetera_recargas->getDisponible();
+	
+		$usuario=$this->general->get_username($id);
+		$style=$this->general->get_style($id);
+	
+		$this->template->set("style",$style);
+		$this->template->set("usuario",$usuario);
+		$this->template->set("id",$id);
+		$this->template->set("saldo",$this->saldo);
+		$this->template->set("disponible",$this->disponible);
+		$this->template->set("api",$account);
+	
+		$this->model_pin->listar_pines_deCompra();
+		$credito = $this->factura_recargas->getCredito();
+	
+		if(count($credito)==0){redirect('/ov/billetera3');}
+	
+		#echo var_dump($pin);exit();
+	
+		$this->template->set("creditos",$credito);
+	
+		$this->template->set_theme('desktop');
+		$this->template->set_layout('website/main');
+		$this->template->set_partial('header', 'website/ov/header');
+		$this->template->set_partial('footer', 'website/ov/footer');
+		$this->template->build('website/ov/recargas/MenuMultimedia');
+	}
+	
+	
+	
 	
 function multimedia()
 	{
@@ -401,6 +454,8 @@ function multimedia()
 		$costo  = intval($_POST['valor']);	
 		
 		#echo $_POST['id']."|".$_POST['credito']."|".$_POST['valor'];
+		$this->pin->setId ( $_POST ['id'] );
+		
 		
 		if($id == 2){
 			$wallet = $this->check_wallet();
@@ -410,8 +465,10 @@ function multimedia()
 			$this->billetera_recargas->setUsuario($id);
 			$this->model_billetera_recargas->getSaldos();
 			$this->saldo = $this->billetera_recargas->getSaldo();
-			$this->disponible = $this->billetera_recargas->getDisponible();
+			$this->disponible = $this->billetera_recargas->getDisponible();			
 		}
+		
+		
 		
 		if(($this->disponible-$costo)<0){
 			echo "ERROR <br>No hay saldo para realizar la Compra.";
@@ -420,6 +477,7 @@ function multimedia()
 		#echo "aqui!";exit();
 		$this->pin->setId($pin);
 		
+	    $this->model_pin->insert_pinesComprados($pin,$id,$credito,$costo); 
 		$this->model_billetera_recargas->agregarRetiro_BilleteraRec($id,$costo,'MEDIA',$pin);
 		$this->model_billetera_recargas->agregarSaldo_BilleteraRec($id,$monto,'PIN');
 	
@@ -441,6 +499,36 @@ function multimedia()
 		//redirect('bo/recargas/listar_pines');
 	
 	}
+	
+	function listar_pinescomprados()
+	{
+		if (!$this->tank_auth->is_logged_in())
+		{																		// logged in
+			redirect('/auth');
+		}
+		
+		$id              = $this->tank_auth->get_user_id();
+		$style=$this->modelo_dashboard->get_style($id);
+	
+		$this->template->set("style",$style);
+	
+		$this->model_pin->listar_pinscomprados($id);
+		$pinc = $this->pin->getPinc();
+	
+		#echo var_dump($pinc);exit();
+	
+		$this->template->set("pinesc",$pinc);
+		
+		
+		
+	
+		$this->template->set_theme('desktop');
+		$this->template->set_layout('website/main');
+		$this->template->set_partial('header', 'website/ov/header');
+		$this->template->set_partial('footer', 'website/ov/footer');
+		$this->template->build('website/ov/recargas/list_compra_pines');
+	}
+	
 	
 	
 	function agregar_saldo()
@@ -975,6 +1063,338 @@ $salida.= ($operator == $selected)
 		echo "</tbody>
 		</table><tr class='odd' role='row'>";
 	
+	}
+	
+	function transferir_otro()
+	{
+		if (!$this->tank_auth->is_logged_in())
+		{																		// logged in
+			redirect('/auth');
+		}
+	
+		$id=$this->tank_auth->get_user_id();
+	
+	
+		$id = $this->tank_auth->get_user_id();
+		$style = $this->general->get_style($id);
+		$this->template->set("id",$id);
+		$this->template->set("style",$style);
+	
+		$this->template->set_theme('desktop');
+		$this->template->set_layout('website/main');
+		$this->template->set_partial('header', 'website/ov/header');
+		$this->template->set_partial('footer', 'website/ov/footer');
+	
+	
+		if($id<=2)
+			$cantidadRedes = $this->model_tipo_red->cantidadRedes();
+		else
+			$cantidadRedes = $this->model_tipo_red->cantidadRedesUsuario($id);
+	
+		if(sizeof($cantidadRedes)==0)
+			redirect('/');
+		if(sizeof($cantidadRedes)==1)
+			redirect('/ov/billetera3/transferir_red?id='.$cantidadRedes[0]->id);
+	
+		$redes = $this->model_tipo_red->RedesUsuario($id);
+		$this->template->set("redes",$redes);
+	
+		$this->template->build('website/ov/recargas/transferencia/redes');
+	}
+	
+	function transferir_red()
+	{
+		if (!$this->tank_auth->is_logged_in())
+		{																		// logged in
+			redirect('/auth');
+		}
+	
+		$id              = $this->tank_auth->get_user_id();
+	
+	
+	
+		$id_red          = $_GET['id'];
+	
+		$usuario         = $this->model_perfil_red->datos_perfil($id);
+		$telefonos       = $this->model_perfil_red->telefonos($id);
+		$sexo            = $this->model_perfil_red->sexo();
+		$pais            = $this->model_perfil_red->get_pais();
+		$style           = $this->general->get_style($id);
+		$dir             = $this->model_perfil_red->dir($id);
+		$civil           = $this->model_perfil_red->edo_civil();
+		$tipo_fiscal     = $this->model_perfil_red->tipo_fiscal();
+		$estudios        = $this->model_perfil_red->get_estudios();
+		$ocupacion       = $this->model_perfil_red->get_ocupacion();
+		$tiempo_dedicado = $this->model_perfil_red->get_tiempo_dedicado();
+	
+		$red 			 = $this->model_afiliado->RedAfiliado($id, $id_red);
+	
+		if($id>2){
+			$estaEnRed 	 = $this->model_tipo_red->validarUsuarioRed($id,$id_red);
+	
+			if(!$estaEnRed)
+				redirect('/');
+	
+		}
+	
+		//$premium         = $red[0]->premium;
+		$afiliados       = $this->model_perfil_red->get_afiliados($id_red, $id);
+		//$planes 		 = $this->model_planes->Planes();
+	
+		$image 			 = $this->model_perfil_red->get_images($id);
+		$red_forntales 	 = $this->model_tipo_red->ObtenerFrontalesRed($id_red );
+	
+		$img_perfil="/template/img/empresario.jpg";
+		foreach ($image as $img)
+		{
+			$cadena=explode(".", $img->img);
+			if($cadena[0]=="user")
+			{
+				$img_perfil=$img->url;
+			}
+		}
+		$this->template->set("id",$id);
+		$this->template->set("style",$style);
+		$this->template->set("afiliados",$afiliados);
+		$this->template->set("sexo",$sexo);
+		$this->template->set("civil",$civil);
+		$this->template->set("pais",$pais);
+		$this->template->set("tipo_fiscal",$tipo_fiscal);
+		$this->template->set("estudios",$estudios);
+		$this->template->set("ocupacion",$ocupacion);
+		$this->template->set("tiempo_dedicado",$tiempo_dedicado);
+		$this->template->set("img_perfil",$img_perfil);
+		$this->template->set("red_frontales",$red_forntales);
+		//$this->template->set("premium",$premium);
+		//$this->template->set("planes",$planes);
+	
+		$this->template->set_theme('desktop');
+		$this->template->set_layout('website/main');
+		$this->template->set_partial('header', 'website/ov/header');
+		$this->template->set_partial('footer', 'website/ov/footer');
+		$this->template->build('website/ov/recargas/transferencia/transferir_red');
+	}
+	
+	function nueva_tranferencia(){
+		//echo "dentro de botbox ";
+	
+		//$datos_banner=$this->model_admin->datos_banner();
+		$img = $this->model_admin->img_banner();
+	
+		$empresa  = $this->model_admin->val_empresa_multinivel();
+		$this->template->set("empresa",$empresa);
+		$this->template->set("img",$img);
+		$this->template->set("debajo_de",$_POST['id_debajo']);
+		$this->template->set("lado",$_POST['lado']);
+		$this->template->set("red",$_POST['red']);
+	
+		$this->template->build('website/ov/recargas/invitar/ver');
+	
+	}
+	
+	function enviar_transferencia(){
+	
+		//echo "dentro de enviar";
+	
+		$afiliado = $_POST['id'];
+		$cobro = $_POST['cobro'];
+		$id = $this->tank_auth->get_user_id();
+		
+		if($id == 2){
+			$wallet = $this->check_wallet();
+			$this->saldo = intval($wallet['balance']);
+		}else{
+			$this->billetera_recargas->setUsuario($id);
+			$this->model_billetera_recargas->getSaldos();
+			$this->saldo = $this->billetera_recargas->getSaldo();
+		}		
+		
+		if(($this->saldo-$cobro)<0){
+			echo "ERROR <br>No hay saldo suficiente para realizar la Transferencia.";
+			exit();
+		}
+	
+		$validar = $this->model_billetera_recargas->agregarSaldo_BilleteraRec($afiliado,$cobro,'TRANSFER');
+		$this->model_billetera_recargas->agregarCanjeo_BilleteraRec($id,$cobro,'DES');
+	
+		$data = array(
+		 'email' => $this->model_perfil_red->get_email($afiliado),
+		 'username' => $this->model_perfil_red->get_username($afiliado),
+		 'afiliado' => $id,
+		 'cobro' => $cobro
+		 );
+		
+		//$email = $this->cemail->send_email(13, $data['email'], $data);
+		
+		echo $validar
+		? "Transaccion Exitosa" : "Transacción no pudo ser Realizada ";
+		
+		//echo $email ? "Email Enviado" : "Falló envio de Email";
+		//redirect('bo/recargas/listar_pines');
+	
+	}
+	
+	function transferencia_usu()
+	{
+		if (!$this->tank_auth->is_logged_in())
+		{																		// logged in
+			redirect('/auth');
+		}
+	
+		$id              = $this->tank_auth->get_user_id();
+	
+		if($this->general->isActived($id)!=0){
+			redirect('/ov/compras/carrito');
+		}
+		
+		$afiliado = $_POST['afiliado'];
+	
+		$pais  = $this->model_recargas->get_pais();
+		$this->template->set("pais",$pais);
+	
+		$this->recarga->setAccount();
+		$account=$this->recarga->getAccount();
+	
+		if($id == 2){ 
+			$wallet = $this->check_wallet();
+			$this->saldo = intval($wallet['balance']);
+		}else{
+			$this->billetera_recargas->setUsuario($id);
+			$this->model_billetera_recargas->getSaldos();
+			$this->saldo = $this->billetera_recargas->getSaldo();	
+		}
+		
+		$this->billetera_recargas->setUsuario($afiliado);
+		$this->model_billetera_recargas->getSaldos();
+		$this->disponible = $this->billetera_recargas->getSaldo();
+	
+		$usuario=$this->general->get_username($id);
+		$style=$this->general->get_style($id);
+	
+		$this->template->set("style",$style);
+		$this->template->set("usuario",$usuario);
+		$this->template->set("id",$id);
+		$this->template->set("afiliado",$afiliado);
+		$this->template->set("saldo",$this->saldo);
+		$this->template->set("disponible",$this->disponible);
+		$this->template->set("api",$account);
+	
+		$this->model_pin->listar_pines_deCompra();
+		$credito = $this->factura_recargas->getCredito();
+	
+		if(count($credito)==0){redirect('/ov/billetera3');}
+	
+		#echo var_dump($pin);exit();
+	
+		$this->template->set("creditos",$credito);
+	
+		$this->template->set_theme('desktop');
+		$this->template->set_layout('website/main');
+	//	$this->template->set_partial('header', 'website/ov/header');
+	//	$this->template->set_partial('footer', 'website/ov/footer');
+		$this->template->build('website/ov/recargas/transferencia/transferencia_usu');
+	}
+	
+function get_red_afiliar()
+	{
+		$id_red=$_POST['red'];
+		$id_afiliado=$_POST['id'];
+		
+		$red 	 = $this->model_tipo_red->ObtenerFrontalesRed($id_red);
+		$frontalidadRed= $red[0]->frontal;
+		$profundidadRed=$red[0]->profundidad;
+
+		$INFINITO=0;
+		
+		if($this->tank_auth->get_user_id()>2){
+			$nivel=$_POST['profundidad'];
+		}else {
+			$nivel=$INFINITO;
+			$profundidadRed=$INFINITO;
+		}
+		
+		if(!$this->getHayEspacioParaAfiliarProfundidad ( $nivel ,$profundidadRed))
+			return false;
+
+
+		if($frontalidadRed==$INFINITO){
+			$frontalesUsuario = $this->model_perfil_red->get_cantidad_de_frontales($id_afiliado,$id_red);
+			$frontalesUsuario=$frontalesUsuario[0]->frontales;
+			$frontalidadRed=$frontalesUsuario+1;
+		}
+
+		$this->printRedParaAfiliar ( $id_red,$id_afiliado,$frontalidadRed,$nivel);
+
+		
+	}
+
+	private function getHayEspacioParaAfiliarProfundidad($nivel,$profundidadRed) {
+		if($profundidadRed>0){
+			if($nivel >= $profundidadRed){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private function printRedParaAfiliar($id_red,$id_afiliado, $frontales,$nivel) {
+	
+		echo "<ul>";
+		for($lado=0;$lado<$frontales;$lado++){
+			$afiliado = $this->model_perfil_red->get_afiliado_por_posicion($id_red,$id_afiliado,$lado);
+			
+			if($afiliado){
+				$this->printPosicionAfiliado ( $nivel, $afiliado);
+			}else {
+				$sponsor=$this->model_perfil_red->get_name($id_afiliado);
+				$this->printEspacioParaAfiliar ($sponsor, $id_afiliado, $lado );
+
+			}
+		}
+		echo "</ul>";
+		
+	}
+	
+	private function printPosicionAfiliado($nivel, $afiliado) {
+		$img_perfil = $this->setImagenAfiliado ($afiliado[0]->id_afiliado);
+		$colorDirecto=$this->getDirectoColor($afiliado[0]->directo);
+		
+		echo "  <li id='".$afiliado[0]->id_afiliado."'>
+		        	<a class='quitar' onclick='subred(".$afiliado[0]->id_afiliado.",".($nivel+1).")' style='background: url(".$img_perfil."); background-size: cover; background-position: center;' href='javascript:void(0)'></a>
+		        	  <div onclick='detalles(".$afiliado[0]->id_afiliado.")' class='".$colorDirecto."'>".$afiliado[0]->afiliado."<br />Detalles</div>
+                     <div> <input type='button' style='background-color:#01DF3A;' class='btn' value='Agregar' onclick='detalles2(".$afiliado[0]->id_afiliado.")' class='".$colorDirecto."'><br /></div>
+		            
+            	</li>";
+	}
+	
+	private function getDirectoColor($directo){
+		$id_usuario=$this->tank_auth->get_user_id();
+		if($id_usuario==$directo)
+			return 'todo1';
+		return 'todo';
+	}
+	
+	
+	
+	private function printEspacioParaAfiliar($sponsor,$id_afiliado, $lado) {
+		echo "<li>
+				<a onclick=\"botbox('".$sponsor[0]->nombre."',".$id_afiliado.",".$lado.")\" href='javascript:void(0)'>Afiliar Aqui</a>
+			  </li>	";
+	}
+
+	private function setImagenAfiliado($id_afiliado) {
+		$image 			 = $this->model_perfil_red->get_images($id_afiliado);
+		$img_perfil='/template/img/empresario.jpg';
+		foreach ($image as $img)
+		{
+			$cadena=explode(".", $img->img);
+			if($cadena[0]=="user")
+			{
+				$img_perfil=$img->url;
+			}
+		}
+		
+		return $img_perfil;
 	}
 	
 }

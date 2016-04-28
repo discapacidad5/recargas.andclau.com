@@ -63,7 +63,7 @@
 				</a>
 			</div>
 			<div class="col-lg-1.3 col-sm-2 col-md-2 col-xs-12">
-				<a href="<?php echo $disponible>0 ? "/ov/billetera3/multimedia" : "/ov/billetera3/#" ?>">
+				<a href="<?php echo $disponible>0 ? "/ov/billetera3/Menumultimedia" : "/ov/billetera3/#" ?>">
 					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
 						<i class="fa fa-laptop fa-2x"></i><i class="fa fa-desktop fa-3x"></i><i
 							class="fa fa-tablet fa-2x"></i>
@@ -74,7 +74,7 @@
 			
           
 			<div class="col-lg-1.5 col-sm-2 col-md-2 col-xs-12">
-				<a href="/ov/billetera3/#">
+				<a href="/ov/billetera3/transferir_otro">
 					<div class="well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>">
 						<i class="fa fa-file-text-o fa-3x"></i><i
 							class="fa fa-refresh fa-3x"></i><i
