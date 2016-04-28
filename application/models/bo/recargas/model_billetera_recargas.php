@@ -171,7 +171,7 @@ class model_billetera_recargas extends CI_Model
 	{
 		$q=$this->db->query("select nombre,monto,fecha from user_profiles,
 				transferencia_recargas where id_destino=user_id and id_origen=".$id."
-				         order by fecha asc ");
+				         order by fecha desc ");
 		$result=$q->result();
 		$this->factura_recargas->setFactura_rec($result);
 	}
@@ -183,7 +183,8 @@ class model_billetera_recargas extends CI_Model
  	            (select nombre from user_profiles where user_id = id_destino) destino,
 	            monto,fecha
                             FROM 
-	            transferencia_recargas");
+	            transferencia_recargas
+					order by fecha desc ");
 		$result=$q->result();
 		$this->factura_recargas->setFactura_rec($result);
 	}

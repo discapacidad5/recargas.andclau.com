@@ -1192,6 +1192,21 @@ $salida.= ($operator == $selected)
 	
 	}
 	
+	
+	function validarPass() {
+		
+		$contraseña = $_POST['pass'];
+		$id              = $this->tank_auth->get_user_id();
+		$username = $this->model_perfil_red->get_username($id);
+		
+		
+	$validacion = $this->tank_auth->login($username,$contraseña,"",1,0);
+	
+	echo $validacion;
+	
+	}
+	
+	
 	function SMenu_transfer()
 	{
 		if (!$this->tank_auth->is_logged_in())
