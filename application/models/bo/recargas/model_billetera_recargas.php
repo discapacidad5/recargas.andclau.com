@@ -11,6 +11,62 @@ class model_billetera_recargas extends CI_Model
 		
 	}
 	
+	function Empresa($values){
+		
+		$this->db->query("DELETE FROM billetera_recargas_saldo 
+				WHERE id_billetera in (select id from billetera_recargas where id_user = 2) and tipo = 'API'");
+		
+		$this->db->query("DELETE FROM billetera_recargas_canjeo
+				WHERE id_billetera in (select id from billetera_recargas where id_user = 2) and estatus = 'API'");
+		
+		$this->agregarSaldo_BilleteraRec(2,$values['balance'],'API');
+		
+		$this->agregarCanjeo_BilleteraRec(2,$values['wallet'],'API');
+		
+		$q=$this->db->query("SELECT
+								u.id,u.username,b.id bill,
+								(select round(sum(valor),2)
+									from billetera_recargas_saldo
+									where id_billetera = b.id and tipo = 'API') saldo,
+								(select round(sum(valor))
+									from billetera_recargas_canjeo
+									where id_billetera = b.id and estatus = 'API') disponible,
+								(select round(sum(valor),2)
+									from billetera_recargas_canjeo
+									where id_billetera = b.id and estatus = 'DES') mitransfer,
+								(select round(sum(valor),2)
+									from billetera_recargas_saldo
+									where id_billetera not in (b.id) and tipo = 'CARRITO') mercancia,
+								(select round(sum(valor),2)
+									from billetera_recargas_saldo
+									where id_billetera = b.id and tipo in ('CATEGORIA','PIN')) ganancia,
+								(select round(sum(valor),2)
+									from billetera_recargas_canjeo
+									where id_billetera not in (b.id) and estatus = 'ACT') consumo
+								FROM billetera_recargas b, users u
+								WHERE b.id_user = u.id
+										and u.id = 2
+								ORDER BY u.id");
+		$q=$q->result();
+	
+		$comsumo =  $q[0]->mitransfer + $q[0]->consumo;//+ $q[0]->mercancia;
+		$ganancia = $q[0]->ganancia;
+		
+		//$disponible = $q[0]->disponible - $q[0]->consumo;
+		$saldo = ($q[0]->saldo) - $comsumo +$ganancia;
+	
+		$Saldos = array(
+				#'billetera' => $q[0]->saldo,
+				'wallet' => $q[0]->disponible,//($disponible<=0.011) ? 0 : $disponible,
+				'balance' => ($saldo<=0) ? 0 : $saldo
+		);
+		
+		//echo $saldo;exit();
+		//var_dump($Saldos);exit();
+	
+		return $Saldos;
+	}
+	
 	function getSaldos(){
 		$q=$this->db->query("SELECT 
 								u.id,u.username,b.id bill,
@@ -37,8 +93,8 @@ class model_billetera_recargas extends CI_Model
 
 		$Saldos = array(
 				#'billetera' => $q[0]->saldo,
-				'disponible' => ($disponible<=0.011) ? 0 : $disponible,
-				'saldo' => ($saldo<=0.011) ? 0 : $saldo
+				'disponible' => ($disponible<=0.02) ? 0 : $disponible,
+				'saldo' => ($saldo<=0.02) ? 0 : $saldo
 		);
 		
 		$this->billetera_recargas->setSaldos($Saldos);

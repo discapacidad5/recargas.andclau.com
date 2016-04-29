@@ -6,7 +6,9 @@
 						<h1 class="page-title txt-color-blueDark">
 						<a class="backHome" href="/ov"><i class="fa fa-home"></i> Menu</a>
 							<span>>
-								<a href="/ov/billetera3">Billetera Recargas</a> > Historial Recargas
+								<a href="/ov/billetera3">Billetera Recargas</a> > 
+								<a href="/ov/billetera3/SMenu_transfer">Transfer</a> > 
+								Historial Transferencias
 							</span>
 						</h1>
 		</div>

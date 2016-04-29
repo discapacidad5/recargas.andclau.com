@@ -61,8 +61,8 @@ class billetera3 extends CI_Controller
 		
 		if($id == 2){ 
 			$wallet = $this->check_wallet();
-			$this->saldo = intval($wallet['balance']);
-			$this->disponible = intval($wallet['wallet']);
+			$this->saldo = $wallet['balance'];
+			$this->disponible = $wallet['wallet'];
 		}else{
 			$this->billetera_recargas->setUsuario($id);
 			$this->model_billetera_recargas->getSaldos();
@@ -111,7 +111,10 @@ class billetera3 extends CI_Controller
 			//echo $key."=".$item."<br/>";
 		//}exit();
 		
-		return $values;
+		$billetera= $this->model_billetera_recargas->Empresa($values);
+				
+		
+		return $billetera;
 	}
 	
 	function canjear()
@@ -246,10 +249,16 @@ class billetera3 extends CI_Controller
 		$this->recarga->setAccount();
 		$account=$this->recarga->getAccount();
 	
-		$this->billetera_recargas->setUsuario($id);
-		$this->model_billetera_recargas->getSaldos();
-		$this->saldo = $this->billetera_recargas->getSaldo();
-		$this->disponible = $this->billetera_recargas->getDisponible();
+		if($id == 2){ 
+			$wallet = $this->check_wallet();
+			$this->disponible = $wallet['balance'];
+			#$this->disponible = $wallet['wallet'];
+		}else{
+			$this->billetera_recargas->setUsuario($id);
+			$this->model_billetera_recargas->getSaldos();
+			$this->saldo = $this->billetera_recargas->getSaldo();	
+			$this->disponible = $this->billetera_recargas->getDisponible();	
+		}
 	
 		$usuario=$this->general->get_username($id);
 		$style=$this->general->get_style($id);
@@ -288,8 +297,8 @@ class billetera3 extends CI_Controller
 		
 		if($id == 2){ 
 			$wallet = $this->check_wallet();
-			$this->saldo = intval($wallet['balance']);
-			$this->disponible = intval($wallet['wallet']);
+			$this->disponible = $wallet['balance'];
+			#$this->disponible = $wallet['wallet'];
 		}else{
 			$this->billetera_recargas->setUsuario($id);
 			$this->model_billetera_recargas->getSaldos();
@@ -359,10 +368,16 @@ class billetera3 extends CI_Controller
 		$this->recarga->setAccount();
 		$account=$this->recarga->getAccount();
 	
-		$this->billetera_recargas->setUsuario($id);
-		$this->model_billetera_recargas->getSaldos();
-		$this->saldo = $this->billetera_recargas->getSaldo();
-		$this->disponible = $this->billetera_recargas->getDisponible();
+		if($id == 2){ 
+			$wallet = $this->check_wallet();
+			$this->disponible = $wallet['balance'];
+			#$this->disponible = $wallet['wallet'];
+		}else{
+			$this->billetera_recargas->setUsuario($id);
+			$this->model_billetera_recargas->getSaldos();
+			$this->saldo = $this->billetera_recargas->getSaldo();	
+			$this->disponible = $this->billetera_recargas->getDisponible();	
+		}
 	
 		$usuario=$this->general->get_username($id);
 		$style=$this->general->get_style($id);
@@ -459,8 +474,8 @@ function multimedia()
 		
 		if($id == 2){
 			$wallet = $this->check_wallet();
-			$this->saldo = intval($wallet['balance']);
-			$this->disponible = intval($wallet['wallet']);
+			$this->saldo = $wallet['balance'];
+			$this->disponible = $wallet['wallet'];
 		}else{
 			$this->billetera_recargas->setUsuario($id);
 			$this->model_billetera_recargas->getSaldos();
@@ -659,8 +674,8 @@ function multimedia()
 		
 		if($id == 2){
 			$wallet = $this->check_wallet();
-			#$this->saldo = intval($wallet['balance']);
-			$this->disponible = intval($wallet['wallet']);
+			$this->disponible = $wallet['balance'];
+			#$this->disponible = $wallet['wallet'];
 		}else{
 			$this->billetera_recargas->setUsuario($id);
 			$this->model_billetera_recargas->getSaldos();
@@ -684,6 +699,8 @@ function multimedia()
 			$responses = explode("\n", $response );
 			$values = $this->model_recargas->setResponse($responses);	
 			
+			if($values['error_code']!=0){return "Transacción No pudo realizarse";}
+			
 			//foreach ($values as $key => $item){
 				//echo $key."=".$item."<br/>";
 			//}exit();			
@@ -692,9 +709,9 @@ function multimedia()
 			? $this->model_recargas->insertar_gsm($values,$id) : $values['transactionid'];
 			$this->recarga->setId($transaccion);
 			//echo $transaccion."|".$sku[1];exit();
-			
+			 
 			$this->billetera_recargas->setValor($sku[1]);
-			$this->model_billetera_recargas->agregarRetiro();
+			($values['error_code']==0) ? $this->model_billetera_recargas->agregarRetiro() : '' ;
 			
 			
 			return ($values['error_code']==0 ) 
@@ -1272,7 +1289,7 @@ $salida.= ($operator == $selected)
 		
 		if($id == 2){
 			$wallet = $this->check_wallet();
-			$this->saldo = intval($wallet['balance']);
+			$this->saldo = $wallet['balance'];
 		}else{
 			$this->billetera_recargas->setUsuario($id);
 			$this->model_billetera_recargas->getSaldos();
@@ -1319,6 +1336,7 @@ $salida.= ($operator == $selected)
 		}
 		
 		$afiliado = $_POST['afiliado'];
+		$usuario2=$this->general->get_username($afiliado);
 	
 		$pais  = $this->model_recargas->get_pais();
 		$this->template->set("pais",$pais);
@@ -1328,7 +1346,7 @@ $salida.= ($operator == $selected)
 	
 		if($id == 2){ 
 			$wallet = $this->check_wallet();
-			$this->saldo = intval($wallet['balance']);
+			$this->saldo = $wallet['balance'];
 		}else{
 			$this->billetera_recargas->setUsuario($id);
 			$this->model_billetera_recargas->getSaldos();
@@ -1344,6 +1362,7 @@ $salida.= ($operator == $selected)
 	
 		$this->template->set("style",$style);
 		$this->template->set("usuario",$usuario);
+		$this->template->set("usuario2",$usuario2);
 		$this->template->set("id",$id);
 		$this->template->set("afiliado",$afiliado);
 		$this->template->set("saldo",$this->saldo);
@@ -1421,7 +1440,7 @@ function get_red_afiliar()
 				$this->printPosicionAfiliado ( $nivel, $afiliado);
 			}else {
 				$sponsor=$this->model_perfil_red->get_name($id_afiliado);
-				$this->printEspacioParaAfiliar ($sponsor, $id_afiliado, $lado );
+				//$this->printEspacioParaAfiliar ($sponsor, $id_afiliado, $lado );
 
 			}
 		}
@@ -1436,7 +1455,7 @@ function get_red_afiliar()
 		echo "  <li id='".$afiliado[0]->id_afiliado."'>
 		        	<a class='quitar' onclick='subred(".$afiliado[0]->id_afiliado.",".($nivel+1).")' style='background: url(".$img_perfil."); background-size: cover; background-position: center;' href='javascript:void(0)'></a>
 		        	  <div onclick='detalles(".$afiliado[0]->id_afiliado.")' class='".$colorDirecto."'>".$afiliado[0]->afiliado."<br />Detalles</div>
-                     <div> <input type='button' style='background-color:#01DF3A;' class='btn' value='Agregar' onclick='detalles2(".$afiliado[0]->id_afiliado.")' class='".$colorDirecto."'><br /></div>
+                     <div> <input type='button' class='btn btn-success' value='Agregar' onclick='detalles2(".$afiliado[0]->id_afiliado.")' class='".$colorDirecto."'><br /></div>
 		            
             	</li>";
 	}

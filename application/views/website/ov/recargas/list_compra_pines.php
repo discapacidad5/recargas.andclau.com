@@ -117,6 +117,7 @@ $(document).ready(function() {
 		};
 
 		$('#dt_basic').dataTable({
+			"bSort": false,
 			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
 				"t"+
 				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",

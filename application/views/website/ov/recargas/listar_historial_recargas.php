@@ -33,7 +33,7 @@
 						<div class="widget-body">
 							<div class="tab-pane">
 							
-														<table id="dt_basic2" class="table table-striped table-bordered table-hover" width="100%">
+														<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
 											<thead>			                
 												<tr>
 													<th data-class="expand">fecha</th>
@@ -123,15 +123,8 @@ $(document).ready(function() {
 			phone : 480
 		};
 
-		$('#dt_basic2').dataTable({
-
 		$('#dt_basic').dataTable({
-			//"bFilter": true,
-	    	//"bInfo": false,
-	    	//"bLengthChange": false
-	    	//"bAutoWidth": false,
-	    	//"bPaginate": false,
-	    	"bSort": false,
+			"bSort": false,
 			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
 				"t"+
 				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
@@ -139,7 +132,7 @@ $(document).ready(function() {
 			"preDrawCallback" : function() {
 				// Initialize the responsive datatables helper once.
 				if (!responsiveHelper_dt_basic) {
-					responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic2'), breakpointDefinition);
+					responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
 				}
 			},
 			"rowCallback" : function(nRow) {
@@ -164,7 +157,6 @@ $(document).ready(function() {
 		};
 
 		$('#dt_basic_paquete').dataTable({
-			
 			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
 				"t"+
 				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",

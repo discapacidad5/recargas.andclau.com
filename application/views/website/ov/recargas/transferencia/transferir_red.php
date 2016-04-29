@@ -72,7 +72,8 @@ function detalles(id)
 			<h1 class="page-title txt-color-blueDark">
 					<a class="backHome" href="/bo"><i class="fa fa-home"></i> Menu</a>
 				<span> 
-				> <a href="/ov/cgeneral/invitacion_afiliar">Invitar a Afiliar</a>
+				> <a href="/ov/billetera3">Billetera Recargas</a>
+				> <a href="/ov/billetera3/SMenu_transfer">Transfer</a>
 				> Red
 				</span>
 			</h1>
@@ -138,9 +139,9 @@ function detalles(id)
                                                         if($key->debajo_de==$id)
                                                         {?>
 														<li id="<?=$key->id_afiliado?>">
-															<a class="quitar" style="background: url('<?=$img?>'); background-size: cover; background-position: center;" onclick="subred(<?=$key->id_afiliado?>, 1)" href="#"></a>
+															<a class="quitar" style="background: url('<?=$img?>'); background-size: cover; background-position: center;" onclick="subred(<?=$key->id_afiliado?>, 1)" ></a>
 															<div  onclick="detalles(<?=$key->id_afiliado?>)" class="<?=($key->directo==0) ? 'todo' : 'todo1'?>"><?=$key->afiliado?> <?=$key->afiliado_p?><br />Detalles</div>
-														   <div > <input class="btn" value="Agregar" type="button" style="background-color:#01DF3A;" onclick="detalles2(<?=$key->id_afiliado?> ,<?=$id ?>)" class="<?=($key->directo==0) ? 'todo' : 'todo1'?>"><br /></div>
+														   <div > <input class="btn btn-success" value="Agregar" type="button"  onclick="detalles2(<?=$key->id_afiliado?> ,<?=$id ?>)" class="<?=($key->directo==0) ? 'todo' : 'todo1'?>"><br /></div>
 														
 														</li>
 														<?}?>	
@@ -148,9 +149,9 @@ function detalles(id)
 														                <?}
 													if($afiliados==null||$id==2||$red_frontales[0]->frontal>count($afiliados))
                                                         {?>
-														<li>
+													<!--  	<li>
 															<a onclick="botbox('Tí',<?=$id?>,<?=count($afiliados)?>)" href='javascript:void(0)'>Afiliar Aqui</a>
-			 										 	</li>
+			 										 	</li>-->
 												<?}?>
 													</ul>
 												</li>
@@ -299,29 +300,7 @@ right connector from last child*/
 Thanks :)*/
 </style>
 <script type="text/javascript">
-/* function detalles2(id)
-{
-	$.ajax({
-		type: "POST",
-		url: "/ov/billetera3/transferencia_usu",
-		data: {id: id},
-	})
-	.done(function( msg )
-	{
-		bootbox.dialog({
-			message: msg,
-			buttons: {
-				success: {
-				label: "Cerrar!",
-				className: "btn-success",
-				callback: function() {
-					//location.href="";
-					}
-				}
-			}
-		});
-	});
-}*/
+
  
  function detalles2(afiliado,id){
 	 $.ajax({
@@ -333,7 +312,7 @@ Thanks :)*/
 	 {
 	 	bootbox.dialog({
 	 	message: msg,
-	 	title: 'Billetera Afiliado',
+	 	title: 'Trasferir entre usuarios',
 	 })//fin done ajax
 	 });
 	 	

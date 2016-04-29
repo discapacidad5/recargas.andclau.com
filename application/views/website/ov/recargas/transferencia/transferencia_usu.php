@@ -5,7 +5,7 @@
 
 		<form action="" onmouseenter="" method="POST" id="edit" role="form" class="smart-form">
 		
-			<legend>Modificar Recarga Saldo del Afiliado</legend>
+			<legend>Dar Saldo a <?=$usuario2[0]->nombre." ".$usuario2[0]->apellido?></legend>
 
 			<br><br>
 			<div style="text-align:left;">
@@ -51,9 +51,9 @@
 						</label>
 					</section></section>
 					<section class="col col-6">
-					<section class="col-md-12">Digite Contraseña:</section>
-					<section class="col-md-12">		
-						<label class="input">
+					<section class="col-md-12">Digite Su Contraseña:</section>
+					<section id="mensaje" class="col-md-12">		
+						<label  class="input">
 							<i class="icon-prepend fa fa-lock"></i>
 							<input name="pass" type="password" min="1" step="0.01" size="30" class="from-control" id="pass" placeholder="password" required />
 						</label>
@@ -118,6 +118,7 @@ var val= "";
 
 function validarPass(evt){
 	$('#dar').attr("disabled", true);
+	$('.msg-val').remove();
 	pass = $("#pass").val();
 
 	$.ajax({
@@ -128,6 +129,7 @@ function validarPass(evt){
 	.done(function( msg )
 	{
 		val=msg;
+		mensaje();		
 	//alert(msg);
 	if(pass && val && neto > 0){
 		
@@ -136,6 +138,15 @@ function validarPass(evt){
 			$('#dar').attr("disabled", true);
 		}
 	});
+}
+
+function mensaje(){
+	$('.msg-val').remove();
+	if(!val){
+		$('#mensaje').append("<p class='msg-val txt-color-red'>Contraseña incorrecta<p>");
+	}else{
+		$('#mensaje').append("<p class='msg-val txt-color-green'>Contraseña Correcta<p>");
+	}
 }
 
 function CalcularSaldo(evt){
