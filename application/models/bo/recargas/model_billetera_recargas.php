@@ -154,4 +154,39 @@ class model_billetera_recargas extends CI_Model
 		$this->db->query("DELETE FROM billetera_recargas_".$tabla."  where id_billetera = ".$id);
 		return 0;
 	}
+	
+	function tranferencia_recargas($id,$afiliado,$cobro){
+		$data = array(
+				'id_origen' => $id,
+				'id_destino' => $afiliado,
+				'monto' => $cobro
+			
+		);
+		
+		$this->db->insert("transferencia_recargas",$data);
+		return true;
+	}
+	
+	function listar_transferencia_recargas($id)
+	{
+		$q=$this->db->query("select nombre,monto,fecha from user_profiles,
+				transferencia_recargas where id_destino=user_id and id_origen=".$id."
+				         order by fecha desc ");
+		$result=$q->result();
+		$this->factura_recargas->setFactura_rec($result);
+	}
+	
+	function listar_transferencia_recargasG()
+	{
+		$q=$this->db->query("SELECT 
+	            (select nombre from user_profiles where user_id = id_origen) origen,
+ 	            (select nombre from user_profiles where user_id = id_destino) destino,
+	            monto,fecha
+                            FROM 
+	            transferencia_recargas
+					order by fecha desc ");
+		$result=$q->result();
+		$this->factura_recargas->setFactura_rec($result);
+	}
+	
 }

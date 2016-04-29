@@ -1192,6 +1192,76 @@ $salida.= ($operator == $selected)
 	
 	}
 	
+	
+	function validarPass() {
+		
+		$contraseña = $_POST['pass'];
+		$id              = $this->tank_auth->get_user_id();
+		$username = $this->model_perfil_red->get_username($id);
+		
+		
+	$validacion = $this->tank_auth->login($username,$contraseña,"",1,0);
+	
+	echo $validacion;
+	
+	}
+	
+	
+	function SMenu_transfer()
+	{
+		if (!$this->tank_auth->is_logged_in())
+		{																		// logged in
+			redirect('/auth');
+		}
+		$id              = $this->tank_auth->get_user_id();
+		$style=$this->modelo_dashboard->get_style($id);
+	
+		$this->template->set("style",$style);
+	
+		$this->model_recargas->listar_facturaRecargas($id);
+		$factura_rec = $this->factura_recargas->getFactura_rec();
+	
+		#echo var_dump($pin);exit();
+	
+		$this->template->set("facturas_rec",$factura_rec);
+	
+	
+	
+		$this->template->set_theme('desktop');
+		$this->template->set_layout('website/main');
+		$this->template->set_partial('header', 'website/ov/header');
+		$this->template->set_partial('footer', 'website/ov/footer');
+		$this->template->build('website/ov/recargas/transferencia/SubMTransfer');
+	}
+	
+	function listar_HTransferencia()
+	{
+		if (!$this->tank_auth->is_logged_in())
+		{																		// logged in
+			redirect('/auth');
+		}
+		$id              = $this->tank_auth->get_user_id();
+		$style=$this->modelo_dashboard->get_style($id);
+	
+		$this->template->set("style",$style);
+	
+		$this->model_billetera_recargas->listar_transferencia_recargas($id);
+		$factura_rec = $this->factura_recargas->getFactura_rec();
+	
+		#echo var_dump($pin);exit();
+	
+		$this->template->set("facturas_rec",$factura_rec);
+	
+	
+	
+		$this->template->set_theme('desktop');
+		$this->template->set_layout('website/main');
+		$this->template->set_partial('header', 'website/ov/header');
+		$this->template->set_partial('footer', 'website/ov/footer');
+		$this->template->build('website/ov/recargas/transferencia/listar_HTransfer');
+	}
+	
+	
 	function enviar_transferencia(){
 	
 		//echo "dentro de enviar";
@@ -1216,7 +1286,8 @@ $salida.= ($operator == $selected)
 	
 		$validar = $this->model_billetera_recargas->agregarSaldo_BilleteraRec($afiliado,$cobro,'TRANSFER');
 		$this->model_billetera_recargas->agregarCanjeo_BilleteraRec($id,$cobro,'DES');
-	
+		$this->model_billetera_recargas->tranferencia_recargas($id,$afiliado,$cobro);
+		
 		$data = array(
 		 'email' => $this->model_perfil_red->get_email($afiliado),
 		 'username' => $this->model_perfil_red->get_username($afiliado),
@@ -1294,6 +1365,9 @@ $salida.= ($operator == $selected)
 	//	$this->template->set_partial('footer', 'website/ov/footer');
 		$this->template->build('website/ov/recargas/transferencia/transferencia_usu');
 	}
+	
+	
+	
 	
 function get_red_afiliar()
 	{

@@ -19,6 +19,7 @@ class recargas extends CI_Controller {
 		$this->load->model ( 'bo/recargas/pin' );
 		$this->load->model ( 'bo/recargas/model_pin' );
 		$this->load->model ( 'bo/recargas/model_recargas' );
+		$this->load->model ( 'bo/recargas/model_billetera_recargas' );
 		$this->load->model ( 'bo/recargas/factura_recargas' );
 	}
 	
@@ -239,6 +240,38 @@ class recargas extends CI_Controller {
 		$this->template->set_partial ( 'footer', 'website/bo/footer' );
 		$this->template->build ( 'website/bo/recargas/historial_recargas_transfer' );
 	}
+	
+	function historial_transfer_usuRecarga() {
+		if (! $this->tank_auth->is_logged_in ()) { // logged in
+			redirect ( '/auth' );
+		}
+	
+		$id = $this->tank_auth->get_user_id ();
+		$usuario = $this->general->get_username ( $id );
+	
+		if ($usuario [0]->id_tipo_usuario != 1) {
+			redirect ( '/auth/logout' );
+		}
+	
+		$style = $this->modelo_dashboard->get_style ( $id );
+		
+		$this->template->set ( "style", $style );
+	
+		$this->model_billetera_recargas->listar_transferencia_recargasG();
+		$factura_rec = $this->factura_recargas->getFactura_rec();
+	
+		#echo var_dump($pin);exit();
+	
+		$this->template->set("facturas_rec",$factura_rec);
+	
+	
+		$this->template->set_theme ( 'desktop' );
+		$this->template->set_layout ( 'website/main' );
+		$this->template->set_partial ( 'header', 'website/bo/header' );
+		$this->template->set_partial ( 'footer', 'website/bo/footer' );
+		$this->template->build ( 'website/bo/recargas/listar_Htransfer_usu' );
+	}
+	
 	
 	function listar_historialRecargaGeneral() {
 		if (! $this->tank_auth->is_logged_in ()) { // logged in

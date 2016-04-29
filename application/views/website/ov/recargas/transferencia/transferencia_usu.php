@@ -38,22 +38,31 @@
 													<input required type="hidden" id="id" name="id" value="<?=$afiliado?>">
 													
 			<div class="row">
-				<div class="form-group">				
+				<div class="form-group" aling-text="letf">				
 					<legend> </legend>
 					<br/>
-					<section class="col col-12">
-										</section>
-					<section class="col col-3"></section>
-					<section class="col col-3">Digite monto:</section>
-					<section class="col col-6">		
+					
+					<section class="col col-6">
+					<section class="col-md-12">Digite monto:</section>
+					<section class="col-md-12">		
 						<label class="input">
 							<i class="icon-prepend fa fa-money"></i>
 							<input name="cobro" type="number" min="1" step="0.01" size="30" class="from-control" id="cobro" required />
 						</label>
-					</section>					
+					</section></section>
+					<section class="col col-6">
+					<section class="col-md-12">Digite Contraseña:</section>
+					<section class="col-md-12">		
+						<label class="input">
+							<i class="icon-prepend fa fa-lock"></i>
+							<input name="pass" type="password" min="1" step="0.01" size="30" class="from-control" id="pass" placeholder="password" required />
+						</label>
+					</section></section>
 				</div>
 			</div>			
-						
+			<div class="row">
+				
+			</div>			
 			<div class="row">
 				<div class="form-group">				
 					<legend> </legend>
@@ -95,29 +104,58 @@ $("#cobro").keyup(function(){
 });
 */
 
-
+    $("#pass").keyup(validarPass);
 	$("#cobro").keyup(CalcularSaldo);
-	$('#dar').attr("disabled", true);
+	$("#pass").change(validarPass);
+	$("#cobro").change(CalcularSaldo);
+	//$('#dar').attr("disabled", true);
 	
 //setup_flots();
 /* end flot charts */
+var pass="";
+var neto="";
+var val= "";
 
-function CalcularSaldo(evt){
-	//alert("aqui!");
-	var saldo = <?=$saldo?>;
-	var pago = $("#cobro").val() /*+ (String.fromCharCode(evt.charCode)*/;
-	var neto = saldo-pago;
-	if(neto >= 0){
+function validarPass(evt){
+	$('#dar').attr("disabled", true);
+	pass = $("#pass").val();
+
+	$.ajax({
+		type: "POST",
+		url: "/ov/billetera3/validarPass",
+		data: {pass: pass},
+	})
+	.done(function( msg )
+	{
+		val=msg;
+	//alert(msg);
+	if(pass && val && neto > 0){
+		
 		$('#dar').attr("disabled", false);
 		}else{
 			$('#dar').attr("disabled", true);
 		}
+	});
+}
+
+function CalcularSaldo(evt){
+	$('#dar').attr("disabled", true);
+	//alert("aqui!");
+	var saldo = <?=$saldo?>;
+	var pago = $("#cobro").val()/*+ (String.fromCharCode(evt.charCode)*/;	
+	neto = saldo-pago;
+	if(neto > 0 && pass && val){
+		$('#dar').attr("disabled", false);
+	}else{
+			$('#dar').attr("disabled", true);
+	}
+	
 }
 
 
 $( "#edit" ).submit(function( event ) {
 	event.preventDefault();	
-		enviar();
+    enviar();
 });
 
 function enviar(){
@@ -150,7 +188,7 @@ function enviar(){
 										label: "Aceptar",
 										className: "btn-success",
 										callback: function() {
-												location.href="/ov/billetera3";
+												location.href="/ov/billetera3/listar_HTransferencia";
 												FinalizarSpinner();
 										}
 									}
