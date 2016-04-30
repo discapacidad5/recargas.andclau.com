@@ -146,6 +146,163 @@ class billetera3 extends CI_Controller
 		$this->template->build('website/ov/recargas/canjear');
 	}
 	
+	function vender()
+	{
+		
+		//echo "Aqui!"; exit();
+		if (!$this->tank_auth->is_logged_in())
+		{																		// logged in
+			redirect('/auth');
+		}
+	
+		$id              = $this->tank_auth->get_user_id();
+	
+		$this->billetera_recargas->setUsuario($id);
+		$this->model_billetera_recargas->getSaldos();
+		$this->saldo = $this->billetera_recargas->getSaldo();
+		$this->disponible = $this->billetera_recargas->getDisponible();
+	
+		$usuario=$this->general->get_username($id);
+		$style=$this->general->get_style($id);
+	
+		$this->template->set("style",$style);
+		$this->template->set("usuario",$usuario);
+		$this->template->set("saldo",$this->saldo);
+		$this->template->set("disponible",$this->disponible);
+		
+		
+		$virtual = $this->getbilleteraVirtual();
+		
+		$this->template->set("virtual",$virtual);
+		
+		$this->template->build('website/ov/recargas/vender');
+	}
+	
+	function venderSaldo(){
+		
+		$id = $this->tank_auth->get_user_id();
+		$monto = $_POST['cobro'];
+		$descripcion = 'obtenido de billetera recargas';
+		$tipo = 'ADD';
+		
+		$transact = $this->modelo_billetera->add_sub_billetera($tipo,$id,($monto*0.97),$descripcion);
+		$this->model_billetera_recargas->agregarCanjeo_BilleteraRec($id,$monto,'DES');
+		$this->model_billetera_recargas->agregarSaldo_BilleteraRec(2,$monto,'VENTA');
+		$this->model_billetera_recargas->alta_venta_saldo($id,($monto*0.97),$monto);
+		
+		$data = array(
+				'email' => $this->model_perfil_red->get_email($id),
+				'username' => $this->model_perfil_red->get_username($id),
+				'id_transaccion' => $transact,
+				'tipo_t' => ($tipo=="ADD") ? "Agregado" : "Descontado",
+				'descripcion_t' => $descripcion,
+				'monto_t' => $monto
+		);
+		
+		$email = $this->cemail->send_email(10, $data['email'], $data);
+		
+		echo $transact ? "Transacción Exitosa" : "Falló la Transacción";
+		//echo $email ? "Email Enviado" : "Falló envio de Email";
+		
+	}
+	
+	
+	function getbilleteraVirtual(){
+		
+		$id = $this->tank_auth->get_user_id ();
+		
+		$redes = $this->model_tipo_red->listarTodos ();
+		$redesUsuario = $this->model_tipo_red->RedesUsuario ( $id );
+		
+		$ganancias = array ();
+		$comision_directos = array ();
+		$bonos = array ();
+		
+		foreach ( $redesUsuario as $red ) {
+			array_push ( $bonos, $this->model_bonos->ver_total_bonos_id_red ( $id, $red->id ) );
+			array_push ( $ganancias, $this->modelo_billetera->get_comisiones ( $id, $red->id ) );
+			array_push ( $comision_directos, $this->modelo_billetera->getComisionDirectos ( $id, $red->id ) );
+		}
+		
+		$comision_todo = array (
+				'directos' => $comision_directos,
+				'ganancias' => $ganancias,
+				'bonos' => $bonos,
+				'redes' => $redesUsuario 
+		);
+		
+		$total_bonos = $this->model_bonos->ver_total_bonos_id ( $id );
+		
+		$comisiones = $this->modelo_billetera->get_total_comisiones_afiliado ( $id );
+		$cobro = $this->modelo_billetera->get_cobros_total ( $id );
+		$cobroPendientes = $this->modelo_billetera->get_cobros_pendientes_total_afiliado ( $id );
+		$retenciones = $this->modelo_billetera->ValorRetencionesTotales ( $id );
+		
+		$transaction = $this->modelo_billetera->get_total_transacciones_id ( $id );
+		
+		$total = 0;
+		$i = 0;
+		$total_transact = 0;
+		// var_dump($comision_todo);
+		for($i = 0; $i < sizeof ( $comision_todo ["redes"] ); $i ++) {
+			
+			$totales = (intval ( $comision_todo ["ganancias"] [$i] [0]->valor ) != 0 || sizeof ( $comision_todo ["bonos"] [$i] ) != 0) ? 0 : 'FAIL';
+			
+			// echo $totales."|";
+			
+			if ($totales !== 'FAIL') {
+				
+				if ($comision_todo ["ganancias"] [$i] [0]->valor != 0) {
+					
+					if ($comision_todo ["ganancias"] [$i] [0]->valor) {
+						$totales += ($comision_todo ["ganancias"] [$i] [0]->valor);
+					}
+				}
+				
+				if ($comision_todo ["bonos"] [$i]) {
+					
+					for($k = 0; $k < sizeof ( $comision_todo ["bonos"] [$i] ); $k ++) {
+						if ($comision_todo ["bonos"] [$i] [$k]->valor != 0) {
+							$totales += ($comision_todo ["bonos"] [$i] [$k]->valor);
+						}
+					}
+				}
+				
+				if ($totales != 0) {
+					$total += ($totales);
+				}
+			}
+		}
+		
+		if ($transaction) {
+			if ($transaction ['add']) {
+				$total_transact += $transaction ['add'];
+			}
+			if ($transaction ['sub']) {
+				$total_transact -= $transaction ['sub'];
+			}
+		}
+		
+		$retenciones_total = 0;
+		foreach ( $retenciones as $retencion ) {
+			$retenciones_total += $retencion ['valor'];
+			$total;
+		}
+		
+		foreach ( $cobro as $cobros ) {
+			
+			if ($cobros->monto == null) {
+				$cobro = 0;
+			} else {
+				$cobro = $cobros->monto;
+			}
+		}
+		$saldo_neto = ($total - ($cobro + $retenciones_total + $cobroPendientes) + ($total_transact));
+		
+		return $saldo_neto;
+	
+	}
+	
 	function historial_cuenta()
 	{
 		if (!$this->tank_auth->is_logged_in())
@@ -1324,17 +1481,8 @@ $salida.= ($operator == $selected)
 	
 	function transferencia_usu()
 	{
-		if (!$this->tank_auth->is_logged_in())
-		{																		// logged in
-			redirect('/auth');
-		}
+		$id = $this->tank_auth->get_user_id();
 	
-		$id              = $this->tank_auth->get_user_id();
-	
-		if($this->general->isActived($id)!=0){
-			redirect('/ov/compras/carrito');
-		}
-		
 		$afiliado = $_POST['afiliado'];
 		$usuario2=$this->general->get_username($afiliado);
 	
@@ -1369,19 +1517,8 @@ $salida.= ($operator == $selected)
 		$this->template->set("disponible",$this->disponible);
 		$this->template->set("api",$account);
 	
-		$this->model_pin->listar_pines_deCompra();
-		$credito = $this->factura_recargas->getCredito();
-	
-		if(count($credito)==0){redirect('/ov/billetera3');}
-	
-		#echo var_dump($pin);exit();
-	
-		$this->template->set("creditos",$credito);
-	
-		$this->template->set_theme('desktop');
-		$this->template->set_layout('website/main');
-	//	$this->template->set_partial('header', 'website/ov/header');
-	//	$this->template->set_partial('footer', 'website/ov/footer');
+			
+		
 		$this->template->build('website/ov/recargas/transferencia/transferencia_usu');
 	}
 	

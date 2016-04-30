@@ -1,25 +1,38 @@
 <!-- MAIN CONTENT -->
 <div id="content">
 	<div class="row">
-		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+		<div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
 			<h1 class="page-title txt-color-blueDark">
 				<a class="backHome" href="/ov"><i class="fa fa-home"></i> Menu</a> <span>>
 					Billetera Recargas </span>
 			</h1>
 		</div>
-		<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-			<h1 class="page-title txt-color-blueDark">
+		<div class="col-xs-12 col-sm-3 col-md-3 col-lg-4">
+			<h1 class="page-title txt-color-blueDark" style="padding: 2.7%;">
 				<i style="color: #5B835B;" class="fa fa-money"></i> <?=($id==2) ? "Balance" : "Saldo Billetera" ?>
 				<span class="txt-color-black"><b>$ <?=number_format($saldo,2)?> </b></span>
+			<?php if($id>2){?>
+					&nbsp;&nbsp;<span><a onclick='<?php echo $saldo<>0 ? "vender()" : "notice()" ?>' style="cursor: pointer;" >
+						<div class=" btn btn-success txt-color-white text-center " style="width: 7.5em; padding: 0px;">
+							<h5>
+								<i class="fa fa-arrow-left  "></i><i class="fa fa-money "></i>&nbsp;&nbsp;Vender
+							</h5>
+						</div>
+					</a></span>
+					<?php }else {?>
+					&nbsp;&nbsp;<span>
+						</span>
+					<?php }?>
 			</h1>
+			
 		</div>
-		<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" >
+		<div class="col-xs-12 col-sm-3 col-md-3 col-lg-4" >
 			
 					<h1 class="page-title txt-color-blueDark " style="padding: 2.7%;"><i style="color: #5B835B;" class="fa fa-mobile-phone"></i> 
 					<?=($id==2) ? "Wallet" : "Saldo Recargas" ?> <span class="txt-color-black">
-					<b>$ <?=number_format($disponible,2)?> </b>
+					<b>$ <?=number_format($disponible,2)?> </b></span>
 					<?php if($id>2){?>
-					</span>&nbsp;&nbsp;<span><a onclick='<?php echo $saldo<>0 ? "agregar()" : "notice()" ?>' style="cursor: pointer;" >
+					&nbsp;&nbsp;<span><a onclick='<?php echo $saldo<>0 ? "agregar()" : "notice()" ?>' style="cursor: pointer;" >
 						<div class=" btn btn-success txt-color-white text-center " style="width: 7.5em;padding: 0px;">
 							<h5>
 								<i class="fa fa-plus "></i><i class="fa fa-mobile-phone "></i>&nbsp;&nbsp;Agregar
@@ -27,7 +40,7 @@
 						</div>
 					</a></span>
 					<?php }else {?>
-					</span>&nbsp;&nbsp;<span>
+					&nbsp;&nbsp;<span>
 						<div class=" txt-color-white text-center " style="width: 7.5em;padding: 0px;">
 							<h5>
 								<i class="fa fa-plus "></i><i class="fa fa-mobile-phone "></i>&nbsp;&nbsp;Agregar
@@ -101,6 +114,29 @@ function agregar(){
 		bootbox.dialog({
 			message: msg,
 			title: 'Agregar Saldo',
+			buttons: {
+				danger: {
+					label: "Volver",
+					className: "btn-danger",
+					callback: function() {
+
+						}
+			}
+		}})//fin done ajax
+	});//Fin callback bootbox
+}
+
+function vender(){
+	$.ajax({
+		type: "POST",
+		url: "/ov/billetera3/vender",
+		data: {}
+	})
+	.done(function( msg )
+	{					
+		bootbox.dialog({
+			message: msg,
+			title: 'Vender Saldo',
 			buttons: {
 				danger: {
 					label: "Volver",

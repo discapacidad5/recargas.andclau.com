@@ -42,10 +42,10 @@
 											<div class="col-xs-11 col-sm-12 col-md-6 col-lg-8 link">
 												<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 link">
 													<a href="/bo/recargas/listar_historialRecargaGeneral/">
-														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_2_color?>;">
-															<i class="fa fa-edit fa-3x"></i>
+														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>;">
+															<i class="fa fa-list-alt fa-3x"></i>
 															<h1>Recargas</h1>
-															<br>
+															<h1>.</h1>
 														</div>
 													</a>
 												</div>
@@ -54,7 +54,15 @@
 														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>;">
 															<i class="fa fa-list-alt fa-3x"></i>
 															<h1>Transferencias</h1>
-															<br>
+															<h1>.</h1>		
+														</div>
+													</a>
+												</div>
+												<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 link">
+													<a href="/bo/recargas/listar_venta_Saldos/">
+														<div class="minh well well-sm txt-color-white text-center link_dashboard" style="background:<?=$style[0]->btn_1_color?>;">
+															<i class="fa fa-list-alt fa-3x"></i>
+															<h1>Ventas Saldo</h1>
 														</div>
 													</a>
 												</div>

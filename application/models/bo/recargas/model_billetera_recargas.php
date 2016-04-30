@@ -39,7 +39,7 @@ class model_billetera_recargas extends CI_Model
 									where id_billetera not in (b.id) and tipo = 'CARRITO') mercancia,
 								(select round(sum(valor),2)
 									from billetera_recargas_saldo
-									where id_billetera = b.id and tipo in ('CATEGORIA','PIN')) ganancia,
+									where id_billetera = b.id and tipo in ('CATEGORIA','PIN','VENTA')) ganancia,
 								(select round(sum(valor),2)
 									from billetera_recargas_canjeo
 									where id_billetera not in (b.id) and estatus = 'ACT') consumo
@@ -244,5 +244,26 @@ class model_billetera_recargas extends CI_Model
 		$result=$q->result();
 		$this->factura_recargas->setFactura_rec($result);
 	}
+	
+	function alta_venta_saldo($id,$monto,$valor){
+		$data = array(
+				'afiliado' => $id,
+				'transferido' => $monto,
+				'valor' => $valor
+		);
+	
+		$this->db->insert("vender_saldo",$data);
+		return true;
+	}
+	
+	function listar_venta_saldo()
+	{
+		$q=$this->db->query("SELECT afiliado,transferido,valor,fecha  FROM
+	            vender_saldo
+					order by fecha desc ");
+		$result=$q->result();
+		$this->factura_recargas->setFactura_recG($result);
+	}
+	
 	
 }

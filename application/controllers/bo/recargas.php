@@ -21,6 +21,7 @@ class recargas extends CI_Controller {
 		$this->load->model ( 'bo/recargas/model_recargas' );
 		$this->load->model ( 'bo/recargas/model_billetera_recargas' );
 		$this->load->model ( 'bo/recargas/factura_recargas' );
+		$this->load->model ( 'bo/recargas/recarga' );
 	}
 	
 	function index() {
@@ -44,6 +45,39 @@ class recargas extends CI_Controller {
 		$this->template->set_partial ( 'header', 'website/bo/header' );
 		$this->template->set_partial ( 'footer', 'website/bo/footer' );
 		$this->template->build ( 'website/bo/recargas/index' );
+	}
+	
+	function check_wallet(){
+		$this->recarga->setKey(time().rand());
+		$this->recarga->setMd5();
+	
+		$login= $this->recarga->getLogin();
+		$key = $this->recarga->getKey();
+		$md5 = $this->recarga->getMd5();
+	
+		$url = $this->recarga->getUrl().
+		"?login=".$login
+		."&key=".$key
+		."&md5=".$md5
+		."&action=check_wallet";
+	
+		try {
+			$response = file_get_contents ( $url );
+		} catch ( Exception $e ) {
+			return "";
+		}
+	
+		$responses = explode ( "\n", $response );
+		$values = $this->model_recargas->setResponse ( $responses );
+	
+		//foreach ($values as $key => $item){
+		//echo $key."=".$item."<br/>";
+		//}exit();
+	
+		$billetera= $this->model_billetera_recargas->Empresa($values);
+	
+	
+		return $billetera;
 	}
 	
 	function pines() {
@@ -296,6 +330,84 @@ class recargas extends CI_Controller {
 		$this->template->build ( 'website/bo/recargas/historialGeneralR' );
 	}
 	
+	function listar_venta_Saldos() {
+		if (! $this->tank_auth->is_logged_in ()) { // logged in
+			redirect ( '/auth' );
+		}
+		$id = $this->tank_auth->get_user_id ();
+		$style = $this->modelo_dashboard->get_style ( $id );
 	
+		$this->template->set ( "style", $style );
+	
+		$this->model_billetera_recargas->listar_venta_saldo();
+		$factura_recG = $this->factura_recargas->getFactura_recG();
+	
+		//var_dump($factura_recG);exit();
+	
+		$this->template->set ( "facturas_recG", $factura_recG );
+	
+		$this->template->set_theme ( 'desktop' );
+		$this->template->set_layout ( 'website/main' );
+		$this->template->set_partial ( 'header', 'website/bo/header' );
+		$this->template->set_partial ( 'footer', 'website/bo/footer' );
+		$this->template->build ( 'website/bo/recargas/listar_HVenta_saldos' );
+	}
+	
+	function billetera_bo(){
+
+		if (! $this->tank_auth->is_logged_in ()) { // logged in
+			redirect ( '/auth' );
+		}
+		$id = $this->tank_auth->get_user_id ();
+		$style = $this->modelo_dashboard->get_style ( $id );
+		
+		$this->template->set ( "style", $style );
+		
+		$wallet = $this->check_wallet();
+		$saldo = $wallet['balance'];
+		$disponible = $wallet['wallet'];
+		
+		$this->template->set("saldo",$saldo);
+		$this->template->set("disponible",$disponible);
+		
+		$this->model_pin->listar_pinscompra2();
+		$pinc = $this->pin->getPinc();
+		
+		#echo var_dump($pinc);exit();
+		
+		$this->template->set("pinesc",$pinc);
+		
+		
+		$this->model_recargas->listar_facturaRecargasGeneral ();
+		$factura_recG = $this->factura_recargas->getFactura_recG ();
+		
+		// echo var_dump($pin);exit();
+		
+		$this->template->set ( "facturas_recG", $factura_recG );
+		
+		
+		
+		$this->model_billetera_recargas->listar_venta_saldo();
+		$ventas_recG = $this->factura_recargas->getFactura_recG();
+		
+		$this->template->set ( "ventas_recG", $ventas_recG );
+		
+		$this->model_billetera_recargas->listar_transferencia_recargasG();
+		$Tranferencia = $this->factura_recargas->getFactura_rec();
+		
+		#echo var_dump($pin);exit();
+		
+		$this->template->set("Tranferencia",$Tranferencia);
+		
+		
+		$this->template->set_theme ( 'desktop' );
+		$this->template->set_layout ( 'website/main' );
+		$this->template->set_partial ( 'header', 'website/bo/header' );
+		$this->template->set_partial ( 'footer', 'website/bo/footer' );
+		$this->template->build ( 'website/bo/recargas/billetera' );
+		
+		
+		
+	}
 	
 }

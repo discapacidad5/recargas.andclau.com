@@ -317,10 +317,6 @@ Thanks :)*/
 	 });
 	 	
 	 }
-	 $(document).ready(function() {
-	 	
-	 	pageSetUp();
-	 });
                                                         
 
 </script>
