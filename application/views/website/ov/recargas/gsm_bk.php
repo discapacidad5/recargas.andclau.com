@@ -3,7 +3,7 @@
 	<div class="row">
 		<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
 			<h1 class="page-title txt-color-blueDark">
-				<a class="backHome" href="/bo"><i class="fa fa-home"></i> Menu</a> <span>
+				<a class="backHome" href="/ov"><i class="fa fa-home"></i> Menu</a> <span>
 					<a href="/ov/billetera3/index"> > Billetera Recargas</a> > Recargas
 					GSM
 				</span>
@@ -53,13 +53,11 @@
 
 										<div class="table-responsive">
 										<div class="header">
-												<div class="col-xs-2 col-md-2" >
+												<div class="col-xs-3 col-md-3" >
 												</div>
-                    							<h1 class="col-xs-4 col-md-4" >
-					                           		<b>Recargate</b>
-					                           </h1>
+                    							
                         			    <a class="col-xs-5 col-md-5" href="http://andclau.com/" target="_blank">
-											<img alt="" width="90%" src="/media/imagenes/andclau/andclau-negro-1.png">
+											<img alt="" width="150%" src="/logo.png">
 										</a>
                         					
                 						</div>
@@ -77,20 +75,20 @@
 										<fieldset><?php // echo $api['url'];?>
 
 												<section class="col-xs-12 col-md-6">
-													<label class="label "><b>Saldo Disponible</b></label> 
+													<label class="label "><b>Saldo Disponible USD</b></label> 
 													<label
 														class="input input state-success"> <input type="text"
 														name="saldo" class="from-control" id="saldo"
-														value="<?php echo number_format($disponible,2)  ?>"
+														value="<?php echo $disponible  ?>"
 														readonly />
 													</label>
 												</section>
 												<section class="col-xs-12 col-md-6">
-													<label class="label"><b>Saldo Final</b></label> 
+													<label class="label"><b>Saldo Final USD</b></label> 
 													<label
 														class="input state-disabled state-error"> <input
-														type="number" disabled="disabled" name="neto" id="neto"
-														value="<?php echo number_format($disponible,2)  ?>"
+														type="text" disabled="disabled" name="neto" id="neto"
+														value="<?php echo $disponible  ?>"
 														class="from-control" readonly />
 													</label>
 												</section>
@@ -107,43 +105,6 @@
 													<?}?>
 												</select>
 											</section>
-											<!--  <section >
-												<label class="label "><b>Operador</b></label>
-												<div class="span8 operators clearfix many many_small">
-													<div class="span4 margin_left0 clear clear_on_phone"
-														data-operator_name="Claro" data-operator_id="887">
-														<div class="operator_name_claro"></div>
-													</div>
-													<div class="span4 " data-operator_name="Tigo"
-														data-operator_id="888">
-														<div class="operator_name_tigo"></div>
-													</div>
-													<div class="span4  clear_on_phone"
-														data-operator_name="Movistar" data-operator_id="889">
-														<div class="operator_name_movistar"></div>
-													</div>
-													<div class="span4 margin_left0 clear"
-														data-operator_name="Uff" data-operator_id="2305">
-														<div class="operator_name_uff"></div>
-													</div>
-													<div class="span4  clear_on_phone"
-														data-operator_name="Virgin Mobile" data-operator_id="2253">
-														<div class="operator_name_virgin"></div>
-													</div>
-													<div class="span4 " data-operator_name="Avantel"
-														data-operator_id="2611">
-														<div class="operator_name_avantel"></div>
-													</div>
-													<div class="span4 margin_left0 clear clear_on_phone"
-														data-operator_name="ETB" data-operator_id="2671">
-														<div class="operator_name_etb"></div>
-													</div>
-													<div class="span4 " data-operator_name="Une"
-														data-operator_id="2663">
-														<div class="operator_name_une"></div>
-													</div>
-												</div>
-											</section> -->
 											<section id="numero_telefono" >
 												<label class="label"><b>Numero de Teléfono</b></label>
 												
@@ -160,51 +121,43 @@
 															class="from-control mr_phone_no margin_bottom0 pagination-left"
 															min="1" value="" type="number" required>
 													</div> 
-													<!--  <img
-														src="../images/spinner.gif"
-														class="margin_horizontal5 mr_input_spinner none">
-													<img
-														src="../images/check_mark.png"
-														class="margin_horizontal5 check_mark none"> -->
-													<div class="margin_top5"> &nbsp;</div> 
-													<div class="margin_top5 ">  
+													  <div class="margin_top5"> &nbsp;</div> 
+													  <div class="margin_top5 ">  
 														<div class="col col-6" id="validacion"></div>
-														<div class="col col-6">
-															<input type="button" class="btn btn-primary" value="Elegir Monto" id="validar"/>
+														<div class="col-md-6">
+															<input type="button" class="btn btn-primary" value="Comprobar" id="comprobar"/>
 														</div>
 													</div>
-													<div class="margin_top5"> &nbsp;</div>  
+													<div class="margin_top5"> &nbsp;</div> 
 												</label>
 											</section>
-											<hr/>
+											<section id="operator_div">
+											<div class="margin_top5"> &nbsp;</div> 
+												<div id="option_operator">
+												
+												</div>
+												<div class="margin_top5"> &nbsp;</div>
+												<div class="margin_top5 ">  
+														
+														<div class="col-md-12">
+															<input type="button" class="btn btn-primary pull-right" value="Elegir Monto" id="elegir"/>
+														</div>
+												</div>
+												<div class="margin_top5"> &nbsp;</div>
+											</section>
 											<section id="productos">
+												
 												<label class="label"><b>Monto</b></label> <label
 													class="input"> <i class="icon-prepend fa fa-money"></i> <input
-													name="delivered_amount_info" type="number" min="1" step="0.01" class="from-control" readonly required
+													name="delivered_amount_info" type="text" min="1" step="0.01" class="from-control" readonly required
 													id="cobro" />
 												</label>
 											</section>
-											<!--<input type="hidden" name="login" value="<?php echo $api['login'] ?>" >
-												<input type="hidden" name="key" value="<?php echo $api['key'] ?>" >
-												<input type="hidden" name="md5" value="<?php echo $api['md5'] ?>" >-->
 												<input type="hidden" name="action" value="simulation" >
-												<input class="hide" type="text" id="numero" name="destination_msisdn" value="" readonly ><!--  +573115654368--> 
-											    <!--<input type="hidden" name="delivered_amount_info" value="1" >  -->
+												<input class="hide" type="text" id="numero" name="destination_msisdn" value="" readonly >
 												<input type="hidden" name="currency" value="USD" >
-												<!--  <input type="hidden" name="originating_currency" value="USD" >-->
-												<!--  <input type="hidden" name="sms_sent" value="+573115654368" >-->
 												<input type="hidden" name="sms" value="nueva recarga" >
 												<input type="hidden" name="destination_currency" value="USD" >
-												<!--  <input type="hidden" name="skuid" value="9940" >-->
-												<!--  <input type="hidden" name="open_range" value="1" > -->
-											   <!--   <input type="hidden" name="product" value="1.41" >-->
-											   <!--   <input type="hidden" name="retail_price" value="1.00" >
-											    <input type="hidden" name="wholesale_price" value="0.92" >-->
-											  	<!--    <input type="hidden" name="operator" value="Tigo Colombia USD" >
-											    <input type="hidden" name="operatorid" value="1578" >
-											    <input type="hidden" name="country" value="Colombia" >
-											    <input type="hidden" name="countryid" value="710" > -->
-											    <!--  <input type="hidden" name="msisdn" value="<?=$usuario[0]->nombre." ".$usuario[0]->apellido?>" >-->
 										</fieldset>
 
 
@@ -260,7 +213,7 @@
 
 <script type="text/javascript">
 			// PAGE RELATED SCRIPTS
-
+//$("#operator").imagepicker();
 			/*
 			 * Run all morris chart on this page
 			 */
@@ -270,32 +223,46 @@
 			var neto ="";
 			var pago="";
 			var saldo=""; 
+			var img="";
+			var operator="";
+			var r=0;
+			var temp="";
 			
 			$(document).ready(function() {
 				
 				// DO NOT REMOVE : GLOBAL FUNCTIONS!
 				pageSetUp();
 
-				$("#validar").click(msisdn);	
-				$("#mr_phone_no").change(validarCampos);
-				
-				//$("#cobro").on("mouseenter",validarCampos);
-				if(monto!=""){$('#foo').show();$('#enviar').attr("disabled", false);};
 				$("#pais").change(getmsisdn);	
-				//$("#pais").change(validarCampos);
-				$("#pais").before(getmsisdn);	
-				//if($("#cobro").val()){
-					//	CalcularSaldo;
-				//}
-				//$("#cobro").before(CalcularSaldo);
-				//$('#enviar').attr("disabled", true);
+				$("#pais").before(getmsisdn);
+				
+				$("#mr_phone_no").change(validarCampos);//msisdn
+				$("#comprobar").click(validarCampos);	
+				
+				$("#operator").select(operator_img);
+				$("#elegir").click(validarCampos);	
+				
+				if(monto!=""&&operator!=""){$('#foo').show();$('#enviar').attr("disabled", false);};
+					
+				$('#operator_div').hide();
 				$('#productos').hide();
 				$('#foo').hide();
+				
 				$('#enviar').attr("disabled", true);
 			});
 
 			//setup_flots();
 			/* end flot charts */
+			
+function operator_img(){
+	operator = $("#operator option:selected").val().split("|");	
+	img = operator[2];
+	//alert("hola");
+	$("#ope_img").attr("src", img);
+	monto="";
+	$('#productos').hide();
+	$('#foo').hide();
+}
 			
 function selector(html,param){
 
@@ -309,21 +276,16 @@ function selector(html,param){
 }
 			
 function CalcularSaldo(){
-				//alert('aqui!')
-				saldo = $("#saldo").val();
-				pago = $("#cobro").val(); /*+ (String.fromCharCode(evt.charCode)*/;
+				saldo = <?=$disponible?>;
 				neto = saldo-pago;
 				$("#neto").val(neto);
 				var tel = $("#mr_phone_no").val();
 				if(pago=""||neto<0){
 					$('#foo').hide();
-				//}else{
-					//$('#foo').show();
 				}
 			}
 
 function getproduct(msg){
-	//if(!monto){	
 		
 		bootbox.dialog({
 			message: msg,
@@ -335,12 +297,10 @@ function getproduct(msg){
 				callback: 
 					function() {
 						if($("#monto:checked")){
-							monto = $("#monto:checked").val().split("|");	
-							//alert(monto[1]);	
+							monto = $("#monto:checked").val().split("|");
 							pago = monto[1];
-							$("#cobro").val(pago);								
+							$("#cobro").val(monto[5]+" "+monto[6]);								
 							$('#productos').show();	
-							//$('#foo').show();
 							$('#foo').show();
 							CalcularSaldo();
 							$('#enviar').attr("disabled", false);
@@ -357,26 +317,54 @@ function getproduct(msg){
 						}
 				}
 			}
-		})//fin done ajax	
-	/*}else{					
-		$("#cobro").val(monto[1]);
-		$('#productos').show();
-		$('#enviar').attr("disabled", false);
-	}*/
+		})
+}
+
+function getOperator(msg){
+	
+	var zip = $("#mr_phone_prefix").val();
+	var tel = $("#mr_phone_no").val(); 
+	numero = zip+""+tel;	
+	
+	if(msg){
+		iniciarSpinner();
+		$.ajax({
+			type: "POST",
+			url: "response_operator",
+			data: {
+				destination_msisdn:numero,
+				action:'msisdn_info',
+				operator:operator
+				}
+		})
+		.done(function( msg )
+		{
+			FinalizarSpinner();	
+			if(msg){	
+				getproduct(msg);
+			}else{
+				alert('Operador no permitido para este Número');
+				$('#productos').hide();
+				$('#foo').hide();
+			}
+		});//Fin callback bootbox
+	}else{		
+		$('#productos').hide();
+		$('#foo').hide();
+	}
 }
 
 function msisdn(evt){
 	var zip = $("#mr_phone_prefix").val();
-	var tel = $("#mr_phone_no").val(); /*+ (String.fromCharCode(evt.charCode)*/;
+	var tel = $("#mr_phone_no").val(); 
 	numero = zip+""+tel;
 	
-	//$("#numero").val(numero); 
-	//alert(numero);
+	
 	if(zip&&tel){
 		iniciarSpinner();
 		$.ajax({
 			type: "POST",
-			url: "response_numero",///ov/billetera3/recargar_gsm
+			url: "response_numero",
 			data: {
 				destination_msisdn:numero,
 				action:'msisdn_info'
@@ -386,14 +374,10 @@ function msisdn(evt){
 		{
 			FinalizarSpinner();	
 			if(msg){
-				
-				//alert(msg);
-				//$("#mr_phone_prefix").val(msg);
-				getproduct(msg);
-				//$("#cobro").val(pago);
-				//$("#numero").val(numero); 				
-				//$('#foo').show();
-				//$("#productos").html(msg);	
+				$("#option_operator").html(msg);	
+				$('#operator_div').show();	
+				//getOperator(msg);
+				//getproduct(msg);	
 			}else{
 				$('#productos').hide();
 				$('#foo').hide();
@@ -407,12 +391,11 @@ function msisdn(evt){
 
 function getmsisdn(evt){
 	var pais = $("#pais").val();
-	//alert(pais);
 	if(pais){
 		iniciarSpinner();
 		$.ajax({
 			type: "POST",
-			url: "getmsisdn",///ov/billetera3/recargar_gsm
+			url: "getmsisdn",
 			data: {
 					id:pais
 				}
@@ -426,17 +409,20 @@ function getmsisdn(evt){
 							
 			}else{
 				$('#numero_telefono').hide();
+				$('#operator_div').hide();
 			}
 			validarCampos();
 		});//Fin callback bootbox
 		FinalizarSpinner();
 	}else{
 		$('#numero_telefono').hide();
+		$('#operator_div').hide();
 	}
 }
 
 $( "#enviar" ).click(function( event ) {
 	event.preventDefault();	
+	r=1;
 	if(validarCampos()){
 		$('#productos').show();	
 		$('#foo').show();
@@ -455,7 +441,7 @@ function cobrar() {
 	})
 	.done(function( msg )
 	{
-		
+		iniciarSpinner();
 		bootbox.dialog({
 		message: msg,
 		title: 'Recarga GSM',
@@ -464,42 +450,40 @@ function cobrar() {
 			label: "Aceptar",
 			className: "btn-success",
 			callback: function() {
-					iniciarSpinner();
-					//alert(numero);
-					//$('#edit').append("<input value='"+monto[0]+"' type='hidden' name='skuid'>");
-					//$('#edit').append("<input value='"+monto[1]+"' type='hidden' name='product'>");
-					//$('#edit').append("<input value='"+monto[2]+"' type='hidden' name='retail_price'>");
-					//$('#edit').append("<input value='"+monto[3]+"' type='hidden' name='wholesale_price'>");		
-					//$('#edit').append("<input value='"+monto+"' type='hidden' name='sku'>");	
-					//$('#edit').append("<input value='"+numero+"' type='hidden' name='destination_msisdn'>");				
+					//alert(operator[0]);
+
 					$.ajax({
 						type: "POST",
-						url: "/ov/billetera3/recargar_gsm",
+						url: "/ov/billetera3/testRecarga",
 						data: {
 							sku:monto,
 							destination_msisdn:numero,
 							neto:neto,
 							pago:pago,
-							saldo:saldo
-							} /*$('#edit').serialize()*/<?php //echo $api['url'];?>
+							saldo:saldo,
+							operator:operator
+							} 
 					})
 					.done(function( msg2 )
 					{
-						iniciarSpinner();
-						bootbox.dialog({
-						message: msg2,
-						title: 'ATENCION!!!',
-						buttons: {
-							success: {
-							label: "Aceptar",
-							className: "btn-success",
-							callback: function() {
-								FinalizarSpinner();
-								location.href='/ov/billetera3/';
+						if(msg2){//iniciarSpinner();
+							bootbox.dialog({
+							message: msg2,
+							title: 'ATENCION!!!',
+							buttons: {
+								success: {
+								label: "Aceptar",
+								className: "btn-success",
+								callback: function() {
+										FinalizarSpinner();
+										location.href='/ov/billetera3/listar_historialRecarga';
+										}
+									}
 								}
-							}
-						}
-						})//fin done ajax
+							})//fin done ajax
+						}else{
+							alert("Algun dato esta incompleto o erroneo");
+						}						
 					});//Fin callback bootbox
 
 				}
@@ -508,7 +492,7 @@ function cobrar() {
 				label: "Cancelar!",
 				className: "btn-danger",
 				callback: function() {
-
+					FinalizarSpinner();
 					}
 			}
 		}
@@ -521,10 +505,12 @@ function validarCampos(){
 	var zip = $("#mr_phone_prefix").val();
 	var tel = $("#mr_phone_no").val();
 	numero = zip+""+tel;
+	
+	
 	iniciarSpinner();
 	$.ajax({
 		type: "POST",
-		url: "response_numero",///ov/billetera3/recargar_gsm
+		url: "response_numero",
 		data: {
 			destination_msisdn:numero,
 			action:'msisdn_info'
@@ -532,25 +518,45 @@ function validarCampos(){
 	})
 	.done(function( msg )
 	{
-		FinalizarSpinner();	
-		$('#productos').hide();
-		$('#foo').hide();
-		if(!tel){
-			//return false;			
+		if(r==0){
+			FinalizarSpinner();
+		}	
+
+		if(temp!==numero){
+			temp=numero;
+			$('#operator_div').hide();
+			$('#productos').hide();
+			$('#foo').hide();
+			operator="";monto="";
+		}
+		
+		if(!tel){			
+			$('#operator_div').hide();
+			$('#productos').hide();
+			$('#foo').hide();		
 			$("#msg_tel").remove();
-			$('#validacion').append("<div id='msg_tel' >Digite Número de telefono</div>");
+			$('#validacion').append("<div id='msg_tel' >Digite Número de telefono</div>");			
+			FinalizarSpinner();
 			return false;
-		}else if(!msg){
-			//return false;			
+		}else if(!msg){	
+			$('#operator_div').hide();
+			$('#productos').hide();
+			$('#foo').hide();
 			$("#msg_tel").remove();
-			$('#validacion').append("<div id='msg_tel' class='txt-color-red'>Número de telefono no valido</div>");
+			$('#validacion').append("<div id='msg_tel' class='txt-color-red'>Número de telefono no valido</div>");			
+			FinalizarSpinner();
 			return false;			
 		}else{
-			//$('#foo').show();
-			if(!monto){
-				getproduct(msg);				
+			if(!operator){
+				$("#option_operator").html(msg);	
+				$('#operator_div').show();
+				operator = $("#operator option:selected").val().split("|");		
 			}
-			//$("#numero").val(numero);			
+						
+			if(!monto&&operator){
+				getOperator(msg);				
+			}	
+					
 			$("#msg_tel").remove();
 			$('#validacion').append("<div id='msg_tel' class='txt-color-green'>Número de telefono Correcto</div>");
 			
@@ -558,20 +564,13 @@ function validarCampos(){
 		}
 	});
 	
-	//if(!$('#numero').val()){
-		//return false;
-	//}
-	
 	return true;
 }
 	</script>
 	
 	<style>
 	
-	#validar{
-		color: #fff;
-		background: #3276b1;
-	}
+	
 	
 	</style>
 	

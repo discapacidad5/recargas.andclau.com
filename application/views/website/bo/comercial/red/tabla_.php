@@ -159,7 +159,7 @@
 			<br>
 			
 			</form>
-			<table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
+			<table id="dt_basic2" class="table table-striped table-bordered table-hover" width="100%">
 				<thead>
 					<tr>
 						<th>ID</th>
@@ -231,11 +231,17 @@
 <script src="/template/js/plugin/morris/raphael.min.js"></script>
 		<script src="/template/js/plugin/morris/morris.min.js"></script>
 
-		<script src="/template/js/plugin/datatables/jquery.dataTables.min.js"></script>
-		<script src="/template/js/plugin/datatables/dataTables.colVis.min.js"></script>
-		<script src="/template/js/plugin/datatables/dataTables.tableTools.min.js"></script>
-		<script src="/template/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
-		<script src="/template/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+		<script src="/template/js/plugin/dropzone/dropzone.min.js"></script>
+	<script src="/template/js/plugin/markdown/markdown.min.js"></script>
+	<script src="/template/js/plugin/markdown/to-markdown.min.js"></script>
+	<script src="/template/js/plugin/markdown/bootstrap-markdown.min.js"></script>
+	<script src="/template/js/plugin/datatables/jquery.dataTables.min.js"></script>
+	<script src="/template/js/plugin/datatables/dataTables.colVis.min.js"></script>
+	<script src="/template/js/plugin/datatables/dataTables.tableTools.min.js"></script>
+	<script src="/template/js/plugin/datatables/dataTables.bootstrap.min.js"></script>
+	<script src="/template/js/plugin/datatable-responsive/datatables.responsive.min.js"></script>
+	<script src="/template/js/validacion.js"></script>
+		
 
 <script type="text/javascript">
 
@@ -380,6 +386,7 @@ $.ajax({
 });
 	
 }
+
 $(document).ready(function() {
 	
 	pageSetUp();
@@ -401,7 +408,7 @@ $(document).ready(function() {
 	*/	
 
 	/* BASIC ;*/
-		var responsiveHelper_dt_basic2 = undefined;
+		var responsiveHelper_dt_basic = undefined;
 		var responsiveHelper_datatable_fixed_column = undefined;
 		var responsiveHelper_datatable_col_reorder = undefined;
 		var responsiveHelper_datatable_tabletools = undefined;
@@ -411,7 +418,7 @@ $(document).ready(function() {
 			phone : 480
 		};
 
-		$('#dt_basic').dataTable({
+		$('#dt_basic2').dataTable({
 			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
 				"t"+
 				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",

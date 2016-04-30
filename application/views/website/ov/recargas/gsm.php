@@ -257,7 +257,6 @@
 function operator_img(){
 	operator = $("#operator option:selected").val().split("|");	
 	img = operator[2];
-	//alert("hola");
 	$("#ope_img").attr("src", img);
 	monto="";
 	$('#productos').hide();
@@ -376,8 +375,6 @@ function msisdn(evt){
 			if(msg){
 				$("#option_operator").html(msg);	
 				$('#operator_div').show();	
-				//getOperator(msg);
-				//getproduct(msg);	
 			}else{
 				$('#productos').hide();
 				$('#foo').hide();
@@ -450,7 +447,6 @@ function cobrar() {
 			label: "Aceptar",
 			className: "btn-success",
 			callback: function() {
-					//alert(operator[0]);
 
 					$.ajax({
 						type: "POST",
@@ -466,7 +462,7 @@ function cobrar() {
 					})
 					.done(function( msg2 )
 					{
-						if(msg2){//iniciarSpinner();
+						if(msg2){
 							bootbox.dialog({
 							message: msg2,
 							title: 'ATENCION!!!',

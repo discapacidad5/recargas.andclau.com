@@ -5,10 +5,11 @@ class comercial extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
-       
-		
+
+		$this->load->model('bo/recargas/recarga');
 		$this->load->model('bo/recargas/billetera_recargas');
 		$this->load->model('bo/recargas/model_billetera_recargas');
+		$this->load->model('bo/recargas/model_recargas');
 		$this->load->helper(array('form', 'url'));
 		$this->load->library('form_validation');
 		$this->load->library('security');
@@ -33,14 +34,14 @@ class comercial extends CI_Controller
 		$this->load->model('bo/model_mercancia');
 		$this->load->model('ov/modelo_compras');
 		$this->load->model('ov/modelo_billetera');
-		$this->load->model('model_tipo_red'); 
+		$this->load->model('bo/model_bonos');
+		$this->load->model('model_tipo_red');
 		$this->load->model('cemail');
 		
 	}
 
 	function index()
 	{
-	//	echo "aqui!";
 		if (!$this->tank_auth->is_logged_in()) 
 		{																		// logged in
 			redirect('/auth');
@@ -64,58 +65,23 @@ class comercial extends CI_Controller
         $this->template->set_partial('footer', 'website/bo/footer');
 		$this->template->build('website/bo/comercial/index');
 	}
-	function billetera_afiliado(){
 
-		$style=$this->modelo_dashboard->get_style(1);
-		$usuario = $this->tank_auth->get_user_id();
-		$id=$_POST['id'];
-
-		$this->template->set("usuario",$usuario);
-		//$usuario=$this->general->get_username($id);
-		//$style=$this->general->get_style($id);
-	
-		$redes = $this->model_tipo_red->listarTodos();
-		$ganancias=array();
-		$comision_directos = array();
-		foreach ($redes as $red){
-			array_push($ganancias,$this->modelo_billetera->get_comisiones($id,$red->id));
-			array_push($comision_directos, $this->modelo_billetera->getComisionDirectos($id, $red->id));
-		}
-		
-		$transaction = $this->modelo_billetera->get_total_transacciones_id($id);		
-		
-		$comisiones = $this->modelo_billetera->get_total_comisiones_afiliado($id);
-		$cobro=$this->modelo_billetera->get_cobros_total($id);
-		$cobroPendientes=$this->modelo_billetera->get_cobros_pendientes_total_afiliado($id);
-		$retenciones = $this->modelo_billetera->ValorRetencionesTotales($id);
-		
-		$this->template->set("style",$style);
-		$this->template->set("id",$id);
-		$this->template->set("transaction",$transaction);
-		$this->template->set("comisiones",$comisiones);
-		$this->template->set("ganancias",$ganancias);
-		$this->template->set("comisiones_directos",$comision_directos);
-		$this->template->set("cobro",$cobro);
-		$this->template->set("cobroPendientes",$cobroPendientes);
-		$this->template->set("retenciones",$retenciones);
-
-		$this->template->set_theme('desktop');
-        //$this->template->set_layout('website/main');
-        $this->template->set_partial('header', 'website/bo/header');
-        $this->template->set_partial('footer', 'website/bo/footer');
-		$this->template->build('website/bo/comercial/billetera');
-	}
-	
 	function billetera_rec_saldo(){
 	
-		$style=$this->modelo_dashboard->get_style(1);
+		//$style=$this->modelo_dashboard->get_style(1);
 		$usuario = $this->tank_auth->get_user_id();
-		$id=$_POST['id'];
-	
-    	$this->billetera_recargas->setUsuario($id);
-    	$this->model_billetera_recargas->getSaldos();
-   	    $saldo = $this->billetera_recargas->getSaldo();
-        $disponible = $this->billetera_recargas->getDisponible();
+		$id=$_POST['id'];	
+		
+			$wallet = $this->check_wallet();
+			$billetera = $wallet['balance']; // 0.02;
+			#$this->disponible = $wallet['wallet'];
+			
+			$this->billetera_recargas->setUsuario($id);
+			$this->model_billetera_recargas->getSaldos();
+			$saldo = $this->billetera_recargas->getSaldo();	
+			$disponible = $this->billetera_recargas->getDisponible();	
+			
+		if ($billetera<=0.02){echo "No hay saldo disponible.";exit();} 
 	
 		$this->template->set("saldo",$saldo);
 		$this->template->set("disponible",$disponible);
@@ -132,30 +98,37 @@ class comercial extends CI_Controller
 		$this->template->build('website/bo/comercial/billetera_recarga_saldo');
 	}
 	
+	function check_wallet(){
+		$this->recarga->setKey(time().rand());
+		$this->recarga->setMd5();
 	
-	function add_sub_billetera_afiliado(){
-		
-		$id = $_POST['id'];
-		$monto = $_POST['cobro'];
-		$descripcion = $_POST['descripcion'];
-		$tipo = $_POST['tipo'];
-		
-		$transact = $this->modelo_billetera->add_sub_billetera($tipo,$id,$monto,$descripcion);		
-		
-		$data = array(
-				'email' => $this->model_perfil_red->get_email($id),
-				'username' => $this->model_perfil_red->get_username($id),
-				'id_transaccion' => $transact,
-				'tipo_t' => ($tipo=="ADD") ? "Agregado" : "Descontado",
-				'descripcion_t' => $descripcion,
-				'monto_t' => $monto
-		);
-		
-		$email = $this->cemail->send_email(10, $data['email'], $data);
-		
-		echo $transact ? "Transacción Exitosa" : "Falló la Transacción";
-		//echo $email ? "Email Enviado" : "Falló envio de Email";
-		
+		$login= $this->recarga->getLogin();
+		$key = $this->recarga->getKey();
+		$md5 = $this->recarga->getMd5();
+	
+		$url = $this->recarga->getUrl().
+		"?login=".$login
+		."&key=".$key
+		."&md5=".$md5
+		."&action=check_wallet";
+	
+		try {
+			$response = file_get_contents ( $url );
+		} catch ( Exception $e ) {
+			return "";
+		}
+	
+		$responses = explode ( "\n", $response );
+		$values = $this->model_recargas->setResponse ( $responses );
+	
+		//foreach ($values as $key => $item){
+		//echo $key."=".$item."<br/>";
+		//}exit();
+	
+		$billetera= $this->model_billetera_recargas->Empresa($values);
+	
+	
+		return $billetera;
 	}
 
 	function add_sub_billetera_afiliadoRec(){
@@ -182,8 +155,96 @@ class comercial extends CI_Controller
 		//echo $email ? "Email Enviado" : "Falló envio de Email";
 	
 	}
+
+	function billetera_afiliado(){
+
+		$style=$this->modelo_dashboard->get_style(1);
+		$usuario = $this->tank_auth->get_user_id();
+		$id=$_POST['id'];
+
+		$this->template->set("usuario",$usuario);
+		//$usuario=$this->general->get_username($id);
+		//$style=$this->general->get_style($id);
 	
+		$redes = $this->model_tipo_red->listarTodos();
+		$redesUsuario = $this->model_tipo_red->RedesUsuario($id);
+		
+		$ganancias=array();
+		$comision_directos = array();
+		$bonos = array();		
+		
+		foreach ($redesUsuario as $red){
+			//$array_bono = $this->model_bonos->ver_total_bonos_id($id,$red->id,'');
+			//$array_ganancias = $this->modelo_billetera->get_comisiones($id,$red->id);
+			//$array_comision = $this->modelo_billetera->getComisionDirectos($id, $red->id);
+
+			array_push($bonos,$this->model_bonos->ver_total_bonos_id_red($id,$red->id));
+			array_push($ganancias,$this->modelo_billetera->get_comisiones($id,$red->id));
+			array_push($comision_directos,$this->modelo_billetera->getComisionDirectos($id, $red->id));
+		}
+		
+		$comision_todo= array(
+				'directos' => $comision_directos,
+				'ganancias' => $ganancias,
+				'bonos' => $bonos,
+				'redes' => $redesUsuario
+		);
+		
+		$comisiones = $this->modelo_billetera->get_total_comisiones_afiliado($id);
+		$cobro=$this->modelo_billetera->get_cobros_total($id);
+		$cobroPendientes=$this->modelo_billetera->get_cobros_pendientes_total_afiliado($id);
+		$retenciones = $this->modelo_billetera->ValorRetencionesTotales($id);
+		$total_bonos = $this->model_bonos->ver_total_bonos_id($id);
+		
+		$transaction = $this->modelo_billetera->get_total_transacciones_id($id);	
+		
+		
+		$this->template->set("style",$style);
+		$this->template->set("usuario",$usuario);
+		$this->template->set("id",$id);
+		$this->template->set("redes",$redesUsuario);
+		$this->template->set("bonos",$bonos);
+		$this->template->set("total_bonos",$total_bonos);
+		$this->template->set("comisiones",$comisiones);
+		$this->template->set("comision_todo",$comision_todo);
+		$this->template->set("ganancias",$ganancias);
+		$this->template->set("transaction",$transaction);
+		$this->template->set("comisiones_directos",$comision_directos);
+		$this->template->set("cobro",$cobro);
+		$this->template->set("cobroPendientes",$cobroPendientes);
+		$this->template->set("retenciones",$retenciones);
+
+		$this->template->set_theme('desktop');
+        //$this->template->set_layout('website/main');
+        $this->template->set_partial('header', 'website/bo/header');
+        $this->template->set_partial('footer', 'website/bo/footer');
+		$this->template->build('website/bo/comercial/billetera');
+	}
 	
+	function add_sub_billetera_afiliado(){
+		
+		$id = $_POST['id'];
+		$monto = $_POST['cobro'];
+		$descripcion = $_POST['descripcion'];
+		$tipo = $_POST['tipo'];
+		
+		$transact = $this->modelo_billetera->add_sub_billetera($tipo,$id,$monto,$descripcion);		
+		
+		$data = array(
+				'email' => $this->model_perfil_red->get_email($id),
+				'username' => $this->model_perfil_red->get_username($id),
+				'id_transaccion' => $transact,
+				'tipo_t' => ($tipo=="ADD") ? "Agregado" : "Descontado",
+				'descripcion_t' => $descripcion,
+				'monto_t' => $monto
+		);
+		
+		$email = $this->cemail->send_email(10, $data['email'], $data);
+		
+		echo $transact ? "Transacción Exitosa" : "Falló la Transacción";
+		//echo $email ? "Email Enviado" : "Falló envio de Email";
+		
+	}
 	
 	function transacciones_billetera(){
 		
@@ -2485,7 +2546,7 @@ class comercial extends CI_Controller
 		
 		
 		$productos       = $this->model_admin->get_productos();
-		$servicios		 = $this->model_admin->get_servicios();
+		$servicios		 = $this->model_admin->get_servicios();//var_dump($servicios);exit();
 		//$promo			 = $this->model_admin->get_promo();
 		$combinados		 = $this->model_admin->get_combinados();
 		$paquete		 = $this->model_admin->get_paquetes();
