@@ -127,15 +127,10 @@ function agregar(){
 }
 
 function vender(){
-	$.ajax({
-		type: "POST",
-		url: "/ov/billetera3/vender",
-		data: {}
-	})
-	.done(function( msg )
-	{					
+	var saldo = <?=$saldo?>;
+	if(parseInt(saldo)<200.0){
 		bootbox.dialog({
-			message: msg,
+			message: 'Debes obtener en tu billetera al menos <strong> $ 200 USD</strong>',
 			title: 'Vender Saldo',
 			buttons: {
 				danger: {
@@ -146,7 +141,28 @@ function vender(){
 						}
 			}
 		}})//fin done ajax
-	});//Fin callback bootbox
+	}else{	
+		$.ajax({
+			type: "POST",
+			url: "/ov/billetera3/vender",
+			data: {}
+		})
+		.done(function( msg )
+		{					
+			bootbox.dialog({
+				message: msg,
+				title: 'Vender Saldo',
+				buttons: {
+					danger: {
+						label: "Volver",
+						className: "btn-danger",
+						callback: function() {
+	
+							}
+				}
+			}})//fin done ajax
+		});//Fin callback bootbox
+	}
 }	
 
 function notice(){

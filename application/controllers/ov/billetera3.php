@@ -187,6 +187,9 @@ class billetera3 extends CI_Controller
 		
 		$monto2 = ($monto-3.0);
 		
+		if($monto<200.0){echo "<p>Transacción No puede realizarse</p></br>
+				<p>Debes obtener en tu billetera al menos <strong> $ 200 USD</strong></p>";}
+		
 		$transact = $this->modelo_billetera->add_sub_billetera($tipo,$id,$monto2,$descripcion);
 		$this->model_billetera_recargas->agregarCanjeo_BilleteraRec($id,$monto,'DES');
 		$this->model_billetera_recargas->agregarSaldo_BilleteraRec(2,$monto,'VENTA');
