@@ -182,26 +182,34 @@ class billetera3 extends CI_Controller
 		
 		$id = $this->tank_auth->get_user_id();
 		$monto = $_POST['cobro'];
-		$descripcion = 'obtenido de billetera recargas';
+		$descripcion = 'Venta de Saldo de billetera recargas, retencion de $ 3 USD.';
 		$tipo = 'ADD';
 		
-		$transact = $this->modelo_billetera->add_sub_billetera($tipo,$id,($monto*0.97),$descripcion);
+		$monto2 = ($monto-3.0);
+		
+		$transact = $this->modelo_billetera->add_sub_billetera($tipo,$id,$monto2,$descripcion);
 		$this->model_billetera_recargas->agregarCanjeo_BilleteraRec($id,$monto,'DES');
 		$this->model_billetera_recargas->agregarSaldo_BilleteraRec(2,$monto,'VENTA');
-		$this->model_billetera_recargas->alta_venta_saldo($id,($monto*0.97),$monto);
+		$this->model_billetera_recargas->alta_venta_saldo($id,$monto2,$monto);
 		
 		$data = array(
 				'email' => $this->model_perfil_red->get_email($id),
 				'username' => $this->model_perfil_red->get_username($id),
 				'id_transaccion' => $transact,
-				'tipo_t' => ($tipo=="ADD") ? "Agregado" : "Descontado",
+				'tipo_t' => "Agregado",
 				'descripcion_t' => $descripcion,
-				'monto_t' => $monto
+				'monto_t' => $monto2
 		);
 		
 		$email = $this->cemail->send_email(10, $data['email'], $data);
 		
-		echo $transact ? "Transacción Exitosa" : "Falló la Transacción";
+		echo $transact ? "<ul>"
+					."<li>"
+					."<h3>Valor: </b>$ ".$monto2." USD</b><h3>"
+					."<h3>Retención : $ 3 USD <h3>"
+					."</li>"
+				."</ul><br/>
+					Transaccion Exitosa"  : "Falló la Transacción";
 		//echo $email ? "Email Enviado" : "Falló envio de Email";
 		
 	}
@@ -549,7 +557,7 @@ class billetera3 extends CI_Controller
 		$this->model_pin->listar_pines_deCompra();
 		$credito = $this->factura_recargas->getCredito();
 	
-		if(count($credito)==0){redirect('/ov/billetera3');}
+		#if(count($credito)==0){redirect('/ov/billetera3');}
 	
 		#echo var_dump($pin);exit();
 	
@@ -1458,34 +1466,63 @@ $salida.= ($operator == $selected)
 			exit();
 		}
 	
-		$validar = $this->model_billetera_recargas->agregarSaldo_BilleteraRec($afiliado,$cobro,'TRANSFER');
+		$cobro2 = ($cobro-3.0);
+		
+		$validar = $this->model_billetera_recargas->agregarSaldo_BilleteraRec($afiliado,$cobro2,'TRANSFER');
 		$this->model_billetera_recargas->agregarCanjeo_BilleteraRec($id,$cobro,'DES');
-		$this->model_billetera_recargas->tranferencia_recargas($id,$afiliado,$cobro);
+		$this->model_billetera_recargas->tranferencia_recargas($id,$afiliado,$cobro2);
 		
 		$data = array(
-		 'email' => $this->model_perfil_red->get_email($afiliado),
-		 'username' => $this->model_perfil_red->get_username($afiliado),
-		 'afiliado' => $id,
-		 'cobro' => $cobro
-		 );
+				'email' => $this->model_perfil_red->get_email($afiliado),
+				'username' => $this->model_perfil_red->get_username($afiliado),
+				'id_transaccion' => "Transferido de Usuario: ".$this->model_perfil_red->get_username($id),
+				'tipo_t' => "Agregado",
+				'monto_t' => $cobro2
+		);
 		
-		//$email = $this->cemail->send_email(13, $data['email'], $data);
+		$this->CEmail ( $data,11 );
+	
+		$data2 = array(
+				'email' => $this->model_perfil_red->get_email($id),
+				'username' => $this->model_perfil_red->get_username($id),
+				'id_transaccion' => "Transferido a: ".$this->model_perfil_red->get_username($afiliado),
+				'tipo_t' => "Descontado, retencion de $ 3 USD",
+				'monto_t' => $cobro
+		);		
+		
+		$this->CEmail ( $data2,11 );
 		
 		echo $validar
-		? "Transaccion Exitosa" : "Transacción no pudo ser Realizada ";
+		? 		"<ul>"
+					."<li>"
+					."<h3>Valor: </b>$ ".$cobro2." USD</b><h3>"
+					."<h3>Retención : $ 3 USD <h3>"
+					."</li>"
+				."</ul><br/>
+					Transaccion Exitosa" : "Transacción no pudo ser Realizada ";
 		
 		//echo $email ? "Email Enviado" : "Falló envio de Email";
 		//redirect('bo/recargas/listar_pines');
 	
 	}
 	
+	private function CEmail($data,$type) {		
+		
+		$email = $this->cemail->send_email($type, $data['email'], $data);
+		
+	}
+
+	
 	function transferencia_usu()
 	{
 		$id = $this->tank_auth->get_user_id();
 	
 		$afiliado = $_POST['afiliado'];
+		
 		$usuario2=$this->general->get_username($afiliado);
 	
+		if(!$usuario2||$afiliado<=1){echo "Este ID no existe, intente con otro";exit();}
+		
 		$pais  = $this->model_recargas->get_pais();
 		$this->template->set("pais",$pais);
 	

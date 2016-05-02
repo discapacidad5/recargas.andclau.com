@@ -68,7 +68,7 @@ function detalles(id)
 <!-- MAIN CONTENT -->
 <div id="content">
 	<div class="row">
-		<div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
+		<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
 			<h1 class="page-title txt-color-blueDark">
 					<a class="backHome" href="/bo"><i class="fa fa-home"></i> Menu</a>
 				<span> 
@@ -76,6 +76,23 @@ function detalles(id)
 				> <a href="/ov/billetera3/SMenu_transfer">Transfer</a>
 				> Red
 				</span>
+			</h1>
+		</div>
+		<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+			<h1 class="page-title txt-color-blueDark" style="padding: 1rem;">
+					
+				<label class="input">
+				<input type="number" class="form-control "
+					id="search_id" placeholder="Digite ID de Afiliado"
+					onsubmit="detalles2($('#search_id').val(),<?=$id?>);" />
+				</label> 
+				<label class="input">
+				<input type="submit"
+					class="btn btn-success pull-right" class=""
+					value="Agregar a este ID"
+					onclick="detalles2($('#search_id').val(),<?=$id?>);">
+				</label>
+
 			</h1>
 		</div>
 	</div>
@@ -303,19 +320,30 @@ Thanks :)*/
 
  
  function detalles2(afiliado,id){
-	 $.ajax({
-	 	type: "POST",
-	 	url: "/ov/billetera3/transferencia_usu",
-	 	data: {id:id,afiliado:afiliado},
-	 })
-	 .done(function( msg )
-	 {
-	 	bootbox.dialog({
-	 	message: msg,
-	 	title: 'Trasferir entre usuarios',
-	 })//fin done ajax
-	 });
-	 	
+
+		 if(afiliado!=id){
+			 $.ajax({
+			 	type: "POST",
+			 	url: "/ov/billetera3/transferencia_usu",
+			 	data: {id:id,afiliado:afiliado},
+			 })
+			 .done(function( msg )
+			 {
+			 	bootbox.dialog({
+			 	message: msg,
+			 	title: 'Trasferir entre usuarios',
+			 	buttons: {
+			 		danger: {
+						label: "Cancelar!",
+						className: "btn-danger",
+						callback: function() {
+							
+						}
+					}
+				}
+			 })//fin done ajax
+			 });
+		 }
 	 }
                                                         
 

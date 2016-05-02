@@ -6,7 +6,10 @@
 						<h1 class="page-title txt-color-blueDark">
 						<a class="backHome" href="/ov"><i class="fa fa-home"></i> Menu</a>
 							<span>>
-								<a href="/bo/recargas/historialRec/">Historial</a> > Historial Tranferencias
+								<a href="bo/comercial">Comercial</a> >
+								<a href="/bo/comercial/red">Red de Afiliacion</a> >  
+								<a href="/bo/recargas/">Recargas</a> >
+								<a href="/bo/recargas/historialRec">Historial</a> > Transferencias
 							</span>
 						</h1>
 		</div>
