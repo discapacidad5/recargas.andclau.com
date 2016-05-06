@@ -791,7 +791,7 @@ function multimedia()
 		$responses = explode ( "\n", $response );
 		$values = $this->model_recargas->setResponse ( $responses );
 		
-		// foreach ($values as $key => $item){
+		//foreach ($values as $key => $item){
 		// echo $key."=".$item."<br/>";
 		// }exit();
 		
